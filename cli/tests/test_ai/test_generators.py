@@ -1,0 +1,84 @@
+# ABOUTME: Tests for AI content generators.
+# ABOUTME: Verifies prompt construction and response parsing.
+
+import pytest
+
+from last_wrapped.ai.generators import (
+    AuraGenerator,
+    NarrativeGenerator,
+    PersonalityGenerator,
+    RoastGenerator,
+    SuggestionsGenerator,
+)
+from last_wrapped.ai.provider import LLMProvider
+
+
+class MockProvider(LLMProvider):
+    """Mock provider for testing prompt construction."""
+
+    def __init__(self, response: str = "mock response") -> None:
+        self.response = response
+        self.last_prompt: str | None = None
+
+    def generate(self, prompt: str, max_tokens: int = 1024) -> str:
+        self.last_prompt = prompt
+        return self.response
+
+
+class TestNarrativeGenerator:
+    def test_generates_narrative_from_stats(self) -> None:
+        """Narrative generator creates story from user stats."""
+        provider = MockProvider('{"narrative": "Your 2024 was wild..."}')
+        generator = NarrativeGenerator(provider)
+
+        stats = {
+            "total_minutes": 42000,
+            "top_artist": "Radiohead",
+            "top_genre": "Alternative",
+        }
+        result = generator.generate(stats)
+
+        assert provider.last_prompt is not None
+        assert "42000" in provider.last_prompt
+        assert "Radiohead" in provider.last_prompt
+
+    def test_prompt_includes_instruction_for_humor(self) -> None:
+        """Prompt asks for playful, humorous tone."""
+        provider = MockProvider('{"narrative": "test"}')
+        generator = NarrativeGenerator(provider)
+
+        generator.generate({"total_minutes": 100})
+
+        assert "playful" in provider.last_prompt.lower() or "humor" in provider.last_prompt.lower()
+
+
+class TestPersonalityGenerator:
+    def test_generates_personality_type(self) -> None:
+        """Personality generator creates type with tagline."""
+        response = '''{
+            "type": "The Chaos Agent",
+            "tagline": "Your playlists have trust issues",
+            "description": "You listen to everything...",
+            "spirit_animal": "A caffeinated raccoon"
+        }'''
+        provider = MockProvider(response)
+        generator = PersonalityGenerator(provider)
+
+        result = generator.generate({"genres": ["rock", "pop", "jazz"]})
+
+        assert provider.last_prompt is not None
+
+
+class TestRoastGenerator:
+    def test_generates_roasts_from_stats(self) -> None:
+        """Roast generator creates playful callouts."""
+        response = '{"roasts": ["Your 2am listening habits are concerning"]}'
+        provider = MockProvider(response)
+        generator = RoastGenerator(provider)
+
+        result = generator.generate({
+            "late_night_plays": 200,
+            "most_repeated_track": "same song",
+        })
+
+        assert provider.last_prompt is not None
