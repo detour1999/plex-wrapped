@@ -1,0 +1,37 @@
+---
+// ABOUTME: User landing page showing all available years.
+// ABOUTME: Lists Wrapped experiences for a specific user.
+
+import WrappedLayout from '@layouts/WrappedLayout.astro';
+
+export function getStaticPaths() {
+  // In production, this reads from generated data
+  return [];
+}
+
+const { user } = Astro.params;
+const years: number[] = []; // Populated at build time
+---
+
+<WrappedLayout title={`${user}'s Wrapped`}>
+  <main class="min-h-screen flex flex-col items-center justify-center p-8">
+    <h1 class="text-5xl font-black mb-4">{user}</h1>
+    <p class="text-wrapped-muted text-xl mb-12">Your music history</p>
+
+    {years.length > 0 ? (
+      <div class="grid gap-4">
+        {years.map((year) => (
+          <a
+            href={`/${user}/${year}/`}
+            class="bg-wrapped-card px-8 py-6 rounded-lg hover:bg-opacity-80 transition text-center"
+          >
+            <span class="text-4xl font-black">{year}</span>
+            <p class="text-wrapped-muted mt-2">View Wrapped</p>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="text-wrapped-muted">No Wrapped data available yet.</p>
+    )}
+  </main>
+</WrappedLayout>

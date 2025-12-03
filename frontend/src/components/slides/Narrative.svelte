@@ -29,8 +29,6 @@
         clearInterval(interval);
       }
     }, 30);
-
-    return () => clearInterval(interval);
   }
 </script>
 

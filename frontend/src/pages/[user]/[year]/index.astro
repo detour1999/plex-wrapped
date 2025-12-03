@@ -1,0 +1,33 @@
+---
+// ABOUTME: Individual Wrapped experience page for a user's year.
+// ABOUTME: Loads user data and renders the full slide experience.
+
+import WrappedLayout from '@layouts/WrappedLayout.astro';
+import WrappedExperience from '@components/WrappedExperience.svelte';
+
+export function getStaticPaths() {
+  // In production, this reads from generated data directory
+  // and creates a page for each user/year combination
+  return [];
+}
+
+const { user, year } = Astro.params;
+
+// Load user data (in production, this reads from data/*.json)
+const data = {
+  user: { name: user, year: parseInt(year as string) },
+  stats: { total_minutes: 0 },
+  top: { artists: [], tracks: [] },
+  time_patterns: { by_hour: Array(24).fill(0), quirky: {} },
+  ai_generated: {
+    personality: { type: '', tagline: '', description: '', spirit_animal: '' },
+    aura: { colors: ['#1DB954'], vibe: '', aesthetic: '' },
+    roasts: [],
+    narrative: '',
+  },
+};
+---
+
+<WrappedLayout title={`${user}'s ${year} Wrapped`}>
+  <WrappedExperience {data} client:load />
+</WrappedLayout>
