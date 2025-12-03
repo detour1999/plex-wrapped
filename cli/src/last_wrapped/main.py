@@ -41,8 +41,11 @@ def get_orchestrator(config_path: str) -> Orchestrator:
 
 @app.command()
 def init() -> None:
-    """Initialize a new Last Wrapped project configuration."""
-    console.print("[yellow]init command not yet implemented[/yellow]")
+    """Initialize Last Wrapped with an interactive setup wizard."""
+    from last_wrapped.setup_tui import SetupApp
+
+    setup = SetupApp()
+    setup.run()
 
 
 @app.command()
