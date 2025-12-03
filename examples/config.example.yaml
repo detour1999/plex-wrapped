@@ -1,0 +1,44 @@
+# Example configuration for Last Wrapped
+# Copy this file to config.yaml and fill in your values
+
+# Plex server configuration
+plex:
+  url: "https://plex.example.com"  # Your Plex server URL
+  token: "your-plex-token-here"    # Get from: Settings > Account > Authorized Devices
+
+# LLM configuration for generating personalized content
+llm:
+  provider: "anthropic"  # Options: anthropic, openai, none
+  api_key: "sk-ant-xxx"  # Your API key (not needed if provider is 'none')
+  model: "claude-sonnet-4-5-20250929"  # Optional: specific model to use
+
+# Year to generate Wrapped for
+year: 2024
+
+# Hosting provider configuration
+hosting:
+  provider: "cloudflare"  # Options: cloudflare, vercel, netlify, github, none
+
+  # Cloudflare Pages configuration (if provider is 'cloudflare')
+  cloudflare:
+    account_id: "your-account-id"
+    project_name: "my-wrapped"
+    api_token: "your-api-token"  # Optional: falls back to env var
+
+  # Vercel configuration (if provider is 'vercel')
+  # vercel:
+  #   project_name: "my-wrapped"
+  #   token: "your-vercel-token"  # Optional: falls back to env var
+
+  # Netlify configuration (if provider is 'netlify')
+  # netlify:
+  #   site_id: "your-site-id"
+  #   auth_token: "your-netlify-token"  # Optional: falls back to env var
+
+  # GitHub Pages configuration (if provider is 'github')
+  # github:
+  #   repo: "username/repo"
+  #   branch: "gh-pages"  # Optional: defaults to 'gh-pages'
+
+# Output directory for generated site (optional)
+output_dir: "dist"
