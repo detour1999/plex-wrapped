@@ -1,0 +1,32 @@
+---
+// ABOUTME: Landing page listing all users with Wrapped available.
+// ABOUTME: Entry point for the static site.
+
+import WrappedLayout from '../layouts/WrappedLayout.astro';
+
+// In production, this would be populated by the build process
+const users: Array<{name: string; year: number}> = [];
+---
+
+<WrappedLayout title="Last Wrapped">
+  <main class="min-h-screen flex flex-col items-center justify-center p-8">
+    <h1 class="text-5xl font-black mb-4">Last Wrapped</h1>
+    <p class="text-wrapped-muted text-xl mb-12">Your year in music</p>
+
+    {users.length > 0 ? (
+      <div class="grid gap-4">
+        {users.map((user) => (
+          <a
+            href={`/${user.name}/${user.year}/`}
+            class="bg-wrapped-card px-8 py-4 rounded-lg hover:bg-opacity-80 transition"
+          >
+            <span class="text-xl font-semibold">{user.name}</span>
+            <span class="text-wrapped-muted ml-2">{user.year}</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="text-wrapped-muted">No Wrapped data available yet.</p>
+    )}
+  </main>
+</WrappedLayout>
