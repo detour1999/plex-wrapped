@@ -548,6 +548,8 @@ class HostingScreen(Screen):
                 self.query_one("#account-id", Input).value = provider_config["account_id"]
             if "project_name" in provider_config:
                 self.query_one("#project-name", Input).value = provider_config["project_name"]
+            if "api_token" in provider_config:
+                self.query_one("#api-token", Input).value = provider_config["api_token"]
         elif provider == "vercel":
             if "token" in provider_config:
                 self.query_one("#token", Input).value = provider_config["token"]
@@ -580,13 +582,18 @@ class HostingScreen(Screen):
             container.mount(
                 Static(
                     "[dim]Find your Account ID at:\n"
-                    "dash.cloudflare.com → Right sidebar → Account ID[/]",
+                    "dash.cloudflare.com → Right sidebar → Account ID\n\n"
+                    "Create an API Token at:\n"
+                    "dash.cloudflare.com/profile/api-tokens → Create Token\n"
+                    "Use template: Edit Cloudflare Pages[/]",
                     classes="help-text",
                 ),
                 Label("Account ID", classes="field-label"),
                 Input(placeholder="Your Cloudflare account ID", id="account-id", classes="input-field"),
                 Label("Project Name", classes="field-label"),
                 Input(placeholder="Your project name", id="project-name", classes="input-field"),
+                Label("API Token", classes="field-label"),
+                Input(placeholder="Your Cloudflare API token", password=True, id="api-token", classes="input-field"),
             )
         elif provider == "vercel":
             container.mount(
@@ -644,9 +651,11 @@ class HostingScreen(Screen):
         if provider == "cloudflare":
             account_id = self.query_one("#account-id", Input).value.strip()
             project_name = self.query_one("#project-name", Input).value.strip()
+            api_token = self.query_one("#api-token", Input).value.strip()
             config = {
                 "account_id": account_id,
                 "project_name": project_name,
+                "api_token": api_token,
             }
         elif provider == "vercel":
             token = self.query_one("#token", Input).value.strip()

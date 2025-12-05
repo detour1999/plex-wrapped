@@ -520,11 +520,15 @@ class Orchestrator:
             config.project_name,
         ]
 
+        # Set up environment with API token if provided
+        env = None
         if config.api_token:
-            cmd.extend(["--api-token", config.api_token])
+            import os
+            env = os.environ.copy()
+            env["CLOUDFLARE_API_TOKEN"] = config.api_token
 
         try:
-            subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True, env=env)
             console.print("[green]Deployed to Cloudflare Pages successfully[/green]")
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Cloudflare deployment failed: {e}") from e
