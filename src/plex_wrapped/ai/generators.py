@@ -114,9 +114,12 @@ User Stats:
 Create a playful, humorous narrative that tells the story of their year through music.
 Make it personal, fun, and slightly irreverent - like Spotify Wrapped but with more personality.
 
-Return ONLY valid JSON in this format:
+IMPORTANT: Return ONLY valid JSON. The narrative text should be plain text with NO markdown formatting (no # headers, no **, no lists).
+Keep paragraphs separated with \\n\\n for readability.
+
+Return in this exact format:
 {{
-    "narrative": "Your 2024 musical journey..."
+    "narrative": "Your 2024 musical journey was..."
 }}
 """
 
