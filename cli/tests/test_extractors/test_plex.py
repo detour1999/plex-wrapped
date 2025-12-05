@@ -5,7 +5,7 @@ import pytest
 from datetime import datetime
 from pathlib import Path
 
-from last_wrapped.extractors.plex import PlexExtractor, ListeningHistory, Track
+from plex_wrapped.extractors.plex import PlexExtractor, ListeningHistory, Track
 
 
 class TestPlexExtractor:

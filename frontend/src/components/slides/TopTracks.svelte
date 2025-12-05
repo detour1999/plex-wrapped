@@ -14,11 +14,13 @@
   }>;
   export let visible = true;
 
+  const maxTracks = 5;
   let revealed = 0;
-  $: if (visible && revealed < tracks.length) {
+  $: displayTracks = tracks.slice(0, maxTracks);
+  $: if (visible && revealed < displayTracks.length) {
     const timer = setInterval(() => {
       revealed++;
-      if (revealed >= tracks.length) clearInterval(timer);
+      if (revealed >= displayTracks.length) clearInterval(timer);
     }, 800);
   }
 </script>
@@ -26,11 +28,11 @@
 <SlideContainer {visible}>
   <h2 class="text-4xl font-black mb-12 text-wrapped-accent">Your Top 5 Tracks</h2>
 
-  <div class="space-y-6 max-w-2xl w-full">
-    {#each tracks.slice(0, revealed) as track, i (track.name + track.artist)}
+  <div class="space-y-4 max-w-2xl w-full">
+    {#each displayTracks.slice(0, revealed) as track, i (track.name + track.artist)}
       <div
-        class="flex items-center gap-4 bg-wrapped-secondary/20 rounded-lg p-4 backdrop-blur"
-        in:fly={{ x: -50, duration: 500 }}
+        class="track-item flex items-center gap-4 bg-wrapped-secondary/20 rounded-lg p-4 backdrop-blur"
+        in:fly={{ y: 20, duration: 400 }}
       >
         <div class="text-4xl font-black text-wrapped-accent w-12 text-center">
           #{i + 1}

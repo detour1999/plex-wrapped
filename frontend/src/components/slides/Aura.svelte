@@ -25,50 +25,36 @@
 
 <SlideContainer {visible}>
   <div class="max-w-2xl mx-auto">
-    <h2 class="text-4xl font-black mb-8 text-wrapped-accent">Your Musical Aura</h2>
-
-    <div class="relative mb-12">
-      <div
-        class="w-64 h-64 mx-auto rounded-full shadow-2xl animate-pulse"
-        style={gradientStyle}
-        in:fly={{ scale: 0.5, duration: 800, delay: 200 }}
-      >
-        <div
-          class="absolute inset-0 rounded-full"
-          style="background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.3) 100%)"
-        />
-      </div>
-
-      {#if mounted && visible}
-        <div
-          class="absolute inset-0 flex items-center justify-center"
-          in:fly={{ y: 20, duration: 600, delay: 600 }}
-        >
-          <div class="text-6xl font-black drop-shadow-lg text-white mix-blend-overlay">
-            {aura.vibe}
-          </div>
-        </div>
-      {/if}
-    </div>
+    <h2 class="text-4xl font-black mb-4 text-wrapped-accent">Your Musical Aura</h2>
 
     <div
-      class="bg-wrapped-secondary/20 rounded-xl p-8 backdrop-blur"
+      class="w-48 h-48 mx-auto rounded-full shadow-2xl mb-6"
+      style="{gradientStyle}; animation: pulse 3s ease-in-out infinite;"
+      in:fly={{ scale: 0.5, duration: 800, delay: 200 }}
+    />
+
+    {#if mounted && visible}
+      <h3
+        class="text-5xl font-black mb-8"
+        style="color: {aura.primary_color}"
+        in:fly={{ y: 20, duration: 600, delay: 600 }}
+      >
+        {aura.vibe}
+      </h3>
+    {/if}
+
+    <div
+      class="bg-wrapped-secondary/20 rounded-xl p-6 backdrop-blur"
       in:fly={{ y: 30, duration: 500, delay: 1000 }}
     >
-      <p class="text-xl leading-relaxed">{aura.description}</p>
-    </div>
-
-    <div class="flex gap-4 justify-center mt-8">
-      <div
-        class="w-16 h-16 rounded-full shadow-lg"
-        style="background: {aura.primary_color}"
-        in:fly={{ x: -20, duration: 400, delay: 1200 }}
-      />
-      <div
-        class="w-16 h-16 rounded-full shadow-lg"
-        style="background: {aura.secondary_color}"
-        in:fly={{ x: 20, duration: 400, delay: 1200 }}
-      />
+      <p class="text-lg text-left leading-relaxed">{aura.description}</p>
     </div>
   </div>
 </SlideContainer>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+  }
+</style>

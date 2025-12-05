@@ -2,6 +2,7 @@
 <!-- ABOUTME: Manages slide navigation and user interaction. -->
 
 <script lang="ts">
+  import VisualizationBackground from './common/VisualizationBackground.svelte';
   import Intro from './slides/Intro.svelte';
   import TotalTime from './slides/TotalTime.svelte';
   import TopArtist from './slides/TopArtist.svelte';
@@ -12,6 +13,7 @@
   import Aura from './slides/Aura.svelte';
   import Roasts from './slides/Roasts.svelte';
   import Narrative from './slides/Narrative.svelte';
+  import NextYear from './slides/NextYear.svelte';
   import Share from './slides/Share.svelte';
 
   export let data: {
@@ -30,6 +32,11 @@
       aura: any;
       roasts: string[];
       narrative: string;
+      suggestions: string[];
+    };
+    theme?: {
+      palette: { primary: string; secondary: string; accent: string; background: string; text: string };
+      slides: Record<string, { visualization: string; mood: string; intensity: number }>;
     };
   };
 
@@ -46,6 +53,7 @@
     'aura',
     'roasts',
     'narrative',
+    'nextYear',
     'share',
   ];
 
@@ -69,20 +77,19 @@
     }
   }
 
-  $: peakHour = data.time_patterns.by_hour.indexOf(
-    Math.max(...data.time_patterns.by_hour)
-  );
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
 <div
-  class="min-h-screen cursor-pointer"
+  class="wrapped-container min-h-screen cursor-pointer"
   on:click={nextSlide}
   on:keypress={(e) => e.key === 'Enter' && nextSlide()}
   role="button"
   tabindex="0"
 >
+  <VisualizationBackground theme={data.theme} currentSlide={slides[currentSlide]} />
+
   <!-- Progress dots -->
   <div class="fixed top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
     {#each slides as _, i}
@@ -104,9 +111,9 @@
   {:else if slides[currentSlide] === 'topTracks'}
     <TopTracks tracks={data.top.tracks} visible={true} />
   {:else if slides[currentSlide] === 'listeningClock'}
-    <ListeningClock byHour={data.time_patterns.by_hour} {peakHour} visible={true} />
+    <ListeningClock hourly_data={data.time_patterns.by_hour.map((plays, hour) => ({ hour, plays }))} visible={true} />
   {:else if slides[currentSlide] === 'quirkyStats'}
-    <QuirkyStats quirky={data.time_patterns.quirky} visible={true} />
+    <QuirkyStats stats={data.time_patterns.quirky} visible={true} />
   {:else if slides[currentSlide] === 'personality'}
     <Personality personality={data.ai_generated.personality} visible={true} />
   {:else if slides[currentSlide] === 'aura'}
@@ -115,7 +122,18 @@
     <Roasts roasts={data.ai_generated.roasts} visible={true} />
   {:else if slides[currentSlide] === 'narrative'}
     <Narrative narrative={data.ai_generated.narrative} visible={true} />
+  {:else if slides[currentSlide] === 'nextYear'}
+    <NextYear suggestions={data.ai_generated.suggestions || []} year={data.user.year} visible={true} />
   {:else if slides[currentSlide] === 'share'}
-    <Share userName={data.user.name} year={data.user.year} visible={true} />
+    <Share
+      userName={data.user.name}
+      year={data.user.year}
+      totalMinutes={data.stats.total_minutes}
+      topArtist={data.top.artists[0] ? { name: data.top.artists[0].name, plays: data.top.artists[0].plays } : null}
+      personalityType={data.ai_generated.personality.type}
+      auraColor={data.ai_generated.aura.hex || data.ai_generated.aura.colors?.[0] || '#1DB954'}
+      auraVibe={data.ai_generated.aura.vibe}
+      visible={true}
+    />
   {/if}
 </div>

@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import yaml
 
-from last_wrapped.config import load_config, Config, PlexConfig, LLMConfig, HostingConfig
+from plex_wrapped.config import load_config, Config, PlexConfig, LLMConfig, HostingConfig
 
 
 class TestConfigLoading:

@@ -4,8 +4,8 @@
 import pytest
 from datetime import datetime
 
-from last_wrapped.extractors.plex import Track, ListeningHistory
-from last_wrapped.processors.time_analysis import TimeAnalysisProcessor
+from plex_wrapped.extractors.plex import Track, ListeningHistory
+from plex_wrapped.processors.time_analysis import TimeAnalysisProcessor
 
 
 def make_track_at(hour: int, day_of_week: int = 0, month: int = 1) -> Track:

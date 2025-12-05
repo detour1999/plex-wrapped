@@ -4,8 +4,8 @@
 import pytest
 from pathlib import Path
 
-from last_wrapped.orchestrator import Orchestrator
-from last_wrapped.config import Config, PlexConfig, LLMConfig, HostingConfig, CloudflareConfig
+from plex_wrapped.orchestrator import Orchestrator
+from plex_wrapped.config import Config, PlexConfig, LLMConfig, HostingConfig, CloudflareConfig
 
 
 class TestOrchestrator:

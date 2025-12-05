@@ -15,16 +15,20 @@
 </script>
 
 <SlideContainer {visible}>
-  <p class="text-wrapped-muted text-xl mb-4">Your listening personality</p>
+  <div class="max-w-2xl mx-auto">
+    <p class="text-wrapped-muted text-xl mb-4">Your listening personality</p>
 
-  <h2 class="text-5xl font-black text-wrapped-accent mb-4">{personality.type}</h2>
+    <h2 class="text-5xl font-black text-wrapped-accent mb-4">{personality.type}</h2>
 
-  <p class="text-2xl italic text-wrapped-muted mb-8">"{personality.tagline}"</p>
+    <p class="text-2xl italic text-wrapped-muted mb-8">"{personality.tagline}"</p>
 
-  <p class="text-lg max-w-md mb-8">{personality.description}</p>
+    <div class="bg-wrapped-secondary/20 rounded-xl p-6 mb-8 backdrop-blur">
+      <p class="text-lg text-left leading-relaxed">{personality.description}</p>
+    </div>
 
-  <div class="bg-wrapped-card rounded-lg px-6 py-4">
-    <p class="text-wrapped-muted text-sm mb-1">Spirit Animal</p>
-    <p class="text-lg font-semibold">{personality.spirit_animal}</p>
+    <div class="bg-wrapped-card rounded-lg px-6 py-4 inline-block">
+      <p class="text-wrapped-muted text-sm mb-1">Spirit Animal</p>
+      <p class="text-lg font-semibold">{personality.spirit_animal}</p>
+    </div>
   </div>
 </SlideContainer>

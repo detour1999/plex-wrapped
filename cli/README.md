@@ -1,4 +1,4 @@
-# Last Wrapped CLI
+# Plex Wrapped CLI
 
 Self-hostable Spotify Wrapped for Plex servers.
 
@@ -11,5 +11,5 @@ pip install -e ".[dev]"
 ## Usage
 
 ```bash
-last-wrapped --help
+plex-wrapped --help
 ```

@@ -4,8 +4,8 @@
 import pytest
 from datetime import datetime
 
-from last_wrapped.extractors.plex import Track, ListeningHistory
-from last_wrapped.processors.stats import StatsProcessor, TopItem
+from plex_wrapped.extractors.plex import Track, ListeningHistory
+from plex_wrapped.processors.stats import StatsProcessor, TopItem
 
 
 def make_track(title: str, artist: str, album: str, plays: int = 1) -> list[Track]:

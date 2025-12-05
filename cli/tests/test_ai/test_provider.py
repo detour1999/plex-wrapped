@@ -3,8 +3,8 @@
 
 import pytest
 
-from last_wrapped.ai.provider import get_provider, LLMProvider, NoOpProvider
-from last_wrapped.config import LLMConfig
+from plex_wrapped.ai.provider import get_provider, LLMProvider, NoOpProvider
+from plex_wrapped.config import LLMConfig
 
 
 class TestProviderSelection:

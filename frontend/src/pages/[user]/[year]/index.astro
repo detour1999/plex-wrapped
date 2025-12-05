@@ -4,27 +4,80 @@
 
 import WrappedLayout from '@layouts/WrappedLayout.astro';
 import WrappedExperience from '@components/WrappedExperience.svelte';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export function getStaticPaths() {
-  // In production, this reads from generated data directory
-  // and creates a page for each user/year combination
-  return [];
+  // Read processed data files from CLI output directory
+  // Try CLI dist/data first, then fallback to frontend dist/data
+  let dataDir = path.join(process.cwd(), '..', 'cli', 'dist', 'data');
+
+  if (!fs.existsSync(dataDir)) {
+    // Fallback to frontend dist/data if CLI path doesn't exist
+    dataDir = path.join(process.cwd(), 'dist', 'data');
+  }
+
+  if (!fs.existsSync(dataDir)) {
+    return [];
+  }
+
+  const files = fs.readdirSync(dataDir);
+  const processedFiles = files.filter(f => f.endsWith('_processed.json'));
+
+  return processedFiles.map(file => {
+    const username = file.replace('_processed.json', '');
+    const filePath = path.join(dataDir, file);
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+    const stats = JSON.parse(rawData);
+
+    // Get year from config or default to current year
+    const year = '2025';
+
+    return {
+      params: { user: username, year },
+      props: { stats, username },
+    };
+  });
 }
 
+const { stats, username } = Astro.props;
 const { user, year } = Astro.params;
 
-// Load user data (in production, this reads from data/*.json)
+// Transform stats into the format expected by WrappedExperience
 const data = {
-  user: { name: user, year: parseInt(year as string) },
-  stats: { total_minutes: 0 },
-  top: { artists: [], tracks: [] },
-  time_patterns: { by_hour: Array(24).fill(0), quirky: {} },
-  ai_generated: {
-    personality: { type: '', tagline: '', description: '', spirit_animal: '' },
-    aura: { colors: ['#1DB954'], vibe: '', aesthetic: '' },
-    roasts: [],
-    narrative: '',
+  user: { name: username, year: parseInt(year as string) },
+  stats: stats.total || { total_minutes: 0 },
+  top: {
+    artists: stats.top_artists || [],
+    tracks: stats.top_tracks || [],
+    albums: stats.top_albums || [],
   },
+  time_patterns: {
+    by_hour: stats.time_analysis?.plays_by_hour || Array(24).fill(0),
+    by_day: stats.time_analysis?.plays_by_day_of_week || {},
+    quirky: {
+      late_night_anthem: stats.time_analysis?.late_night_anthem ? {
+        name: stats.time_analysis.late_night_anthem.track,
+        artist: stats.time_analysis.late_night_anthem.artist,
+        count: stats.time_analysis.late_night_anthem.plays_after_midnight,
+      } : undefined,
+      most_repeated: stats.time_analysis?.most_repeated_single_day ? {
+        name: stats.time_analysis.most_repeated_single_day.track,
+        artist: stats.time_analysis.most_repeated_single_day.artist,
+        streak: stats.time_analysis.most_repeated_single_day.plays,
+      } : undefined,
+    },
+  },
+  ai_generated: {
+    personality: stats.ai_content?.personality || { type: '', tagline: '', description: '', spirit_animal: '' },
+    aura: stats.ai_content?.aura || { colors: ['#1DB954'], vibe: '', aesthetic: '' },
+    roasts: stats.ai_content?.roast?.roasts || [],
+    narrative: stats.ai_content?.narrative?.narrative || stats.ai_content?.personality?.description || '',
+    hot_takes: stats.ai_content?.hot_takes?.hot_takes || [],
+    suggestions: stats.ai_content?.suggestions?.suggestions || [],
+    superlatives: stats.ai_content?.superlatives?.superlatives || [],
+  },
+  theme: stats.ai_content?.theme || null,
 };
 ---
 

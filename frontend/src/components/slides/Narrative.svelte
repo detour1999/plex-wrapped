@@ -4,30 +4,39 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
+  import { writable } from 'svelte/store';
   import SlideContainer from '../common/SlideContainer.svelte';
 
   export let narrative: string;
   export let visible = true;
 
-  let displayedText = '';
-  let currentIndex = 0;
+  const displayedText = writable('');
+  const currentIndex = writable(0);
   let mounted = false;
+  let intervalId: ReturnType<typeof setInterval> | null = null;
 
   onMount(() => {
     mounted = true;
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   });
 
   $: if (visible && mounted && narrative) {
-    displayedText = '';
-    currentIndex = 0;
+    if (intervalId) clearInterval(intervalId);
+    displayedText.set('');
+    currentIndex.set(0);
 
-    const interval = setInterval(() => {
-      if (currentIndex < narrative.length) {
-        displayedText += narrative[currentIndex];
-        currentIndex++;
-      } else {
-        clearInterval(interval);
-      }
+    intervalId = setInterval(() => {
+      currentIndex.update(idx => {
+        if (idx < narrative.length) {
+          displayedText.update(text => text + narrative[idx]);
+          return idx + 1;
+        } else {
+          if (intervalId) clearInterval(intervalId);
+          return idx;
+        }
+      });
     }, 30);
   }
 </script>
@@ -40,19 +49,25 @@
       class="bg-wrapped-secondary/20 rounded-xl p-10 backdrop-blur"
       in:fly={{ y: 30, duration: 500, delay: 200 }}
     >
-      <div class="text-xl leading-relaxed space-y-4">
-        {#each displayedText.split('\n\n') as paragraph}
-          <p class="text-left">
-            {paragraph}
-          </p>
-        {/each}
-        {#if currentIndex < narrative.length}
-          <span class="inline-block w-2 h-5 bg-wrapped-accent animate-pulse ml-1" />
-        {/if}
-      </div>
+      {#if narrative}
+        <div class="text-lg leading-relaxed space-y-6">
+          {#each $displayedText.split('\n\n') as paragraph, i}
+            <p class="text-left {i === 0 ? 'text-xl font-medium' : i % 2 === 1 ? 'text-wrapped-muted' : ''}">
+              {paragraph}
+            </p>
+          {/each}
+          {#if $currentIndex < narrative.length}
+            <span class="inline-block w-2 h-5 bg-wrapped-accent animate-pulse ml-1" />
+          {/if}
+        </div>
+      {:else}
+        <p class="text-xl text-wrapped-muted italic text-center">
+          Your musical story is still being written...
+        </p>
+      {/if}
     </div>
 
-    {#if currentIndex >= narrative.length}
+    {#if narrative && $currentIndex >= narrative.length}
       <div
         class="mt-8 text-wrapped-muted text-sm italic"
         in:fly={{ y: 20, duration: 400, delay: 300 }}

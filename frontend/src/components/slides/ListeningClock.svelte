@@ -30,6 +30,21 @@
     if (hour > 12) return `${hour - 12}pm`;
     return `${hour}am`;
   }
+
+  function getTimeEmoji(hour: number): string {
+    if (hour === 0) return '🌙';
+    if (hour === 6) return '🌅';
+    if (hour === 12) return '☀️';
+    if (hour === 18) return '🌆';
+    return '';
+  }
+
+  function getTimeOfDayLabel(hour: number): string {
+    if (hour >= 22 || hour < 6) return 'Night Owl';
+    if (hour >= 6 && hour < 12) return 'Morning Person';
+    if (hour >= 12 && hour < 17) return 'Afternoon Groover';
+    return 'Evening Listener';
+  }
 </script>
 
 <SlideContainer {visible}>
@@ -37,12 +52,12 @@
   <p class="text-wrapped-muted text-lg mb-12">When you pressed play</p>
 
   <div class="relative w-96 h-96 mx-auto">
-    <svg viewBox="0 0 400 400" class="w-full h-full">
+    <svg viewBox="0 0 500 500" class="w-full h-full overflow-visible">
       <!-- Clock face circle -->
       <circle
-        cx="200"
-        cy="200"
-        r="180"
+        cx="250"
+        cy="250"
+        r="120"
         fill="none"
         stroke="currentColor"
         stroke-width="1"
@@ -52,11 +67,11 @@
       <!-- Hour bars -->
       {#each hourly_data as { hour, plays }, i}
         {@const angle = (hour * 15 - 90) * (Math.PI / 180)}
-        {@const barLength = 60 + getBarHeight(plays) * 0.8}
-        {@const startX = 200 + Math.cos(angle) * 100}
-        {@const startY = 200 + Math.sin(angle) * 100}
-        {@const endX = 200 + Math.cos(angle) * (100 + barLength)}
-        {@const endY = 200 + Math.sin(angle) * (100 + barLength)}
+        {@const barLength = 30 + getBarHeight(plays) * 0.6}
+        {@const startX = 250 + Math.cos(angle) * 70}
+        {@const startY = 250 + Math.sin(angle) * 70}
+        {@const endX = 250 + Math.cos(angle) * (70 + barLength)}
+        {@const endY = 250 + Math.sin(angle) * (70 + barLength)}
 
         {#if mounted && visible}
           <line
@@ -75,28 +90,29 @@
 
         <!-- Hour labels for key hours -->
         {#if hour % 6 === 0}
-          {@const labelX = 200 + Math.cos(angle) * 220}
-          {@const labelY = 200 + Math.sin(angle) * 220}
+          {@const labelX = 250 + Math.cos(angle) * 185}
+          {@const labelY = 250 + Math.sin(angle) * 185}
           <text
             x={labelX}
             y={labelY}
             text-anchor="middle"
             dominant-baseline="middle"
-            class="text-sm fill-current text-wrapped-muted"
+            class="text-2xl"
           >
-            {getHourLabel(hour)}
+            {getTimeEmoji(hour)}
           </text>
         {/if}
       {/each}
     </svg>
   </div>
 
-  <p class="text-wrapped-muted text-sm mt-8">
-    Most active:
-    <span class="text-wrapped-accent font-bold">
-      {getHourLabel(
-        hourly_data.reduce((max, d) => (d.plays > max.plays ? d : max), hourly_data[0]).hour
-      )}
-    </span>
-  </p>
+  {@const peakHour = hourly_data.reduce((max, d) => (d.plays > max.plays ? d : max), hourly_data[0]).hour}
+  <div class="mt-8 text-center">
+    <p class="text-wrapped-muted text-sm">
+      Most active: <span class="text-wrapped-accent font-bold">{getHourLabel(peakHour)}</span>
+    </p>
+    <p class="text-lg font-semibold mt-2">
+      You're a <span class="text-wrapped-accent">{getTimeOfDayLabel(peakHour)}</span>
+    </p>
+  </div>
 </SlideContainer>

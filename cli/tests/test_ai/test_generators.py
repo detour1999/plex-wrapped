@@ -3,14 +3,14 @@
 
 import pytest
 
-from last_wrapped.ai.generators import (
+from plex_wrapped.ai.generators import (
     AuraGenerator,
     NarrativeGenerator,
     PersonalityGenerator,
     RoastGenerator,
     SuggestionsGenerator,
 )
-from last_wrapped.ai.provider import LLMProvider
+from plex_wrapped.ai.provider import LLMProvider
 
 
 class MockProvider(LLMProvider):
