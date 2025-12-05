@@ -1,0 +1,428 @@
+{
+  "total": {
+    "total_tracks": 5967,
+    "total_minutes": 22513.741583333333,
+    "unique_artists": 110,
+    "unique_albums": 275,
+    "unique_tracks": 913
+  },
+  "top_artists": [
+    {
+      "name": "Kendrick Lamar",
+      "plays": 1308,
+      "minutes": 5132.276766666688,
+      "image_url": "/images/Felix/artist-kendrick-lamar-ea327d49.jpg"
+    },
+    {
+      "name": "Chance the Rapper",
+      "plays": 950,
+      "minutes": 3649.7115666666987,
+      "image_url": "/images/Felix/artist-chance-the-rapper-aafde663.jpg"
+    },
+    {
+      "name": "Ye",
+      "plays": 862,
+      "minutes": 3093.7871166666755,
+      "image_url": "/images/Felix/artist-ye-bd6a6665.jpg"
+    },
+    {
+      "name": "Gorillaz",
+      "plays": 289,
+      "minutes": 1098.513133333334,
+      "image_url": "/images/Felix/artist-gorillaz-8f0f9c62.jpg"
+    },
+    {
+      "name": "Tyler, The Creator",
+      "plays": 199,
+      "minutes": 591.3568833333335,
+      "image_url": "/images/Felix/artist-tyler-the-creator-724fff51.jpg"
+    },
+    {
+      "name": "OutKast",
+      "plays": 195,
+      "minutes": 783.0819166666666,
+      "image_url": "/images/Felix/artist-outkast-a91e3b92.jpg"
+    },
+    {
+      "name": "N.W.A",
+      "plays": 188,
+      "minutes": 764.3647833333334,
+      "image_url": "/images/Felix/artist-nwa-351578f6.jpg"
+    },
+    {
+      "name": "Childish Gambino",
+      "plays": 173,
+      "minutes": 691.1974333333334,
+      "image_url": "/images/Felix/artist-childish-gambino-4162fd34.jpg"
+    },
+    {
+      "name": "The Pharcyde",
+      "plays": 143,
+      "minutes": 636.7380333333329,
+      "image_url": "/images/Felix/artist-the-pharcyde-7e8326e3.jpg"
+    },
+    {
+      "name": "MF DOOM",
+      "plays": 136,
+      "minutes": 576.1087333333339,
+      "image_url": "/images/Felix/artist-mf-doom-5e42f4b4.jpg"
+    }
+  ],
+  "top_tracks": [
+    {
+      "name": "All Night",
+      "artist": "Chance the Rapper",
+      "album": "Coloring Book",
+      "plays": 183,
+      "minutes": 431.82814999999994,
+      "image_url": "/images/Felix/album-chance-the-rapper-coloring-book-056bb168.jpg"
+    },
+    {
+      "name": "Die Hard",
+      "artist": "Kendrick Lamar",
+      "album": "Mr. Morale & the Big Steppers",
+      "plays": 146,
+      "minutes": 581.6299333333333,
+      "image_url": "/images/Felix/album-kendrick-lamar-mr-morale-the-big-steppers-1be944d6.jpg"
+    },
+    {
+      "name": "No Problem",
+      "artist": "Chance the Rapper",
+      "album": "Coloring Book",
+      "plays": 114,
+      "minutes": 578.9642,
+      "image_url": "/images/Felix/album-chance-the-rapper-coloring-book-056bb168.jpg"
+    },
+    {
+      "name": "To Binge (Feat. Little Dragon)",
+      "artist": "Gorillaz",
+      "album": "Plastic Beach",
+      "plays": 112,
+      "minutes": 439.98453333333333,
+      "image_url": "/images/Felix/album-gorillaz-plastic-beach-5e38c8d4.jpg"
+    },
+    {
+      "name": "Blessings",
+      "artist": "Chance the Rapper",
+      "album": "Coloring Book",
+      "plays": 94,
+      "minutes": 347.7812,
+      "image_url": "/images/Felix/album-chance-the-rapper-coloring-book-056bb168.jpg"
+    },
+    {
+      "name": "Plastic Beach (Feat. Mick Jones & Paul Simonon)",
+      "artist": "Gorillaz",
+      "album": "Plastic Beach",
+      "plays": 91,
+      "minutes": 344.6063833333333,
+      "image_url": "/images/Felix/album-gorillaz-plastic-beach-5e38c8d4.jpg"
+    },
+    {
+      "name": "Rich (interlude)",
+      "artist": "Kendrick Lamar",
+      "album": "Mr. Morale & the Big Steppers",
+      "plays": 89,
+      "minutes": 153.25651666666667,
+      "image_url": "/images/Felix/album-kendrick-lamar-mr-morale-the-big-steppers-1be944d6.jpg"
+    },
+    {
+      "name": "Father Time",
+      "artist": "Kendrick Lamar",
+      "album": "Mr. Morale & the Big Steppers",
+      "plays": 86,
+      "minutes": 318.9123666666666,
+      "image_url": "/images/Felix/album-kendrick-lamar-mr-morale-the-big-steppers-1be944d6.jpg"
+    },
+    {
+      "name": "I'm Flying Away",
+      "artist": "The Dead Milkmen",
+      "album": "Stoney's Extra Stout (Pig)",
+      "plays": 85,
+      "minutes": 240.26666666666668,
+      "image_url": "/images/Felix/track-the-dead-milkmen-im-flying-away-12c96ea5.jpg"
+    },
+    {
+      "name": "It\u2019s a Vibe",
+      "artist": "2 Chainz",
+      "album": "Pretty Girls Like Trap Music",
+      "plays": 80,
+      "minutes": 280.26666666666665,
+      "image_url": "/images/Felix/track-2-chainz-its-a-vibe-e34445bc.jpg"
+    }
+  ],
+  "top_albums": [
+    {
+      "name": "Coloring Book",
+      "artist": "Chance the Rapper",
+      "plays": 809,
+      "minutes": 3104.0680666666894,
+      "image_url": "/images/Felix/album-chance-the-rapper-coloring-book-056bb168.jpg"
+    },
+    {
+      "name": "Mr. Morale & the Big Steppers",
+      "artist": "Kendrick Lamar",
+      "plays": 523,
+      "minutes": 1886.2448000000102,
+      "image_url": "/images/Felix/album-kendrick-lamar-mr-morale-the-big-steppers-1be944d6.jpg"
+    },
+    {
+      "name": "Late Registration",
+      "artist": "Ye",
+      "plays": 411,
+      "minutes": 1351.296349999998,
+      "image_url": "/images/Felix/album-ye-late-registration-fe7cd3c7.jpg"
+    },
+    {
+      "name": "DAMN.",
+      "artist": "Kendrick Lamar",
+      "plays": 354,
+      "minutes": 1332.3265333333343,
+      "image_url": "/images/Felix/album-kendrick-lamar-damn-81141522.jpg"
+    },
+    {
+      "name": "Plastic Beach",
+      "artist": "Gorillaz",
+      "plays": 245,
+      "minutes": 939.9887833333329,
+      "image_url": "/images/Felix/album-gorillaz-plastic-beach-5e38c8d4.jpg"
+    },
+    {
+      "name": "The College Dropout",
+      "artist": "Ye",
+      "plays": 242,
+      "minutes": 925.1740166666671,
+      "image_url": "/images/Felix/album-ye-the-college-dropout-18bc4fce.jpg"
+    },
+    {
+      "name": "good kid, m.A.A.d city",
+      "artist": "Kendrick Lamar",
+      "plays": 144,
+      "minutes": 763.7838666666665,
+      "image_url": "/images/Felix/album-kendrick-lamar-good-kid-maad-city-b742e714.jpg"
+    },
+    {
+      "name": "Greatest Hits",
+      "artist": "N.W.A",
+      "plays": 136,
+      "minutes": 551.9055333333328,
+      "image_url": "http://plex.home:32400/library/metadata/8616/thumb/1764410492?X-Plex-Token=atd4cs-oVmZBz5CE8TrM"
+    },
+    {
+      "name": "Operation: Doomsday",
+      "artist": "MF DOOM",
+      "plays": 122,
+      "minutes": 528.8897500000008,
+      "image_url": "/images/Felix/album-mf-doom-operation-doomsday-72503d31.jpg"
+    },
+    {
+      "name": "Graduation",
+      "artist": "Ye",
+      "plays": 122,
+      "minutes": 467.12635000000023,
+      "image_url": "/images/Felix/album-ye-graduation-19bf82ea.jpg"
+    }
+  ],
+  "time_analysis": {
+    "plays_by_hour": [
+      9,
+      25,
+      20,
+      24,
+      15,
+      4,
+      2,
+      41,
+      297,
+      648,
+      704,
+      650,
+      583,
+      590,
+      524,
+      540,
+      440,
+      292,
+      191,
+      137,
+      118,
+      47,
+      45,
+      21
+    ],
+    "plays_by_day_of_week": [
+      1170,
+      1157,
+      914,
+      723,
+      830,
+      626,
+      547
+    ],
+    "plays_by_month": [
+      38,
+      0,
+      10,
+      0,
+      12,
+      10,
+      0,
+      974,
+      1278,
+      1855,
+      1716,
+      74
+    ],
+    "peak_listening_hour": 10,
+    "peak_listening_day": 0,
+    "peak_day_overall": {
+      "date": "2025-11-04",
+      "plays": 131
+    },
+    "longest_streak": 37,
+    "late_night_anthem": {
+      "track": "Redbone",
+      "artist": "Childish Gambino",
+      "plays_after_midnight": 24
+    },
+    "most_repeated_single_day": {
+      "track": "All Night",
+      "artist": "Chance the Rapper",
+      "date": "2025-09-01",
+      "plays": 86
+    }
+  },
+  "ai_content": {
+    "narrative": {
+      "narrative": "Your musical journey was too epic to put into words."
+    },
+    "personality": {
+      "type": "The Gospel Hip-Hop Workaholic",
+      "tagline": "Blessing the spreadsheets from 9 to 5",
+      "description": "You've played 'All Night' by Chance 183 times, but let's be honest\u201486 of those were on September 1st alone. You're the type to start your workday at 8am sharp with Kendrick's introspection, hit peak productivity at 10am (704 plays don't lie), and somehow convinced yourself that listening to the same 3 songs on repeat is 'curating your vibe.' Your top 3 artists account for over half your listening time, which is either profound loyalty or a cry for help. You disappeared for most of 2024 until August hit and you had an existential crisis that only 'Mr. Morale & the Big Steppers' could solve. Weekends? Those are for casual listeners. You're clocking in Monday through Wednesday like it's a second job.",
+      "spirit_animal": "A very focused golden retriever with a business degree and a gospel playlist"
+    },
+    "roast": {
+      "roasts": [
+        "You listened to 'All Night' by Chance 86 times in ONE DAY. That's not appreciation, that's a hostage situation.",
+        "1,308 Kendrick plays but only 110 unique artists? My guy discovered hip-hop in 2012 and said 'that's enough exploring for me.'",
+        "You played a 1:43 interlude called 'Rich' 89 times. That's 2.5 hours of Kendrick literally just talking between songs. Go outside.",
+        "Your listening peaked at 10 AM on a Monday. Either you have the world's most understanding office job or you're a productivity influencer's nightmare.",
+        "September to November you went absolutely feral with 4,849 plays, then December hit and you managed 74. Did Kendrick personally tell you to touch grass?"
+      ]
+    },
+    "aura": {
+      "color": "Gospel Gold",
+      "hex": "#D4AF37",
+      "vibe": "Conscious and uplifting with soulful depth",
+      "description": "Your aura radiates the warmth of Sunday morning blessings mixed with the raw truth of street poetry. Like Kendrick's introspection meeting Chance's joyful gospel choirs, you're drawn to hip-hop that feeds the soul while challenging the mind. You're a 10 AM warrior\u2014your peak energy flows during morning hours when clarity hits different. That 86-play loop of 'All Night' reveals your obsessive nature when a vibe truly connects. You chase that golden era sound (OutKast, N.W.A, MF DOOM, The Pharcyde) while staying locked into modern conscious rap. Your autumn awakening (that massive August-November spike) suggests you're seasonally inspired, using music as a meditative ritual during working hours. You're not just listening\u2014you're studying, reflecting, and finding spiritual resonance in beats and bars."
+    },
+    "superlatives": {
+      "superlatives": [
+        {
+          "award": "The 'All Night' All Day Award",
+          "reason": "Played 'All Night' by Chance the Rapper 86 times in a single day on September 1st. That's basically once every 17 minutes for 24 hours straight."
+        },
+        {
+          "award": "Most Likely to Be a Kendrick Scholar",
+          "reason": "Spent 85+ hours listening to Kendrick Lamar in 2024. That's long enough to write a dissertation on good kid, m.A.A.d city."
+        },
+        {
+          "award": "The 9-to-5 Music Enthusiast",
+          "reason": "Peak listening between 9am-2pm with over 3,000 plays during work hours. Someone's definitely got a very musical spreadsheet job."
+        },
+        {
+          "award": "October Spotify Wrapped Warm-Up Champion",
+          "reason": "Went from 10 plays in July to 1,855 in October. Talk about cramming for the test."
+        },
+        {
+          "award": "Most Committed to the Vibe",
+          "reason": "37-day listening streak while keeping it 95% hip-hop. When you know what you like, you REALLY know what you like."
+        }
+      ]
+    },
+    "hot_takes": {
+      "hot_takes": [
+        "You listened to 'All Night' 183 times and 'Die Hard' 146 times. At this point you're not a fan, you're in a parasocial relationship with these songs.",
+        "Playing a 1.7-minute interlude 89 times is giving 'I refuse to press skip even though my Spotify Wrapped depends on it' energy.",
+        "You discovered hip-hop exists beyond Kendrick and Kanye in August 2024 and decided to make it everyone's problem for the rest of the year.",
+        "Gorillaz is doing a LOT of heavy lifting to prove you listen to 'other genres' when 95% of your top 10 went to the same high school.",
+        "You played 'All Night' 86 times in one day. That's not even a vibe anymore, that's a cry for help disguised as gospel rap."
+      ]
+    },
+    "suggestions": {
+      "suggestions": [
+        "You played 'All Night' by Chance the Rapper 86 times in ONE DAY (September 1st). That's dedication. In 2025, try the rest of Chance's discography - 'Acid Rap' will hit that same joyful, soulful spot.",
+        "With 85+ hours of Kendrick, you're basically a DAMN. scholar. In 2025, dive into his influences: check out Nas's 'Illmatic' and Jay-Z's 'The Blueprint' to complete your hip-hop education.",
+        "Your 10 AM - 2 PM window is PEAK listening mode (2,585 plays). You're either working through the best playlist ever or avoiding actual work. Either way, explore J. Cole's 'The Off-Season' for those productive midday vibes.",
+        "Gorillaz's 'Plastic Beach' got heavy rotation, especially 'To Binge' (112 plays). Your genre-bending taste screams for KAYTRANADA and Anderson .Paak in 2025 - same experimental energy, equally addictive.",
+        "With The Pharcyde, MF DOOM, and OutKast in your top 10, you're clearly into that golden era boom-bap. 2025 prediction: you'll discover Madvillain deeper cuts and become insufferable about underground hip-hop (in the best way)."
+      ]
+    },
+    "theme": {
+      "palette": {
+        "primary": "#E63946",
+        "secondary": "#F4A261",
+        "accent": "#2A9D8F",
+        "background": "#1D1D1D",
+        "text": "#ffffff"
+      },
+      "slides": {
+        "intro": {
+          "visualization": "aurora",
+          "mood": "dramatic",
+          "intensity": 0.85
+        },
+        "totalTime": {
+          "visualization": "particles",
+          "mood": "celebratory",
+          "intensity": 0.7
+        },
+        "topArtist": {
+          "visualization": "gradient_blob",
+          "mood": "warm",
+          "intensity": 0.75
+        },
+        "topTracks": {
+          "visualization": "particles",
+          "mood": "energetic",
+          "intensity": 0.8
+        },
+        "listeningClock": {
+          "visualization": "aurora",
+          "mood": "analytical",
+          "intensity": 0.5
+        },
+        "quirkyStats": {
+          "visualization": "particles",
+          "mood": "playful",
+          "intensity": 0.65
+        },
+        "personality": {
+          "visualization": "gradient_blob",
+          "mood": "introspective",
+          "intensity": 0.6
+        },
+        "aura": {
+          "visualization": "aurora",
+          "mood": "mystical",
+          "intensity": 0.9
+        },
+        "roasts": {
+          "visualization": "particles",
+          "mood": "chaotic",
+          "intensity": 0.85
+        },
+        "narrative": {
+          "visualization": "gradient_blob",
+          "mood": "reflective",
+          "intensity": 0.4
+        },
+        "share": {
+          "visualization": "aurora",
+          "mood": "triumphant",
+          "intensity": 0.8
+        }
+      }
+    }
+  }
+}

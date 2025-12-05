@@ -1,0 +1,428 @@
+{
+  "total": {
+    "total_tracks": 30642,
+    "total_minutes": 78488.74046666667,
+    "unique_artists": 74,
+    "unique_albums": 360,
+    "unique_tracks": 3039
+  },
+  "top_artists": [
+    {
+      "name": "NOFX",
+      "plays": 13306,
+      "minutes": 31098.975016667355,
+      "image_url": "/images/milo/artist-nofx-d18cd243.jpg"
+    },
+    {
+      "name": "Chumbawamba",
+      "plays": 3225,
+      "minutes": 10846.187616666726,
+      "image_url": "/images/milo/artist-chumbawamba-4732d6cb.jpg"
+    },
+    {
+      "name": "Screeching Weasel",
+      "plays": 2770,
+      "minutes": 5789.676433333299,
+      "image_url": "/images/milo/artist-screeching-weasel-cd8374a0.jpg"
+    },
+    {
+      "name": "The Dead Milkmen",
+      "plays": 2624,
+      "minutes": 7174.580100000017,
+      "image_url": "/images/milo/artist-the-dead-milkmen-d1208819.jpg"
+    },
+    {
+      "name": "Propagandhi",
+      "plays": 1904,
+      "minutes": 5164.474450000001,
+      "image_url": "/images/milo/artist-propagandhi-ae424391.jpg"
+    },
+    {
+      "name": "Parasites",
+      "plays": 1381,
+      "minutes": 3548.614816666671,
+      "image_url": "/images/milo/artist-parasites-2996ccb5.jpg"
+    },
+    {
+      "name": "Various artists",
+      "plays": 986,
+      "minutes": 2348.622916666668,
+      "image_url": "/images/milo/artist-various-artists-6ceaea2b.jpg"
+    },
+    {
+      "name": "Refused",
+      "plays": 785,
+      "minutes": 2792.6294833333336,
+      "image_url": "/images/milo/artist-refused-7b785685.jpg"
+    },
+    {
+      "name": "Descendents",
+      "plays": 548,
+      "minutes": 1156.5496,
+      "image_url": "/images/milo/artist-descendents-bc1fbcf0.jpg"
+    },
+    {
+      "name": "Atom and His Package",
+      "plays": 340,
+      "minutes": 719.8111500000001,
+      "image_url": "/images/milo/artist-atom-and-his-package-15b71014.jpg"
+    }
+  ],
+  "top_tracks": [
+    {
+      "name": "Linoleum",
+      "artist": "NOFX",
+      "album": "Punk in Drublic",
+      "plays": 132,
+      "minutes": 277.74780000000004,
+      "image_url": "/images/milo/album-nofx-punk-in-drublic-9f0fde2d.jpg"
+    },
+    {
+      "name": "Murder the Government",
+      "artist": "NOFX",
+      "album": "They\u2019ve Actually Gotten Worse Live!",
+      "plays": 129,
+      "minutes": 92.38765,
+      "image_url": "/images/milo/album-nofx-theyve-actually-gotten-worse-live-a8f17321.jpg"
+    },
+    {
+      "name": "Bob",
+      "artist": "NOFX",
+      "album": "The Greatest Songs Ever Written (By Us)",
+      "plays": 124,
+      "minutes": 253.1956,
+      "image_url": "/images/milo/album-nofx-the-greatest-songs-ever-written-by-us-59e10eef.jpg"
+    },
+    {
+      "name": "Eat the Meek",
+      "artist": "NOFX",
+      "album": "So Long and Thanks for All the Shoes",
+      "plays": 117,
+      "minutes": 412.8072,
+      "image_url": "/images/milo/track-nofx-eat-the-meek-76cc9995.jpg"
+    },
+    {
+      "name": "Scavenger Type",
+      "artist": "NOFX",
+      "album": "They\u2019ve Actually Gotten Worse Live!",
+      "plays": 116,
+      "minutes": 491.9521333333334,
+      "image_url": "/images/milo/album-nofx-theyve-actually-gotten-worse-live-a8f17321.jpg"
+    },
+    {
+      "name": "The Decline",
+      "artist": "NOFX",
+      "album": "The Decline",
+      "plays": 108,
+      "minutes": 2033.8829999999998,
+      "image_url": "/images/milo/track-nofx-the-decline-01ee3d65.jpg"
+    },
+    {
+      "name": "I\u2019m Telling Tim",
+      "artist": "NOFX",
+      "album": "They\u2019ve Actually Gotten Worse Live!",
+      "plays": 107,
+      "minutes": 118.9305,
+      "image_url": "/images/milo/album-nofx-theyve-actually-gotten-worse-live-a8f17321.jpg"
+    },
+    {
+      "name": "Kill All the White Man",
+      "artist": "NOFX",
+      "album": "The Greatest Songs Ever Written (By Us)",
+      "plays": 89,
+      "minutes": 251.43686666666667,
+      "image_url": "/images/milo/album-nofx-the-greatest-songs-ever-written-by-us-59e10eef.jpg"
+    },
+    {
+      "name": "We March to the Beat of Indifferent Drum",
+      "artist": "NOFX",
+      "album": "They\u2019ve Actually Gotten Worse Live!",
+      "plays": 87,
+      "minutes": 494.39200000000005,
+      "image_url": "/images/milo/album-nofx-theyve-actually-gotten-worse-live-a8f17321.jpg"
+    },
+    {
+      "name": "Ant Attack",
+      "artist": "NOFX",
+      "album": "The Demo",
+      "plays": 86,
+      "minutes": 62.86456666666667,
+      "image_url": "/images/milo/track-nofx-ant-attack-62f60283.jpg"
+    }
+  ],
+  "top_albums": [
+    {
+      "name": "45 or 46 Songs That Weren\u2019t Good Enough to Go on Our Other Records",
+      "artist": "NOFX",
+      "plays": 1645,
+      "minutes": 2535.427066666657,
+      "image_url": "/images/milo/album-nofx-45-or-46-songs-that-werent-good-enough-to-go-on-ou-c8015800.jpg"
+    },
+    {
+      "name": "They\u2019ve Actually Gotten Worse Live!",
+      "artist": "NOFX",
+      "plays": 935,
+      "minutes": 2218.5525166666666,
+      "image_url": "/images/milo/album-nofx-theyve-actually-gotten-worse-live-a8f17321.jpg"
+    },
+    {
+      "name": "The Greatest Songs Ever Written (By Us)",
+      "artist": "NOFX",
+      "plays": 899,
+      "minutes": 1968.0063666666604,
+      "image_url": "/images/milo/album-nofx-the-greatest-songs-ever-written-by-us-59e10eef.jpg"
+    },
+    {
+      "name": "Maximum Rocknroll",
+      "artist": "NOFX",
+      "plays": 835,
+      "minutes": 1507.4078666666635,
+      "image_url": "/images/milo/album-nofx-maximum-rocknroll-99124949.jpg"
+    },
+    {
+      "name": "I Heard They Suck Live!!",
+      "artist": "NOFX",
+      "plays": 767,
+      "minutes": 1573.4406833333287,
+      "image_url": "/images/milo/album-nofx-i-heard-they-suck-live-decad6cc.jpg"
+    },
+    {
+      "name": "Wolves in Wolves\u2019 Clothing",
+      "artist": "NOFX",
+      "plays": 645,
+      "minutes": 1599.7237333333353,
+      "image_url": "/images/milo/album-nofx-wolves-in-wolves-clothing-806604d1.jpg"
+    },
+    {
+      "name": "Punk in Drublic",
+      "artist": "NOFX",
+      "plays": 610,
+      "minutes": 1304.335966666661,
+      "image_url": "/images/milo/album-nofx-punk-in-drublic-9f0fde2d.jpg"
+    },
+    {
+      "name": "The War on Errorism",
+      "artist": "NOFX",
+      "plays": 560,
+      "minutes": 1432.9503833333367,
+      "image_url": "/images/milo/album-nofx-the-war-on-errorism-8c191164.jpg"
+    },
+    {
+      "name": "White Trash, Two Heebs and a Bean",
+      "artist": "NOFX",
+      "plays": 531,
+      "minutes": 1318.8738833333339,
+      "image_url": "/images/milo/album-nofx-white-trash-two-heebs-and-a-bean-10ab4d45.jpg"
+    },
+    {
+      "name": "Liberal Animation",
+      "artist": "NOFX",
+      "plays": 526,
+      "minutes": 1107.1124,
+      "image_url": "/images/milo/album-nofx-liberal-animation-0af805f5.jpg"
+    }
+  ],
+  "time_analysis": {
+    "plays_by_hour": [
+      2240,
+      2403,
+      2171,
+      1860,
+      1561,
+      1132,
+      1059,
+      1530,
+      1434,
+      1368,
+      1247,
+      1188,
+      1326,
+      1184,
+      1296,
+      852,
+      1039,
+      941,
+      633,
+      396,
+      830,
+      921,
+      646,
+      1385
+    ],
+    "plays_by_day_of_week": [
+      5029,
+      4682,
+      4444,
+      5012,
+      4881,
+      3340,
+      3254
+    ],
+    "plays_by_month": [
+      5751,
+      5719,
+      5137,
+      2845,
+      3748,
+      1131,
+      301,
+      1,
+      887,
+      2868,
+      1990,
+      264
+    ],
+    "peak_listening_hour": 1,
+    "peak_listening_day": 0,
+    "peak_day_overall": {
+      "date": "2025-01-22",
+      "plays": 395
+    },
+    "longest_streak": 164,
+    "late_night_anthem": {
+      "track": "Linoleum",
+      "artist": "NOFX",
+      "plays_after_midnight": 43
+    },
+    "most_repeated_single_day": {
+      "track": "The Decline",
+      "artist": "NOFX",
+      "date": "2025-06-02",
+      "plays": 18
+    }
+  },
+  "ai_content": {
+    "narrative": {
+      "narrative": "## Your 2024: A Punk Rock Odyssey (Mostly NOFX)\n\n**30,642 tracks. 1,308 hours. 74 artists.**\n\nLet's be real here: this wasn't a year of musical exploration. This was a year of *commitment*. Specifically, commitment to NOFX that borders on \"should we be concerned?\"\n\n### The NOFX Situation\n\nYou played NOFX **13,306 times**. That's 43% of everything you listened to. For perspective, you gave them 518 hours\u2014that's **21 full days** of Fat Mike's snarky vocals. Your second place artist, Chumbawamba, got a mere 3,225 plays. NOFX didn't just win\u2014they lapped the competition three times while doing a keg stand.\n\nYour top 10 tracks? **All NOFX.** Every. Single. One. You played \"Linoleum\" 132 times, which is somehow not even your most obsessive moment. That honor goes to June 2nd, when you played \"The Decline\" *18 times in one day*. That's **5 hours and 24 minutes** of the same 18-minute song. Were you okay? Did you lose a bet?\n\n### Your Album Collection (The NOFX Wing)\n\nYour top 10 albums? Take a wild guess. Yes, **10 for 10 NOFX**. You listened to \"45 or 46 Songs That Weren't Good Enough to Go on Our Other Records\" 1,645 times. The irony of making their B-sides your most-played album of the year is *chef's kiss*.\n\n### The 1 AM Punk Rock Philosophy Hour\n\nYour peak listening time was 1-2 AM, when you were most likely to fire up \"Linoleum\" (43 plays after midnight) and contemplate life's big questions. Like why Fat Mike wore that dress that one time. Or whether you've actually memorized all 18 minutes of \"The Decline.\" (Spoiler: you definitely have.)\n\n### The Other 56.6% of Your Year\n\nCredit where it's due: you *did* listen to other artists. Chumbawamba, Screeching Weasel, and The Dead Milkmen rounded out a very respectable 90s punk revival. You're basically a time capsule from 1994, and honestly? In 2024, that tracks.\n\nYou maintained a **164-day listening streak**, proving that whatever else happened this year\u2014good, bad, or weird\u2014there was always punk rock. Mostly NOFX. Okay, *overwhelmingly* NOFX.\n\n### The Final Tally\n\n74 unique artists across 3,039 unique tracks means you've got range... you just choose not to use it. And you know what? That's valid. When you find something that works\u2014whether it's a life partner, a breakfast routine, or a California punk band that broke up this year\u2014you commit.\n\n**2024: The year you said \"Fuck it\" to algorithms and played what you wanted. Over. And over. And over.**\n\nSee you in 2025, when we're all desperately curious if you'll find a new band or just keep playing \"Linoleum\" until the heat death of the universe. \ud83e\udd18"
+    },
+    "personality": {
+      "type": "The NOFX Absolutist",
+      "tagline": "43% of your year was Fat Mike screaming at you",
+      "description": "You don't just like NOFX\u2014you've achieved a level of dedication that borders on performance art. While most people have a 'top artist,' you've essentially turned Last.fm into NOFX.fm. You listened to 'The Decline' 108 times, which is 33 HOURS of the same 18-minute song. You've got 74 artists in your library but let's be real, 73 of them are just emotional support bands for when NOFX needs a bathroom break. Your peak listening hour is 1 AM because nothing says 'healthy sleep schedule' like aggressive California punk at witching hour. You hit play on music 395 times in a single day\u2014that's not listening, that's a cry for help set to power chords. The most impressive part? You somehow found time to give Chumbawamba 3,225 plays. Respect.",
+      "spirit_animal": "A skateboard that gained sentience in 1994 and refuses to acknowledge any music made after 2009"
+    },
+    "roast": {
+      "roasts": [
+        "You listened to NOFX 13,306 times this year. At this point, Fat Mike should be sending you a Christmas card and a restraining order.",
+        "You played 'The Decline' 108 times, spending 34 HOURS on one song. That's not a listening habit, that's a hostage situation.",
+        "43% of your listening was NOFX. You didn't discover music in 2024, you just kept losing the same CD in your car and finding it again.",
+        "You listened to an album literally called '45 or 46 Songs That Weren't Good Enough' more than anything else. The band told you these weren't good enough and you said 'I'll be the judge of that' 1,645 times.",
+        "Only 74 unique artists all year? Your Spotify Wrapped looks like it was generated by a punk rock vending machine that's been out of order since 1994."
+      ]
+    },
+    "aura": {
+      "color": "Mosh Pit Orange",
+      "hex": "#FF6B35",
+      "vibe": "Relentlessly rebellious and unapologetically raw",
+      "description": "Your aura radiates pure punk rock defiance\u2014a blazing orange energy fueled by 43% NOFX devotion and an encyclopedic knowledge of Fat Wreck Chords. You're the kind of person who listened to 'The Decline' 108 times this year and considers it a warm-up. Your late nights are powered by 'Linoleum' at 1 AM, and your 164-day listening streak proves commitment is punk as fuck. You live in the space between political fury and self-deprecating humor, where Propagandhi's rage meets Dead Milkmen's absurdity. Your musical DNA is pure DIY ethos: fast, loud, and refusing to compromise. You don't just listen to punk\u2014you breathe it, 78,488 minutes worth of three-chord truth and ska-tinged chaos. Your aura screams from basement shows and warns the government that you're still not listening."
+    },
+    "superlatives": {
+      "superlatives": [
+        {
+          "award": "Most Likely to Know Every NOFX B-Side by Heart",
+          "reason": "Spent 43% of your entire year listening to NOFX, including 1,645 plays of their literal rejects album '45 or 46 Songs That Weren't Good Enough'. You're more dedicated to their discography than they are."
+        },
+        {
+          "award": "The 'I Get Knocked Down' Persistence Award",
+          "reason": "Maintained a 164-day listening streak while keeping Chumbawamba as your #2 artist. You truly get up again, and nobody's ever gonna keep you down from that play button."
+        },
+        {
+          "award": "Most Likely to Be a Time Traveler Stuck in 1994",
+          "reason": "With 74 total artists and 13,306 NOFX plays, you've achieved the musical diversity of a single Warped Tour lineup. Your 'Punk in Drublic' is showing."
+        },
+        {
+          "award": "The '3 AM Linoleum Floor' Award",
+          "reason": "Played 'Linoleum' 43 times after midnight because apparently nothing says insomnia like Fat Mike screaming about possessions. Your peak listening hour is 1 AM - sleep is for people without punk."
+        },
+        {
+          "award": "Most Committed to a Bit",
+          "reason": "Listened to 'The Decline' (an 18-minute epic) 108 times this year, including 18 plays in a single day. That's 5.4 hours of one song on June 2nd. Society is definitely declining when you do that."
+        }
+      ]
+    },
+    "hot_takes": {
+      "hot_takes": [
+        "You listened to NOFX for 43% of your entire year. That's not a music taste, that's a parasocial relationship with Fat Mike.",
+        "You played 'The Decline' 108 times including 18 times in one day. We get it, you understand the 18-minute opus. Time to let someone else have a turn on the aux.",
+        "Only 74 unique artists in 30,642 plays? You're not exploring music, you're speed-running the same punk album like it's a Mario Kart track.",
+        "Your late night anthem being 'Linoleum' is the most predictable thing since NOFX writing another song about being drunk. At least throw in some Descendents at 2am for variety.",
+        "Chumbawamba is your #2 artist but everyone still only knows you for getting knocked down. Your dedication to deep cuts nobody asked for is almost admirable."
+      ]
+    },
+    "suggestions": {
+      "suggestions": [
+        "You listened to 'The Decline' 18 times in one day. Your 2025 needs the epic 14-minute journey of Propagandhi's 'Failed Imagineer' - same political punk energy, equally uncompromising.",
+        "43% of your year was NOFX. Time to deep dive into Fat Mike's side projects: try Me First and the Gimme Gimmes for punk covers of everything, or Cokie the Clown for when NOFX isn't dark enough.",
+        "With 2am as your peak listening hour and Chumbawamba in your top 3, you're clearly nocturnal AND politically conscious. Add Left\u00f6ver Crack and Star Fucking Hipsters to your late-night anarcho-punk rotation.",
+        "You've mastered 90s SoCal punk and political hardcore. 2025 is your year to discover the UK82 scene that influenced them all: Conflict, Subhumans, and Crass will fill that gap between Chumbawamba's early stuff and NOFX's politics.",
+        "You played 'Linoleum' 132 times. Clearly you appreciate a perfect punk song. Add Lagwagon's 'May 16' and Strung Out's 'Matchbook' - Fat Wreck Chords at its absolute finest, criminally underplayed in your rotation."
+      ]
+    },
+    "theme": {
+      "palette": {
+        "primary": "#E63946",
+        "secondary": "#F4A259",
+        "accent": "#2A9D8F",
+        "background": "#1D1D1D",
+        "text": "#ffffff"
+      },
+      "slides": {
+        "intro": {
+          "visualization": "aurora",
+          "mood": "energetic",
+          "intensity": 0.9
+        },
+        "totalTime": {
+          "visualization": "particles",
+          "mood": "chaotic",
+          "intensity": 0.8
+        },
+        "topArtist": {
+          "visualization": "aurora",
+          "mood": "dramatic",
+          "intensity": 0.9
+        },
+        "topTracks": {
+          "visualization": "particles",
+          "mood": "energetic",
+          "intensity": 0.85
+        },
+        "listeningClock": {
+          "visualization": "gradient_blob",
+          "mood": "analytical",
+          "intensity": 0.5
+        },
+        "quirkyStats": {
+          "visualization": "particles",
+          "mood": "playful",
+          "intensity": 0.7
+        },
+        "personality": {
+          "visualization": "aurora",
+          "mood": "chaotic",
+          "intensity": 0.8
+        },
+        "aura": {
+          "visualization": "aurora",
+          "mood": "dramatic",
+          "intensity": 0.95
+        },
+        "roasts": {
+          "visualization": "particles",
+          "mood": "chaotic",
+          "intensity": 0.9
+        },
+        "narrative": {
+          "visualization": "gradient_blob",
+          "mood": "reflective",
+          "intensity": 0.6
+        },
+        "share": {
+          "visualization": "aurora",
+          "mood": "triumphant",
+          "intensity": 0.85
+        }
+      }
+    }
+  }
+}

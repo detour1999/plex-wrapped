@@ -1,0 +1,428 @@
+{
+  "total": {
+    "total_tracks": 12821,
+    "total_minutes": 40247.827983333336,
+    "unique_artists": 326,
+    "unique_albums": 1052,
+    "unique_tracks": 5153
+  },
+  "top_artists": [
+    {
+      "name": "Chumbawamba",
+      "plays": 1314,
+      "minutes": 4400.867549999994,
+      "image_url": "/images/detour1999/artist-chumbawamba-4732d6cb.jpg"
+    },
+    {
+      "name": "Descendents",
+      "plays": 686,
+      "minutes": 1408.8674666666682,
+      "image_url": "/images/detour1999/artist-descendents-bc1fbcf0.jpg"
+    },
+    {
+      "name": "Various artists",
+      "plays": 647,
+      "minutes": 2090.611066666668,
+      "image_url": "/images/detour1999/artist-various-artists-6ceaea2b.jpg"
+    },
+    {
+      "name": "Kendrick Lamar",
+      "plays": 591,
+      "minutes": 2491.8003833333346,
+      "image_url": "/images/detour1999/artist-kendrick-lamar-ea327d49.jpg"
+    },
+    {
+      "name": "Shit Present",
+      "plays": 493,
+      "minutes": 1609.3138833333335,
+      "image_url": "/images/detour1999/artist-shit-present-1353edbe.jpg"
+    },
+    {
+      "name": "NOFX",
+      "plays": 344,
+      "minutes": 767.9122000000001,
+      "image_url": "/images/detour1999/artist-nofx-d18cd243.jpg"
+    },
+    {
+      "name": "Ween",
+      "plays": 312,
+      "minutes": 957.4485333333333,
+      "image_url": "/images/detour1999/artist-ween-11883e18.jpg"
+    },
+    {
+      "name": "The Mr. T Experience",
+      "plays": 308,
+      "minutes": 804.8294499999996,
+      "image_url": "/images/detour1999/artist-the-mr-t-experience-cf88aa43.jpg"
+    },
+    {
+      "name": "Eminem",
+      "plays": 307,
+      "minutes": 1252.72325,
+      "image_url": "/images/detour1999/artist-eminem-e2e6645c.jpg"
+    },
+    {
+      "name": "Weston",
+      "plays": 285,
+      "minutes": 867.8781999999997,
+      "image_url": "/images/detour1999/artist-weston-1e1f544e.jpg"
+    }
+  ],
+  "top_tracks": [
+    {
+      "name": "Redbone",
+      "artist": "Childish Gambino",
+      "album": "\"Awaken, My Love!\"",
+      "plays": 50,
+      "minutes": 272.44416666666666,
+      "image_url": "/images/detour1999/track-childish-gambino-redbone-21bbcb41.jpg"
+    },
+    {
+      "name": "Voice in Your Head",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 27,
+      "minutes": 96.16185,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Cram the Page",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 25,
+      "minutes": 89.68875,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Fuck It",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 24,
+      "minutes": 80.74119999999999,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "What Still Gets Me",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 24,
+      "minutes": 111.78639999999999,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "More To Lose",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 24,
+      "minutes": 96.27199999999999,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Way I'd Like",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 24,
+      "minutes": 87.152,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Unravelling",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 24,
+      "minutes": 50.9332,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Too Into It",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 23,
+      "minutes": 68.98965,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "The Pain",
+      "artist": "Shit Present",
+      "album": "What Still Gets Me",
+      "plays": 23,
+      "minutes": 60.632983333333335,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    }
+  ],
+  "top_albums": [
+    {
+      "name": "What Still Gets Me",
+      "artist": "Shit Present",
+      "plays": 307,
+      "minutes": 1036.8408500000014,
+      "image_url": "/images/detour1999/album-shit-present-what-still-gets-me-e64ed5d5.jpg"
+    },
+    {
+      "name": "Discography 1995-1998",
+      "artist": "I Hate You",
+      "plays": 210,
+      "minutes": 274.79054999999994,
+      "image_url": "/images/detour1999/album-i-hate-you-discography-1995-1998-aad268dd.jpg"
+    },
+    {
+      "name": "ALL",
+      "artist": "Descendents",
+      "plays": 205,
+      "minutes": 452.5094666666666,
+      "image_url": "/images/detour1999/album-descendents-somery-8f899214.jpg"
+    },
+    {
+      "name": "Get Rich or Die Tryin\u2019",
+      "artist": "50 Cent",
+      "plays": 203,
+      "minutes": 763.8832166666673,
+      "image_url": "/images/detour1999/album-50-cent-get-rich-or-die-tryin-bd907426.jpg"
+    },
+    {
+      "name": "Set Your Pussy Free",
+      "artist": "Nobro",
+      "plays": 186,
+      "minutes": 494.54288333333295,
+      "image_url": "/images/detour1999/album-nobro-set-your-pussy-free-822a6c17.jpg"
+    },
+    {
+      "name": "Un",
+      "artist": "Chumbawamba",
+      "plays": 151,
+      "minutes": 556.1730333333336,
+      "image_url": "/images/detour1999/album-chumbawamba-abcdefg-e6fe7fa2.jpg"
+    },
+    {
+      "name": "Somery",
+      "artist": "Descendents",
+      "plays": 145,
+      "minutes": 294.7587999999999,
+      "image_url": "/images/detour1999/album-descendents-somery-8f899214.jpg"
+    },
+    {
+      "name": "Demon Days",
+      "artist": "Gorillaz",
+      "plays": 145,
+      "minutes": 501.3020000000003,
+      "image_url": "/images/detour1999/album-gorillaz-demon-days-d47a3763.jpg"
+    },
+    {
+      "name": "ABCDEFG",
+      "artist": "Chumbawamba",
+      "plays": 143,
+      "minutes": 375.9041500000001,
+      "image_url": "/images/detour1999/album-chumbawamba-abcdefg-e6fe7fa2.jpg"
+    },
+    {
+      "name": "The Eminem Show",
+      "artist": "Eminem",
+      "plays": 142,
+      "minutes": 646.722116666667,
+      "image_url": "/images/detour1999/album-eminem-the-eminem-show-c713e766.jpg"
+    }
+  ],
+  "time_analysis": {
+    "plays_by_hour": [
+      82,
+      60,
+      47,
+      22,
+      6,
+      7,
+      16,
+      113,
+      1832,
+      981,
+      618,
+      721,
+      829,
+      775,
+      881,
+      1003,
+      1063,
+      1088,
+      818,
+      585,
+      517,
+      344,
+      249,
+      164
+    ],
+    "plays_by_day_of_week": [
+      1708,
+      1895,
+      1849,
+      2117,
+      2410,
+      1461,
+      1381
+    ],
+    "plays_by_month": [
+      791,
+      860,
+      742,
+      1204,
+      1411,
+      1435,
+      2428,
+      872,
+      899,
+      968,
+      1125,
+      86
+    ],
+    "peak_listening_hour": 8,
+    "peak_listening_day": 4,
+    "peak_day_overall": {
+      "date": "2025-06-27",
+      "plays": 230
+    },
+    "longest_streak": 45,
+    "late_night_anthem": {
+      "track": "Redbone",
+      "artist": "Childish Gambino",
+      "plays_after_midnight": 26
+    },
+    "most_repeated_single_day": {
+      "track": "Redbone",
+      "artist": "Childish Gambino",
+      "date": "2025-03-07",
+      "plays": 26
+    }
+  },
+  "ai_content": {
+    "narrative": {
+      "narrative": "Your musical journey was too epic to put into words."
+    },
+    "personality": {
+      "type": "The Anarcho-Punk Scholar Who Found Kendrick",
+      "tagline": "73 hours of Chumbawamba wasn't a phase, it was a lifestyle choice",
+      "description": "You're the rare breed who can seamlessly transition from British anarcho-punk manifestos to Kendrick Lamar's poetic genius without breaking a sweat. Your 1,314 Chumbawamba plays aren't just a number\u2014they're a political statement. You've got Descendents on speed dial for when you need that pop-punk caffeine hit, but also secretly played 'Redbone' 50 times (26 of those after midnight, you smooth criminal). Your 8am listening spike suggests you're either the world's most productive punk or you've mastered the art of moshing at your desk job. With 5,153 unique tracks but somehow still playing the entire Shit Present album on repeat, you're living proof that you can have both eclectic taste AND hyperfixations. You're basically a walking contradiction who probably owns a 'FUCK IT' t-shirt but also color-codes their Spotify playlists.",
+      "spirit_animal": "A philosophy professor's rescue pit bull wearing a Descendents collar and a monocle"
+    },
+    "roast": {
+      "roasts": [
+        "You listened to Chumbawamba for 73 HOURS this year. That's not 'getting knocked down and getting up again,' that's Stockholm syndrome.",
+        "Playing 'Redbone' 26 times in one day on March 7th... did someone break your heart or did your repeat button break your brain?",
+        "Your top 10 tracks are basically the entire Shit Present album on repeat. At least buy them dinner before this level of commitment.",
+        "You peak at 8am with your listening but still call yourself a punk fan? Real anarchists don't have a consistent work schedule, poser.",
+        "326 unique artists but 1,314 Chumbawamba plays? It's giving 'I peaked in 1997 and I'm not afraid to show it.'"
+      ]
+    },
+    "aura": {
+      "color": "Anarchist Crimson",
+      "hex": "#D32F2F",
+      "vibe": "Defiant workday warrior with eclectic rage",
+      "description": "Your aura radiates pure rebellious energy\u2014a potent mix of punk rock defiance and hip-hop swagger that peaks at 8 AM when most people are just waking up. You're the rare soul who channels Chumbawamba's anarchist spirit while commuting, blasting 1,314 plays of anti-establishment anthems alongside Kendrick's conscious bars and Eminem's raw intensity. Your musical DNA is equal parts '90s skate punk (Descendents, NOFX) and modern provocation (Shit Present's entire album on obsessive repeat). You listen like you're perpetually soundtracking a revolution during business hours, with weekday energy that crushes weekends. That late-night 'Redbone' fixation reveals a softer side\u201426 plays after midnight suggest you chase introspection once the rebellion quiets down. You're unapologetically diverse (326 artists!), fiercely loyal (over 73 hours of Chumbawamba alone), and you turn listening into a lifestyle sport with 12,821 tracks in one year. Your aura screams: 'I've got opinions, a killer playlist, and zero interest in mainstream mediocrity.'"
+    },
+    "superlatives": {
+      "superlatives": [
+        {
+          "award": "The Anarchist Alarm Clock Award",
+          "reason": "Listened to Chumbawamba for 73+ hours this year\u2014apparently anarchy starts at 8 AM sharp when your peak listening kicks in"
+        },
+        {
+          "award": "Most Likely to Name Their Playlist 'Emotional Whiplash'",
+          "reason": "Seamlessly pivoted from a band literally called 'Shit Present' to Childish Gambino's 'Redbone' 50 times\u2014that's range, baby"
+        },
+        {
+          "award": "The 'I Swear I'm Not Stuck' Award",
+          "reason": "Played 'Redbone' 26 times in one day (March 7th). At that point you weren't listening, you were ASCENDING"
+        },
+        {
+          "award": "Most Committed to the Bit",
+          "reason": "Played every single track from Shit Present's 'What Still Gets Me' almost exactly 24 times each. That's not obsession, that's SYMMETRY"
+        },
+        {
+          "award": "The 9-to-5 Rebel",
+          "reason": "Over 1,000 plays during work hours (4-5 PM) while bumping punk bands and rap\u2014corporate America didn't stand a chance"
+        }
+      ]
+    },
+    "hot_takes": {
+      "hot_takes": [
+        "You listened to Chumbawamba for 73 HOURS this year. That's not nostalgia, that's a cry for help. Even Tubthumping is judging you.",
+        "Playing 'Redbone' 50 times is giving 'discovered it from Get Out in 2024' energy. Also playing it 26 times in one day? Sir, there are other songs.",
+        "Your music taste is '90s pop-punk kid who accidentally discovered Kendrick Lamar and is now having an identity crisis.' Descendents to Eminem is a JOURNEY.",
+        "You played an entire Shit Present album 307 times. Either you're their #1 fan, their mom, or you need to expand your horizons beyond bands with edgy names.",
+        "Going from 50 Cent's 'Get Rich or Die Tryin'' to a band called 'I Hate You' to Gorillaz is the most chaotic top albums list I've ever seen. Pick a personality."
+      ]
+    },
+    "suggestions": {
+      "suggestions": [
+        "With 1,314 Chumbawamba plays, you're practically a walking anarchist jukebox. Time to dive into Crass and Chumbawamba's riot grrrl contemporaries like Bikini Kill\u2014your 2025 needs more radical politics set to punk.",
+        "You listened to 'Redbone' 50 times (including 26 times after midnight on a single day in March). Childish Gambino clearly has you in a chokehold. Explore Frank Ocean's 'Blonde' for more late-night existential vibes that hit different at 3 AM.",
+        "Your Descendents/NOFX/Mr. T Experience trifecta screams 'I have opinions about Fat Wreck Chords.' 2025 prediction: You'll finally give Teenage Bottlerocket and Masked Intruder the deep dive they deserve.",
+        "Shit Present's 'What Still Gets Me' album consumed your soul (307 plays!). Hunt down their UK punk scene peers like ONSIND and Great Cynics\u2014short, scrappy songs with big feelings are clearly your thing.",
+        "Kendrick Lamar sandwiched between Descendents and Eminem? Your taste is beautifully chaotic. Try clipping. or JPEGMAFIA to bridge that experimental hip-hop/punk energy that your 40,000+ minutes of listening clearly craves."
+      ]
+    },
+    "theme": {
+      "palette": {
+        "primary": "#D63447",
+        "secondary": "#1A1A2E",
+        "accent": "#FFB800",
+        "background": "#0F0F1E",
+        "text": "#ffffff"
+      },
+      "slides": {
+        "intro": {
+          "visualization": "particles",
+          "mood": "chaotic",
+          "intensity": 0.85
+        },
+        "totalTime": {
+          "visualization": "aurora",
+          "mood": "dramatic",
+          "intensity": 0.7
+        },
+        "topArtist": {
+          "visualization": "particles",
+          "mood": "energetic",
+          "intensity": 0.8
+        },
+        "topTracks": {
+          "visualization": "particles",
+          "mood": "playful",
+          "intensity": 0.75
+        },
+        "listeningClock": {
+          "visualization": "gradient_blob",
+          "mood": "analytical",
+          "intensity": 0.5
+        },
+        "quirkyStats": {
+          "visualization": "particles",
+          "mood": "playful",
+          "intensity": 0.9
+        },
+        "personality": {
+          "visualization": "gradient_blob",
+          "mood": "introspective",
+          "intensity": 0.6
+        },
+        "aura": {
+          "visualization": "aurora",
+          "mood": "energetic",
+          "intensity": 0.85
+        },
+        "roasts": {
+          "visualization": "particles",
+          "mood": "chaotic",
+          "intensity": 0.95
+        },
+        "narrative": {
+          "visualization": "gradient_blob",
+          "mood": "reflective",
+          "intensity": 0.4
+        },
+        "share": {
+          "visualization": "aurora",
+          "mood": "triumphant",
+          "intensity": 0.8
+        }
+      }
+    }
+  }
+}

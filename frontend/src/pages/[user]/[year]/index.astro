@@ -8,12 +8,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export function getStaticPaths() {
-  // Read processed data files from CLI output directory
-  // Try CLI dist/data first, then fallback to frontend dist/data
-  let dataDir = path.join(process.cwd(), '..', 'cli', 'dist', 'data');
+  // Read processed data files from output directory
+  // Try ../dist/data first, then fallback to frontend dist/data
+  let dataDir = path.join(process.cwd(), '..', 'dist', 'data');
 
   if (!fs.existsSync(dataDir)) {
-    // Fallback to frontend dist/data if CLI path doesn't exist
+    // Fallback to frontend dist/data if path doesn't exist
     dataDir = path.join(process.cwd(), 'dist', 'data');
   }
 
