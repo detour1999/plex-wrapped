@@ -25,13 +25,17 @@ export function getStaticPaths() {
   const processedFiles = files.filter(f => f.endsWith('_processed.json'));
 
   return processedFiles.map(file => {
-    const username = file.replace('_processed.json', '');
+    // Extract username and year from filename: {username}_{year}_processed.json
+    const stem = file.replace('_processed.json', ''); // e.g., "detour1999_2024"
+    const parts = stem.split('_');
+
+    // Last part should be the year, everything before is username
+    const year = parts[parts.length - 1];
+    const username = parts.slice(0, -1).join('_'); // Handle usernames with underscores
+
     const filePath = path.join(dataDir, file);
     const rawData = fs.readFileSync(filePath, 'utf-8');
     const stats = JSON.parse(rawData);
-
-    // Get year from config or default to current year
-    const year = '2025';
 
     return {
       params: { user: username, year },

@@ -5,10 +5,13 @@ import pytest
 
 from plex_wrapped.ai.generators import (
     AuraGenerator,
+    HotTakesGenerator,
     NarrativeGenerator,
     PersonalityGenerator,
     RoastGenerator,
     SuggestionsGenerator,
+    SuperlativesGenerator,
+    ThemeGenerator,
 )
 from plex_wrapped.ai.provider import LLMProvider
 
@@ -82,3 +85,60 @@ class TestRoastGenerator:
         })
 
         assert provider.last_prompt is not None
+
+
+class TestSuperlativesGenerator:
+    def test_generates_superlatives_from_stats(self) -> None:
+        """Superlatives generator creates awards from stats."""
+        response = '''{
+            "superlatives": [
+                {"award": "Most Dedicated Fan", "reason": "Played the same song 200 times"}
+            ]
+        }'''
+        provider = MockProvider(response)
+        generator = SuperlativesGenerator(provider)
+
+        result = generator.generate({"top_track_plays": 200})
+
+        assert provider.last_prompt is not None
+        assert "superlatives" in provider.last_prompt.lower() or "award" in provider.last_prompt.lower()
+
+
+class TestHotTakesGenerator:
+    def test_generates_hot_takes_from_stats(self) -> None:
+        """HotTakes generator creates spicy opinions."""
+        response = '{"hot_takes": ["You say you like indie, but your top 10 is basically the radio"]}'
+        provider = MockProvider(response)
+        generator = HotTakesGenerator(provider)
+
+        result = generator.generate({"top_artists": ["Pop Artist 1", "Pop Artist 2"]})
+
+        assert provider.last_prompt is not None
+        assert "hot take" in provider.last_prompt.lower()
+
+
+class TestThemeGenerator:
+    def test_generates_theme_with_palette_and_slides(self) -> None:
+        """Theme generator creates colors and per-slide visualizations."""
+        response = '''{
+            "palette": {
+                "primary": "#6366F1",
+                "secondary": "#8B5CF6",
+                "accent": "#EC4899",
+                "background": "#0F172A",
+                "text": "#FFFFFF"
+            },
+            "slides": {
+                "intro": {"visualization": "aurora", "mood": "dramatic", "intensity": 0.8}
+            }
+        }'''
+        provider = MockProvider(response)
+        generator = ThemeGenerator(provider)
+
+        result = generator.generate({"top_genres": ["rock", "electronic"]})
+
+        assert provider.last_prompt is not None
+        assert "palette" in provider.last_prompt.lower()
+        assert "visualization" in provider.last_prompt.lower()
+        assert result["palette"]["primary"] == "#6366F1"
+        assert "intro" in result["slides"]

@@ -49,11 +49,12 @@ def main(ctx: typer.Context) -> None:
         setup.run()
 
 
-def get_orchestrator(config_path: str) -> Orchestrator:
+def get_orchestrator(config_path: str, year: Optional[int] = None) -> Orchestrator:
     """Load config and create orchestrator instance.
 
     Args:
         config_path: Path to configuration file
+        year: Optional year to override config file value
 
     Returns:
         Orchestrator instance
@@ -63,6 +64,8 @@ def get_orchestrator(config_path: str) -> Orchestrator:
     """
     try:
         config = load_config(Path(config_path))
+        if year is not None:
+            config.year = year
         return Orchestrator(config)
     except Exception as e:
         console.print(f"[red]Failed to load config: {e}[/red]")
@@ -80,10 +83,11 @@ def init() -> None:
 
 @app.command()
 def generate(
-    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file")
+    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
+    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to generate (overrides config)")
 ) -> None:
     """Generate a complete Wrapped experience from start to finish."""
-    orchestrator = get_orchestrator(config)
+    orchestrator = get_orchestrator(config, year)
     try:
         orchestrator.run_all()
     except Exception as e:
@@ -93,10 +97,11 @@ def generate(
 
 @app.command()
 def extract(
-    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file")
+    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
+    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to extract (overrides config)")
 ) -> None:
     """Extract listening history from Plex server."""
-    orchestrator = get_orchestrator(config)
+    orchestrator = get_orchestrator(config, year)
     try:
         orchestrator.extract()
     except Exception as e:
@@ -106,10 +111,11 @@ def extract(
 
 @app.command()
 def process(
-    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file")
+    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
+    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to process (overrides config)")
 ) -> None:
     """Process extracted data and generate insights."""
-    orchestrator = get_orchestrator(config)
+    orchestrator = get_orchestrator(config, year)
     try:
         orchestrator.process()
     except Exception as e:

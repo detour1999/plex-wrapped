@@ -77,11 +77,13 @@ llm:
 
 If you skip this, Last Wrapped will still generate stats but without AI-enhanced content.
 
-### 4. Set Target Year
+### 4. Set Target Year (Optional)
 
 ```yaml
-year: 2024  # Year to generate Wrapped for
+year: 2024  # Year to generate Wrapped for (defaults to current year if not specified)
 ```
+
+The year field is optional and defaults to the current year. You can also override the year at runtime with the `--year` flag (see below).
 
 ### 5. Configure Hosting (Optional)
 
@@ -159,6 +161,26 @@ last-wrapped build
 # 4. Deploy to hosting (optional)
 last-wrapped deploy
 ```
+
+### Generating for Specific Years
+
+You can generate Wrapped for any year using the `--year` flag, which overrides the year in your config file:
+
+```bash
+# Generate for 2023
+last-wrapped generate --year 2023
+
+# Or use the short form
+last-wrapped generate -y 2023
+
+# Works with individual commands too
+last-wrapped extract --year 2022
+last-wrapped process --year 2022
+```
+
+This is useful for:
+- Generating historical Wrapped experiences without editing your config
+- Running multiple years in sequence (2022, 2023, 2024, etc.)
 
 ## Local Preview
 

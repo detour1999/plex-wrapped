@@ -1,6 +1,8 @@
 # ABOUTME: Configuration loading and validation using Pydantic models.
 # ABOUTME: Handles YAML parsing and validates all config settings for Plex, LLM, and hosting.
 
+import os
+from datetime import datetime
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -97,7 +99,10 @@ class Config(BaseModel):
 
     plex: PlexConfig = Field(..., description="Plex server configuration")
     llm: LLMConfig = Field(..., description="LLM provider configuration")
-    year: int = Field(..., description="Year to generate Wrapped for")
+    year: int = Field(
+        default_factory=lambda: datetime.now().year,
+        description="Year to generate Wrapped for (defaults to current year)"
+    )
     hosting: HostingConfig = Field(..., description="Hosting provider configuration")
     output_dir: Path = Field(
         default=Path("dist"), description="Output directory for generated site"
@@ -109,7 +114,15 @@ class Config(BaseModel):
 
 def load_config(config_path: Path) -> Config:
     """
-    Load and validate configuration from a YAML file.
+    Load and validate configuration from a YAML file with environment variable fallbacks.
+
+    Environment variables are checked as fallbacks for sensitive credentials:
+    - PLEX_TOKEN: Plex authentication token
+    - ANTHROPIC_API_KEY: Anthropic API key
+    - OPENAI_API_KEY: OpenAI API key
+    - CLOUDFLARE_API_TOKEN: Cloudflare API token
+    - VERCEL_TOKEN: Vercel authentication token
+    - NETLIFY_AUTH_TOKEN: Netlify authentication token
 
     Args:
         config_path: Path to the YAML configuration file
@@ -132,6 +145,31 @@ def load_config(config_path: Path) -> Config:
 
     if config_data is None:
         raise ValueError("Config file is empty")
+
+    # Apply environment variable fallbacks for sensitive credentials
+    if "plex" in config_data:
+        if not config_data["plex"].get("token"):
+            config_data["plex"]["token"] = os.getenv("PLEX_TOKEN")
+
+    if "llm" in config_data:
+        if not config_data["llm"].get("api_key"):
+            provider = config_data["llm"].get("provider", "")
+            if provider == "anthropic":
+                config_data["llm"]["api_key"] = os.getenv("ANTHROPIC_API_KEY")
+            elif provider == "openai":
+                config_data["llm"]["api_key"] = os.getenv("OPENAI_API_KEY")
+
+    if "hosting" in config_data:
+        provider = config_data["hosting"].get("provider", "")
+        if provider == "cloudflare" and "cloudflare" in config_data["hosting"]:
+            if not config_data["hosting"]["cloudflare"].get("api_token"):
+                config_data["hosting"]["cloudflare"]["api_token"] = os.getenv("CLOUDFLARE_API_TOKEN")
+        elif provider == "vercel" and "vercel" in config_data["hosting"]:
+            if not config_data["hosting"]["vercel"].get("token"):
+                config_data["hosting"]["vercel"]["token"] = os.getenv("VERCEL_TOKEN")
+        elif provider == "netlify" and "netlify" in config_data["hosting"]:
+            if not config_data["hosting"]["netlify"].get("auth_token"):
+                config_data["hosting"]["netlify"]["auth_token"] = os.getenv("NETLIFY_AUTH_TOKEN")
 
     try:
         return Config(**config_data)

@@ -1,1 +1,5 @@
 config.yaml
+
+# Generated data and build artifacts
+dist/
+frontend/dist/

@@ -14,6 +14,7 @@ from rich.console import Console
 
 import httpx
 
+from plex_wrapped.utils import slugify
 from plex_wrapped.ai.generators import (
     AuraGenerator,
     HotTakesGenerator,
@@ -27,7 +28,6 @@ from plex_wrapped.ai.generators import (
 from plex_wrapped.ai.provider import get_provider
 from plex_wrapped.config import Config
 from plex_wrapped.extractors.plex import PlexExtractor
-from plex_wrapped.processors.images import download_images
 from plex_wrapped.processors.stats import StatsProcessor
 from plex_wrapped.processors.time_analysis import TimeAnalysisProcessor
 
@@ -80,7 +80,7 @@ class Orchestrator:
                 on_progress(msg)
             self._download_images_for_user(history, extractor, on_progress)
 
-            user_file = data_dir / f"{history.user}_raw.json"
+            user_file = data_dir / f"{history.user}_{self.config.year}_raw.json"
             with open(user_file, "w") as f:
                 json.dump(history.model_dump(mode="json"), f, indent=2, default=str)
 
@@ -96,8 +96,27 @@ class Orchestrator:
     ) -> None:
         """Download images only for top artists, tracks, and albums.
 
-        Looks up items in the current library to get valid thumb URLs,
-        since history thumb URLs become stale.
+        Image Matching Algorithm:
+        -------------------------
+        1. Historical track data contains thumb URLs, but these become stale over time
+           as Plex regenerates thumbnails or library metadata changes.
+
+        2. To get current valid URLs, we search the live Plex library for each item:
+           - Artists: Direct search by artist name (title=name)
+           - Albums: Search by album title, then match parentTitle to artist name
+           - Tracks: Use album art - search for album, match artist, use album.thumb
+
+        3. All image URLs include the Plex auth token as a query parameter:
+           {plex_url}{thumb_path}?X-Plex-Token={token}
+
+        4. Images are deduplicated by URL to avoid downloading the same image twice
+           (e.g., multiple tracks from the same album share one image).
+
+        5. Downloaded images are saved as:
+           {output_dir}/images/{username}/{type}-{slugified-name}-{url-hash}.{ext}
+           Example: artist-radiohead-a1b2c3d4.jpg
+
+        6. The url-hash (first 8 chars of MD5) ensures uniqueness even when names collide.
 
         Args:
             history: ListeningHistory object with tracks
@@ -105,12 +124,6 @@ class Orchestrator:
             on_progress: Optional callback for progress updates
         """
         import hashlib
-        import re
-
-        def slugify(text: str) -> str:
-            text = re.sub(r'[^\w\s-]', '', text.lower())
-            text = re.sub(r'[-\s]+', '-', text).strip('-')
-            return text[:50]
 
         images_dir = self.output_dir / "images" / history.user
         images_dir.mkdir(parents=True, exist_ok=True)
@@ -199,23 +212,41 @@ class Orchestrator:
                     key_to_local[key] = local_path
                     continue
 
-                try:
-                    response = client.get(url)
-                    response.raise_for_status()
+                # Retry logic: 3 attempts with exponential backoff (1s, 2s, 4s)
+                max_retries = 3
+                retry_delay = 1.0
+                success = False
 
-                    # Adjust extension based on content type
-                    content_type = response.headers.get("content-type", "image/jpeg")
-                    if "png" in content_type:
-                        filepath = filepath.with_suffix(".png")
-                        local_path = local_path.replace(".jpg", ".png")
-                    elif "webp" in content_type:
-                        filepath = filepath.with_suffix(".webp")
-                        local_path = local_path.replace(".jpg", ".webp")
+                for attempt in range(max_retries):
+                    try:
+                        response = client.get(url)
+                        response.raise_for_status()
 
-                    filepath.write_bytes(response.content)
-                    key_to_local[key] = local_path
-                    downloaded += 1
-                except Exception:
+                        # Adjust extension based on content type
+                        content_type = response.headers.get("content-type", "image/jpeg")
+                        if "png" in content_type:
+                            filepath = filepath.with_suffix(".png")
+                            local_path = local_path.replace(".jpg", ".png")
+                        elif "webp" in content_type:
+                            filepath = filepath.with_suffix(".webp")
+                            local_path = local_path.replace(".jpg", ".webp")
+
+                        filepath.write_bytes(response.content)
+                        key_to_local[key] = local_path
+                        downloaded += 1
+                        success = True
+                        break
+                    except httpx.HTTPError:
+                        if attempt < max_retries - 1:
+                            import time
+                            time.sleep(retry_delay)
+                            retry_delay *= 2
+                        continue
+                    except Exception:
+                        # Non-HTTP errors (filesystem, etc.) don't retry
+                        break
+
+                if not success:
                     failed += 1
 
         # Update track thumb_urls to local paths for matching top tracks
@@ -252,13 +283,6 @@ class Orchestrator:
         Returns:
             Dict mapping type:slugname to local path (e.g., "artist:nofx" -> "/images/milo/artist-nofx-xxx.jpg")
         """
-        import re
-
-        def slugify(text: str) -> str:
-            text = re.sub(r'[^\w\s-]', '', text.lower())
-            text = re.sub(r'[-\s]+', '-', text).strip('-')
-            return text[:50]
-
         images_dir = self.output_dir / "images" / username
         if not images_dir.exists():
             return {}
@@ -314,8 +338,22 @@ class Orchestrator:
 
         # Process each user's data
         for file_idx, raw_file in enumerate(raw_files):
-            username = raw_file.stem.replace("_raw", "")
-            msg = f"Processing user {file_idx + 1}/{len(raw_files)}: {username}"
+            # Extract username and year from filename: {username}_{year}_raw.json
+            stem = raw_file.stem  # e.g., "detour1999_2024_raw"
+            if stem.endswith("_raw"):
+                stem = stem[:-4]  # Remove "_raw" suffix
+
+            # Extract username (everything before last underscore which should be year)
+            parts = stem.rsplit("_", 1)
+            if len(parts) == 2 and parts[1].isdigit():
+                username = parts[0]
+                file_year = parts[1]
+            else:
+                # Fallback for old format files without year
+                username = stem
+                file_year = str(self.config.year)
+
+            msg = f"Processing user {file_idx + 1}/{len(raw_files)}: {username} ({file_year})"
             console.print(msg)
             if on_progress:
                 on_progress(msg)
@@ -329,13 +367,6 @@ class Orchestrator:
             history = ListeningHistory(**history_data)
 
             # Build image mapping from downloaded images
-            import re
-
-            def slugify(text: str) -> str:
-                text = re.sub(r'[^\w\s-]', '', text.lower())
-                text = re.sub(r'[-\s]+', '-', text).strip('-')
-                return text[:50]
-
             image_mapping = self._build_image_mapping(username)
 
             # Generate stats
@@ -381,6 +412,8 @@ class Orchestrator:
                 })
 
             stats = {
+                "user": username,
+                "year": self.config.year,
                 "total": stats_processor.total_stats(),
                 "top_artists": top_artists,
                 "top_tracks": top_tracks,
@@ -431,7 +464,7 @@ class Orchestrator:
                 stats["ai_content"] = ai_content
 
             # Save processed data
-            processed_file = data_dir / f"{username}_processed.json"
+            processed_file = data_dir / f"{username}_{file_year}_processed.json"
             with open(processed_file, "w") as f:
                 json.dump(stats, f, indent=2, default=str)
 
