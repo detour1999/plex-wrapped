@@ -1,32 +1,296 @@
 ---
-// ABOUTME: Landing page listing all users with Wrapped available.
-// ABOUTME: Entry point for the static site.
+// ABOUTME: Landing page for Plex Wrapped with brutalist/concert poster aesthetic.
+// ABOUTME: Showcases features and drives installation.
 
-import WrappedLayout from '../layouts/WrappedLayout.astro';
+import LandingLayout from '../layouts/LandingLayout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 
-// In production, this would be populated by the build process
-const users: Array<{name: string; year: number}> = [];
+// Check for existing wrapped data to show user links
+let dataDir = path.join(process.cwd(), '..', 'dist', 'data');
+if (!fs.existsSync(dataDir)) {
+  dataDir = path.join(process.cwd(), 'dist', 'data');
+}
+
+let users: Array<{name: string; year: string}> = [];
+if (fs.existsSync(dataDir)) {
+  const files = fs.readdirSync(dataDir);
+  const processedFiles = files.filter(f => f.endsWith('_processed.json'));
+  users = processedFiles.map(file => {
+    const stem = file.replace('_processed.json', '');
+    const parts = stem.split('_');
+    const year = parts[parts.length - 1];
+    const username = parts.slice(0, -1).join('_');
+    return { name: username, year };
+  });
+}
 ---
 
-<WrappedLayout title="Music Wrapped">
-  <main class="min-h-screen flex flex-col items-center justify-center p-8">
-    <h1 class="text-5xl font-black mb-4">Music Wrapped</h1>
-    <p class="text-wrapped-muted text-xl mb-12">Your year in music</p>
+<LandingLayout title="Plex Wrapped - Your Year in Music">
+  <!-- Hero Section -->
+  <section class="min-h-screen relative overflow-hidden">
+    <!-- Background texture -->
+    <div class="absolute inset-0 opacity-30" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%270 0 200 200%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27/%3E%3C/svg%3E');"></div>
 
-    {users.length > 0 ? (
-      <div class="grid gap-4">
-        {users.map((user) => (
-          <a
-            href={`/${user.name}/${user.year}/`}
-            class="bg-wrapped-card px-8 py-4 rounded-lg hover:bg-opacity-80 transition"
-          >
-            <span class="text-xl font-semibold">{user.name}</span>
-            <span class="text-wrapped-muted ml-2">{user.year}</span>
-          </a>
-        ))}
+    <div class="relative z-10 container mx-auto px-6 py-12">
+      <!-- Nav -->
+      <nav class="flex justify-between items-center mb-16">
+        <div class="font-display text-2xl">PLEX WRAPPED</div>
+        <a
+          href="https://github.com/detour1999/plex-wrapped"
+          target="_blank"
+          class="border-brutal px-4 py-2 hover-shake bg-landing-cream"
+        >
+          GitHub
+        </a>
+      </nav>
+
+      <!-- Hero Content -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
+        <div>
+          <div class="stamp inline-block mb-6 text-landing-orange animate-wobble">
+            Self-Hosted
+          </div>
+
+          <h1 class="font-display text-6xl md:text-8xl lg:text-9xl leading-[0.85] mb-8">
+            YOUR<br/>
+            <span class="underline-sketch">MUSIC</span><br/>
+            WRAPPED
+          </h1>
+
+          <p class="text-xl md:text-2xl mb-8 max-w-lg leading-relaxed">
+            Like Spotify Wrapped, but for your Plex server.
+            <span class="bg-landing-paper px-1">Your data stays home.</span>
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="#install"
+              class="border-brutal bg-landing-orange text-landing-cream px-8 py-4 font-bold text-lg hover-shake inline-block"
+            >
+              GET STARTED
+            </a>
+            <a
+              href="#features"
+              class="border-brutal bg-landing-cream px-8 py-4 font-bold text-lg hover-shake inline-block"
+            >
+              SEE FEATURES
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Visual - Stacked Cards -->
+        <div class="relative h-[500px] hidden lg:block">
+          <div class="absolute top-0 right-0 w-72 h-96 bg-landing-paper border-brutal p-6 rotate-3 shadow-[8px_8px_0_0_#1a1a1a]">
+            <div class="font-display text-4xl mb-4">2024</div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between border-b-2 border-dashed border-landing-black pb-2">
+                <span>MINUTES</span>
+                <span class="font-bold">31,847</span>
+              </div>
+              <div class="flex justify-between border-b-2 border-dashed border-landing-black pb-2">
+                <span>TOP ARTIST</span>
+                <span class="font-bold">RADIOHEAD</span>
+              </div>
+              <div class="flex justify-between border-b-2 border-dashed border-landing-black pb-2">
+                <span>PERSONALITY</span>
+                <span class="font-bold">OVERTHINKER</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute top-20 right-20 w-72 h-96 bg-landing-green text-landing-cream border-brutal p-6 -rotate-2 shadow-[8px_8px_0_0_#1a1a1a]">
+            <div class="font-display text-3xl mb-2">TOP TRACKS</div>
+            <ol class="space-y-2 text-sm">
+              <li class="flex gap-2"><span class="font-bold">01.</span> Bohemian Rhapsody</li>
+              <li class="flex gap-2"><span class="font-bold">02.</span> Purple Rain</li>
+              <li class="flex gap-2"><span class="font-bold">03.</span> Starman</li>
+              <li class="flex gap-2"><span class="font-bold">04.</span> Take On Me</li>
+              <li class="flex gap-2"><span class="font-bold">05.</span> Don't Stop Me Now</li>
+            </ol>
+          </div>
+
+          <div class="absolute bottom-0 right-10 w-64 h-32 bg-landing-orange text-landing-cream border-brutal p-4 rotate-1 shadow-[8px_8px_0_0_#1a1a1a]">
+            <div class="font-display text-2xl">YOUR AURA</div>
+            <div class="text-sm mt-2">Electric Blue - "You peaked in a decade you weren't even alive for"</div>
+          </div>
+        </div>
       </div>
-    ) : (
-      <p class="text-wrapped-muted">No Wrapped data available yet.</p>
-    )}
-  </main>
-</WrappedLayout>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="bg-landing-black text-landing-cream py-24">
+    <div class="container mx-auto px-6">
+      <h2 class="font-display text-5xl md:text-7xl mb-16 text-center">
+        WHAT YOU<br/>
+        <span class="text-landing-orange">GET</span>
+      </h2>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature Cards -->
+        <div class="bg-landing-cream text-landing-black border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl text-landing-orange mb-4">01</div>
+          <h3 class="font-display text-2xl mb-3">LISTENING STATS</h3>
+          <p>Total minutes, top artists, albums, tracks. The numbers that prove you have good taste (or don't).</p>
+        </div>
+
+        <div class="bg-landing-paper text-landing-black border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl text-landing-green mb-4">02</div>
+          <h3 class="font-display text-2xl mb-3">AI ROASTS</h3>
+          <p>Claude analyzes your listening habits and roasts you accordingly. It's like therapy but meaner.</p>
+        </div>
+
+        <div class="bg-landing-orange text-landing-cream border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl mb-4">03</div>
+          <h3 class="font-display text-2xl mb-3">PERSONALITY</h3>
+          <p>Get a music personality type. Myers-Briggs but actually useful and slightly insulting.</p>
+        </div>
+
+        <div class="bg-landing-green text-landing-cream border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl mb-4">04</div>
+          <h3 class="font-display text-2xl mb-3">SHAREABLE</h3>
+          <p>Each user gets their own URL. Share it. Brag about it. Start arguments about music taste.</p>
+        </div>
+
+        <div class="bg-landing-cream text-landing-black border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl text-landing-orange mb-4">05</div>
+          <h3 class="font-display text-2xl mb-3">SELF-HOSTED</h3>
+          <p>Your data never leaves your server. No tracking. No ads. Just vibes and statistics.</p>
+        </div>
+
+        <div class="bg-landing-paper text-landing-black border-brutal p-8 hover-shake">
+          <div class="font-display text-6xl text-landing-green mb-4">06</div>
+          <h3 class="font-display text-2xl mb-3">MULTI-USER</h3>
+          <p>Everyone on your Plex server gets their own Wrapped. Be the hero your family deserves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-24 bg-landing-paper">
+    <div class="container mx-auto px-6">
+      <h2 class="font-display text-5xl md:text-7xl mb-16 text-center">
+        HOW IT<br/>
+        <span class="underline-sketch">WORKS</span>
+      </h2>
+
+      <div class="max-w-4xl mx-auto space-y-8">
+        <div class="flex gap-6 items-start">
+          <div class="font-display text-5xl text-landing-orange shrink-0 w-20">01</div>
+          <div class="border-brutal bg-landing-cream p-6 flex-1">
+            <h3 class="font-display text-2xl mb-2">INSTALL</h3>
+            <code class="bg-landing-black text-landing-cream px-3 py-1 text-sm block overflow-x-auto">
+              pip install git+https://github.com/detour1999/plex-wrapped.git
+            </code>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="font-display text-5xl text-landing-green shrink-0 w-20">02</div>
+          <div class="border-brutal bg-landing-cream p-6 flex-1">
+            <h3 class="font-display text-2xl mb-2">CONFIGURE</h3>
+            <p>Run <code class="bg-landing-black text-landing-cream px-2 py-0.5 text-sm">plex-wrapped</code> and follow the setup wizard. Point it at your Plex server, add an AI key if you want roasts.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="font-display text-5xl text-landing-orange shrink-0 w-20">03</div>
+          <div class="border-brutal bg-landing-cream p-6 flex-1">
+            <h3 class="font-display text-2xl mb-2">GENERATE</h3>
+            <code class="bg-landing-black text-landing-cream px-3 py-1 text-sm block">
+              plex-wrapped generate
+            </code>
+            <p class="mt-2">Extracts data, crunches numbers, generates roasts, builds the site.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="font-display text-5xl text-landing-green shrink-0 w-20">04</div>
+          <div class="border-brutal bg-landing-cream p-6 flex-1">
+            <h3 class="font-display text-2xl mb-2">SHARE</h3>
+            <p>Deploy to Cloudflare, Vercel, Netlify, or just run it locally. Send links to your Plex users. Accept their gratitude.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Users Section (if data exists) -->
+  {users.length > 0 && (
+    <section class="py-24 bg-landing-green text-landing-cream">
+      <div class="container mx-auto px-6">
+        <h2 class="font-display text-5xl md:text-7xl mb-12 text-center">
+          VIEW<br/>
+          WRAPPED
+        </h2>
+
+        <div class="flex flex-wrap justify-center gap-4">
+          {users.map((user) => (
+            <a
+              href={`/${user.name}/${user.year}/`}
+              class="border-brutal bg-landing-cream text-landing-black px-8 py-4 hover-shake"
+            >
+              <span class="font-display text-xl">{user.name}</span>
+              <span class="ml-2 text-landing-orange">{user.year}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section id="install" class="py-24 bg-landing-black text-landing-cream">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="font-display text-5xl md:text-8xl mb-8">
+        READY TO<br/>
+        <span class="text-landing-orange">WRAP?</span>
+      </h2>
+
+      <p class="text-xl mb-12 max-w-xl mx-auto">
+        It takes about 5 minutes to set up. Your Plex users will think you're a wizard.
+      </p>
+
+      <div class="bg-landing-paper text-landing-black border-brutal p-8 max-w-2xl mx-auto mb-12">
+        <code class="text-lg block overflow-x-auto whitespace-pre-wrap">
+pip install git+https://github.com/detour1999/plex-wrapped.git
+plex-wrapped</code>
+      </div>
+
+      <a
+        href="https://github.com/detour1999/plex-wrapped"
+        target="_blank"
+        class="border-brutal bg-landing-orange text-landing-cream px-12 py-6 font-display text-2xl hover-shake inline-block"
+      >
+        VIEW ON GITHUB
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-landing-cream py-12 border-t-4 border-landing-black">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="font-display text-2xl">PLEX WRAPPED</div>
+
+        <div class="flex gap-8 text-sm">
+          <a href="https://github.com/detour1999/plex-wrapped" target="_blank" class="hover:text-landing-orange">
+            GitHub
+          </a>
+          <a href="https://github.com/detour1999/plex-wrapped/blob/main/docs/getting-started.md" target="_blank" class="hover:text-landing-orange">
+            Docs
+          </a>
+          <a href="https://github.com/detour1999/plex-wrapped/issues" target="_blank" class="hover:text-landing-orange">
+            Issues
+          </a>
+        </div>
+
+        <div class="text-sm text-landing-black/60">
+          Made with bemused indifference
+        </div>
+      </div>
+    </div>
+  </footer>
+</LandingLayout>

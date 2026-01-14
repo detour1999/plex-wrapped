@@ -14,6 +14,13 @@ export default {
           text: '#ffffff',
           muted: '#b3b3b3',
         },
+        landing: {
+          black: '#1a1a1a',
+          cream: '#faf6f0',
+          paper: '#f4e9d8',
+          orange: '#e85d04',
+          green: '#606c38',
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
