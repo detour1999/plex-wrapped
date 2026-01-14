@@ -1,4 +1,4 @@
-# Last Wrapped
+# Plex Wrapped
 
 > Self-hostable Spotify Wrapped for Plex servers
 
@@ -15,14 +15,14 @@ Generate beautiful, interactive year-end music recaps for everyone on your Plex 
 ## Quick Start
 
 ```bash
-# Install
-pip install last-wrapped
+# Install from GitHub
+pip install git+https://github.com/detour1999/plex-wrapped.git
 
-# Initialize config
-last-wrapped init
+# Run interactive setup wizard
+plex-wrapped
 
-# Generate Wrapped for all users
-last-wrapped generate
+# Or generate directly with existing config
+plex-wrapped generate
 ```
 
 ## Requirements

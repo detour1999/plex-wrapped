@@ -1,4 +1,4 @@
-# Getting Started with Last Wrapped
+# Getting Started with Plex Wrapped
 
 Complete guide to setting up and generating your Plex Wrapped experience.
 
@@ -14,16 +14,16 @@ Before you begin, make sure you have:
 
 ## Installation
 
-### Install Last Wrapped CLI
+### Install Plex Wrapped CLI
 
 ```bash
-pip install last-wrapped
+pip install git+https://github.com/detour1999/plex-wrapped.git
 ```
 
 Verify installation:
 
 ```bash
-last-wrapped --help
+plex-wrapped --help
 ```
 
 ### Install Frontend Dependencies
@@ -42,7 +42,7 @@ npm install
 Create a new configuration file:
 
 ```bash
-last-wrapped init
+plex-wrapped init
 ```
 
 This creates a `config.yaml` file in your current directory.
@@ -75,7 +75,7 @@ llm:
   model: "claude-sonnet-4-5-20250929"  # Optional: specific model
 ```
 
-If you skip this, Last Wrapped will still generate stats but without AI-enhanced content.
+If you skip this, Plex Wrapped will still generate stats but without AI-enhanced content.
 
 ### 4. Set Target Year (Optional)
 
@@ -110,6 +110,16 @@ hosting:
     token: "your-vercel-token"
 ```
 
+#### Netlify
+
+```yaml
+hosting:
+  provider: "netlify"
+  netlify:
+    site_id: "your-site-id"
+    auth_token: "your-netlify-token"
+```
+
 #### GitHub Pages
 
 ```yaml
@@ -134,7 +144,7 @@ hosting:
 Generate the complete Wrapped experience with a single command:
 
 ```bash
-last-wrapped generate
+plex-wrapped generate
 ```
 
 This will:
@@ -150,16 +160,16 @@ For more control, run each step individually:
 
 ```bash
 # 1. Extract listening history from Plex
-last-wrapped extract
+plex-wrapped extract
 
 # 2. Process data and generate insights
-last-wrapped process
+plex-wrapped process
 
 # 3. Build the frontend
-last-wrapped build
+plex-wrapped build
 
 # 4. Deploy to hosting (optional)
-last-wrapped deploy
+plex-wrapped deploy
 ```
 
 ### Generating for Specific Years
@@ -168,14 +178,14 @@ You can generate Wrapped for any year using the `--year` flag, which overrides t
 
 ```bash
 # Generate for 2023
-last-wrapped generate --year 2023
+plex-wrapped generate --year 2023
 
 # Or use the short form
-last-wrapped generate -y 2023
+plex-wrapped generate -y 2023
 
 # Works with individual commands too
-last-wrapped extract --year 2022
-last-wrapped process --year 2022
+plex-wrapped extract --year 2022
+plex-wrapped process --year 2022
 ```
 
 This is useful for:
@@ -187,7 +197,7 @@ This is useful for:
 Preview the generated Wrapped site locally:
 
 ```bash
-last-wrapped preview
+plex-wrapped preview
 ```
 
 This starts a local server at `http://localhost:4321` where you can view the Wrapped experience before deploying.
@@ -200,28 +210,36 @@ This starts a local server at `http://localhost:4321` where you can view the Wra
 2. Get your Account ID from the Cloudflare dashboard
 3. Create an API token with Pages permissions
 4. Configure in `config.yaml` as shown above
-5. Run `last-wrapped deploy`
+5. Run `plex-wrapped deploy`
 
 ### Vercel
 
 1. Install Vercel CLI: `npm install -g vercel`
 2. Run `vercel login` to authenticate
 3. Configure in `config.yaml`
-4. Run `last-wrapped deploy`
+4. Run `plex-wrapped deploy`
+
+### Netlify
+
+1. Install Netlify CLI: `npm install -g netlify-cli`
+2. Run `netlify login` to authenticate
+3. Get your Site ID from Site Settings > General > Site details
+4. Configure in `config.yaml`
+5. Run `plex-wrapped deploy`
 
 ### GitHub Pages
 
 1. Create a repository on GitHub
 2. Enable GitHub Pages in repository settings
 3. Configure in `config.yaml`
-4. Run `last-wrapped deploy`
+4. Run `plex-wrapped deploy`
 
 ### Manual Deployment
 
 Build the site and upload the `dist/` directory to any static hosting provider:
 
 ```bash
-last-wrapped build
+plex-wrapped build
 # Upload contents of dist/ directory to your hosting
 ```
 
@@ -274,12 +292,12 @@ export ANTHROPIC_API_KEY="sk-ant-xxx"
 export CLOUDFLARE_API_TOKEN="your-token"
 ```
 
-Then in `config.yaml`, omit the keys - Last Wrapped will use the environment variables.
+Then in `config.yaml`, omit the keys - Plex Wrapped will use the environment variables.
 
 ### Custom Config File Location
 
 ```bash
-last-wrapped generate --config /path/to/custom-config.yaml
+plex-wrapped generate --config /path/to/custom-config.yaml
 ```
 
 ## Next Steps
