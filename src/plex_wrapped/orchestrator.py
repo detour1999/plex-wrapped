@@ -575,11 +575,15 @@ class Orchestrator:
 
         cmd = ["npx", "vercel", "deploy", str(dist_dir), "--prod"]
 
+        # Set up environment with token if provided (avoids exposing token in process list)
+        env = None
         if config.token:
-            cmd.extend(["--token", config.token])
+            import os
+            env = os.environ.copy()
+            env["VERCEL_TOKEN"] = config.token
 
         try:
-            subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True, env=env)
             console.print("[green]Deployed to Vercel successfully[/green]")
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Vercel deployment failed: {e}") from e
@@ -602,11 +606,15 @@ class Orchestrator:
             config.site_id,
         ]
 
+        # Set up environment with token if provided (avoids exposing token in process list)
+        env = None
         if config.auth_token:
-            cmd.extend(["--auth", config.auth_token])
+            import os
+            env = os.environ.copy()
+            env["NETLIFY_AUTH_TOKEN"] = config.auth_token
 
         try:
-            subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True, env=env)
             console.print("[green]Deployed to Netlify successfully[/green]")
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Netlify deployment failed: {e}") from e
