@@ -15,8 +15,13 @@ Generate beautiful, interactive year-end music recaps for everyone on your Plex 
 ## Quick Start
 
 ```bash
-# Install from GitHub
-pip install git+https://github.com/detour1999/plex-wrapped.git
+# Clone the repository
+git clone https://github.com/detour1999/plex-wrapped.git
+cd plex-wrapped
+
+# Install with uv (recommended) or pip
+uv pip install -e .
+# or: pip install -e .
 
 # Run interactive setup wizard
 plex-wrapped

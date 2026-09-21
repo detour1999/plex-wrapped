@@ -14,25 +14,24 @@ Before you begin, make sure you have:
 
 ## Installation
 
-### Install Plex Wrapped CLI
+### Clone and Install
 
 ```bash
-pip install git+https://github.com/detour1999/plex-wrapped.git
+# Clone the repository
+git clone https://github.com/detour1999/plex-wrapped.git
+cd plex-wrapped
+
+# Install in development mode with uv (recommended)
+uv pip install -e .
+
+# Or with pip
+pip install -e .
 ```
 
 Verify installation:
 
 ```bash
 plex-wrapped --help
-```
-
-### Install Frontend Dependencies
-
-Navigate to the frontend directory and install dependencies:
-
-```bash
-cd frontend
-npm install
 ```
 
 ## Configuration
