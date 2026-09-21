@@ -19,9 +19,13 @@ Generate beautiful, interactive year-end music recaps for everyone on your Plex 
 git clone https://github.com/detour1999/plex-wrapped.git
 cd plex-wrapped
 
-# Install with uv (recommended) or pip
+# Install with uv (recommended)
+uv venv && source .venv/bin/activate
 uv pip install -e .
-# or: pip install -e .
+
+# Or with pip
+# python3 -m venv .venv && source .venv/bin/activate
+# pip install -e .
 
 # Run interactive setup wizard
 plex-wrapped

@@ -21,10 +21,12 @@ Before you begin, make sure you have:
 git clone https://github.com/detour1999/plex-wrapped.git
 cd plex-wrapped
 
-# Install in development mode with uv (recommended)
+# Install with uv (recommended)
+uv venv && source .venv/bin/activate
 uv pip install -e .
 
 # Or with pip
+python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
