@@ -72,7 +72,7 @@ For AI-generated narratives, roasts, and recommendations:
 llm:
   provider: "anthropic"  # Options: anthropic, openai, none
   api_key: "sk-ant-xxx"  # Your API key
-  model: "claude-sonnet-4-5-20250929"  # Optional: specific model
+  model: "claude-sonnet-5"  # Optional: specific model
 ```
 
 If you skip this, Plex Wrapped will still generate stats but without AI-enhanced content.

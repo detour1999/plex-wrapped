@@ -386,7 +386,7 @@ class LLMScreen(Screen):
                 client = anthropic.Anthropic(api_key=api_key)
                 # Test with a minimal request
                 client.messages.create(
-                    model="claude-3-5-haiku-20241022",
+                    model="claude-haiku-4-5",
                     max_tokens=10,
                     messages=[{"role": "user", "content": "Hi"}]
                 )
