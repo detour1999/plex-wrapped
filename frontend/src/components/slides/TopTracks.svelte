@@ -47,7 +47,7 @@
           />
         {/if}
 
-        <div class="flex-1 text-left">
+        <div class="flex-1 min-w-0 text-left">
           <div class="font-bold text-lg">{track.name}</div>
           <div class="text-wrapped-muted text-sm">{track.artist}</div>
         </div>

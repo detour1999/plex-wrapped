@@ -42,11 +42,11 @@
 </script>
 
 <SlideContainer {visible}>
-  <div class="max-w-3xl mx-auto">
+  <div class="max-w-3xl w-full mx-auto">
     <h2 class="text-4xl font-black mb-12 text-wrapped-accent">Your Year in Music</h2>
 
     <div
-      class="bg-wrapped-secondary/20 rounded-xl p-10 backdrop-blur"
+      class="bg-wrapped-secondary/20 rounded-xl p-5 sm:p-10 backdrop-blur"
       in:fly={{ y: 30, duration: 500, delay: 200 }}
     >
       {#if narrative}

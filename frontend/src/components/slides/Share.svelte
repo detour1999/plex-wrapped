@@ -87,10 +87,10 @@
 </div>
 
 <SlideContainer {visible}>
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-2xl w-full mx-auto">
     <div class="mb-12" in:fly={{ y: -30, duration: 600, delay: 200 }}>
-      <h2 class="text-5xl font-black mb-4">That's Your</h2>
-      <h2 class="text-6xl font-black text-wrapped-accent mb-4">Music Wrapped {year}</h2>
+      <h2 class="text-[clamp(1.875rem,9vw,3rem)] leading-none font-black mb-4">That's Your</h2>
+      <h2 class="text-[clamp(2.25rem,11vw,3.75rem)] leading-none font-black text-wrapped-accent mb-4">Music Wrapped {year}</h2>
       <p class="text-wrapped-muted text-xl">Thanks for listening</p>
     </div>
 

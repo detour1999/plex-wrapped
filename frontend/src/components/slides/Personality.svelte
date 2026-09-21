@@ -15,10 +15,10 @@
 </script>
 
 <SlideContainer {visible}>
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-2xl w-full mx-auto">
     <p class="text-wrapped-muted text-xl mb-4">Your listening personality</p>
 
-    <h2 class="text-5xl font-black text-wrapped-accent mb-4">{personality.type}</h2>
+    <h2 class="text-[clamp(1.875rem,9vw,3rem)] leading-none font-black text-wrapped-accent mb-4">{personality.type}</h2>
 
     <p class="text-2xl italic text-wrapped-muted mb-8">"{personality.tagline}"</p>
 

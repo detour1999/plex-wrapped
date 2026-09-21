@@ -27,7 +27,7 @@
     />
   {/if}
 
-  <h2 class="text-5xl font-black mb-4">{artist.name}</h2>
+  <h2 class="text-[clamp(1.875rem,9vw,3rem)] leading-none font-black mb-4">{artist.name}</h2>
 
   <div class="flex gap-8 text-center">
     <div>
