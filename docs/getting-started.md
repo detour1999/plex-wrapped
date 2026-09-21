@@ -34,6 +34,8 @@ Verify installation:
 plex-wrapped --help
 ```
 
+**Note:** The first `plex-wrapped build` (or `generate`) runs `npm install` in `frontend/` when `frontend/node_modules` does not exist, so Node.js 18+ and `npm` must be on your PATH. Run all commands from inside the cloned `plex-wrapped` folder.
+
 ## Configuration
 
 ### 1. Initialize Configuration
