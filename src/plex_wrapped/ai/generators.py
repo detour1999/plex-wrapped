@@ -20,6 +20,14 @@ class BaseGenerator(ABC):
         """Generate content from user stats."""
         pass
 
+    @staticmethod
+    def _wrapped_year(stats: dict[str, Any]) -> int:
+        """Return the year being wrapped, failing clearly if stats lack it."""
+        year = stats.get("year")
+        if year is None:
+            raise ValueError("stats must include the 'year' being wrapped")
+        return year
+
     def _parse_json(self, response: str, default: dict[str, Any] | None = None) -> dict[str, Any]:
         """Parse JSON response from LLM with defensive error handling.
 
@@ -106,7 +114,8 @@ class NarrativeGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate narrative from user stats."""
-        prompt = f"""You are writing a Last.fm Wrapped narrative for a user's 2024 listening year.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are writing a Plex Wrapped narrative for a user's {year} listening year.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -119,7 +128,7 @@ Keep paragraphs separated with \\n\\n for readability.
 
 Return in this exact format:
 {{
-    "narrative": "Your 2024 musical journey was..."
+    "narrative": "Your {year} musical journey was..."
 }}
 """
 
@@ -132,7 +141,8 @@ class PersonalityGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate personality type from user stats."""
-        prompt = f"""You are creating a music personality type for a Last.fm user based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating a music personality type for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -162,7 +172,8 @@ class RoastGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate roasts from user stats."""
-        prompt = f"""You are creating playful roasts for a Last.fm user based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating playful roasts for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -190,7 +201,8 @@ class AuraGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate aura from user stats."""
-        prompt = f"""You are creating a "music aura" for a Last.fm user based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating a "music aura" for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -220,7 +232,8 @@ class SuperlativesGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate superlatives from user stats."""
-        prompt = f"""You are creating music superlatives/awards for a Last.fm user based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating music superlatives/awards for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -251,7 +264,8 @@ class HotTakesGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate hot takes from user stats."""
-        prompt = f"""You are creating "hot takes" about a Last.fm user's music taste based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating "hot takes" about a Plex user's music taste based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
@@ -279,12 +293,13 @@ class SuggestionsGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate suggestions from user stats."""
-        prompt = f"""You are creating personalized music suggestions for a Last.fm user based on their 2024 listening habits.
+        year = self._wrapped_year(stats)
+        prompt = f"""You are creating personalized music suggestions for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create 3-5 recommendations or predictions about what they should listen to next, or what their 2025 might look like.
+Create 3-5 recommendations or predictions about what they should listen to next, or what their {year + 1} might look like.
 Make them fun and personalized.
 
 Return ONLY valid JSON in this format:
@@ -318,10 +333,12 @@ class ThemeGenerator(BaseGenerator):
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate theme from user stats."""
+        year = self._wrapped_year(stats)
         viz_info = json.dumps(self.AVAILABLE_VISUALIZATIONS, indent=2)
         slides_list = json.dumps(self.SLIDES)
+        username = stats.get("user", "the user")
 
-        prompt = f"""You are creating a visual theme for a Last.fm Wrapped experience based on the user's 2024 listening habits.
+        prompt = f"""You are creating a visual theme for {username}'s Plex Wrapped experience for {year}.
 
 User Stats:
 {json.dumps(stats, indent=2)}
