@@ -2,6 +2,7 @@
 <!-- ABOUTME: Reveals roasts one by one with dramatic timing. -->
 
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import SlideContainer from '../common/SlideContainer.svelte';
 
@@ -10,13 +11,18 @@
 
   let currentRoast = 0;
 
-  $: if (visible && roasts.length > 0) {
-    currentRoast = 0;
+  // Started once on mount: a reactive `$:` block would re-run (and reset
+  // currentRoast) every time the timer increments it.
+  onMount(() => {
+    if (!visible || roasts.length === 0) return;
+
     const timer = setInterval(() => {
       currentRoast++;
-      if (currentRoast >= roasts.length) clearInterval(timer);
+      if (currentRoast >= roasts.length - 1) clearInterval(timer);
     }, 3000);
-  }
+
+    return () => clearInterval(timer);
+  });
 </script>
 
 <SlideContainer {visible}>
