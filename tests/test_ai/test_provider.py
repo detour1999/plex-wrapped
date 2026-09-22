@@ -2,9 +2,10 @@
 # ABOUTME: Verifies provider selection and interface contract.
 
 import os
+from unittest.mock import MagicMock
 
 import pytest
-from anthropic.types import TextBlock, ThinkingBlock
+from anthropic.types import Message, TextBlock, ThinkingBlock, Usage
 
 from plex_wrapped.ai.generators import AuraGenerator
 from plex_wrapped.ai.provider import (
@@ -90,3 +91,56 @@ class TestAnthropicProviderLive:
 
         assert result.get("hex", "").startswith("#")
         assert result.get("vibe")
+
+
+def anthropic_message(content: list) -> Message:
+    return Message(
+        id="msg_1", type="message", role="assistant", model="m", content=content,
+        stop_reason="end_turn", stop_sequence=None,
+        usage=Usage(input_tokens=1, output_tokens=1),
+    )
+
+
+class TestGenerateCreativePickDefault:
+    def test_falls_back_to_generate_when_not_overridden(self) -> None:
+        """A provider that only implements generate() still answers a creative-pick request."""
+
+        class MinimalProvider(LLMProvider):
+            def generate(self, prompt: str, max_tokens: int = 1024) -> str:
+                return f"echo: {prompt}"
+
+        provider = MinimalProvider()
+
+        assert provider.generate_creative_pick("invent something") == "echo: invent something"
+
+
+class TestAnthropicProviderCreativePick:
+    def test_uses_a_separate_cheap_model_at_high_temperature(self) -> None:
+        """Real sampling entropy (a hot, cheap model) makes the pick, not the main model."""
+        provider = AnthropicProvider(api_key="unused")
+        provider.client = MagicMock()
+        provider.client.messages.create.return_value = anthropic_message([text("a lit match at midnight")])
+
+        result = provider.generate_creative_pick("invent a conceit")
+
+        assert result == "a lit match at midnight"
+        _, kwargs = provider.client.messages.create.call_args
+        assert kwargs["model"] != provider.model
+        assert kwargs["temperature"] == 1.0
+        assert kwargs["max_tokens"] < 200
+
+    def test_strips_surrounding_whitespace(self) -> None:
+        provider = AnthropicProvider(api_key="unused")
+        provider.client = MagicMock()
+        provider.client.messages.create.return_value = anthropic_message([text("  a pick with padding  \n")])
+
+        assert provider.generate_creative_pick("invent a conceit") == "a pick with padding"
+
+    def test_skips_thinking_blocks_like_the_main_generate_call(self) -> None:
+        provider = AnthropicProvider(api_key="unused")
+        provider.client = MagicMock()
+        provider.client.messages.create.return_value = anthropic_message(
+            [thinking("mulling it over"), text("a decision")]
+        )
+
+        assert provider.generate_creative_pick("invent a conceit") == "a decision"

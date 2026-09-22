@@ -243,3 +243,105 @@ class TestParseJsonTrailingCommas:
 
     def test_unparseable_text_still_returns_the_default(self) -> None:
         assert self.parse("not json at all", {"fallback": True}) == {"fallback": True}
+
+
+class RecordingProvider(LLMProvider):
+    """Records the prompts a generator sends to generate() and to generate_creative_pick()
+    separately, and lets a test control what each one returns."""
+
+    def __init__(self, response: str = "{}", pick: str = "a specific structural conceit") -> None:
+        self.response = response
+        self.pick = pick
+        self.last_prompt: str | None = None
+        self.pick_prompts: list[str] = []
+
+    def generate(self, prompt: str, max_tokens: int = 1024) -> str:
+        self.last_prompt = prompt
+        return self.response
+
+    def generate_creative_pick(self, prompt: str) -> str:
+        self.pick_prompts.append(prompt)
+        return self.pick
+
+
+NEVER_IN_PICK_PROMPT = ("music", "listening", "wrapped", "song", "playlist", "taste")
+
+
+class TestNarrativeCreativePick:
+    def test_asks_for_a_structural_conceit(self) -> None:
+        """The picker prompt asks for a device, not for content about the user."""
+        provider = RecordingProvider()
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert len(provider.pick_prompts) == 1
+        assert "conceit" in provider.pick_prompts[0] or "device" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        """Naming the domain is what caused every pick to collapse onto a recap trope."""
+        provider = RecordingProvider()
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt_as_a_directive(self) -> None:
+        provider = RecordingProvider(pick="told entirely through voicemail transcripts")
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert "told entirely through voicemail transcripts" in provider.last_prompt
+        assert "without deviation" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        """A provider with nothing to add (e.g. NoOpProvider) must not get an empty directive."""
+        provider = RecordingProvider(pick="")
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            NarrativeGenerator(provider).generate({"total_minutes": 100})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestRoastCreativePick:
+    def test_asks_for_a_critique_persona(self) -> None:
+        provider = RecordingProvider()
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert len(provider.pick_prompts) == 1
+        assert "persona" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a disgruntled maritime archaeologist")
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert "a disgruntled maritime archaeologist" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            RoastGenerator(provider).generate({"late_night_plays": 5})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None

@@ -28,6 +28,21 @@ class BaseGenerator(ABC):
             raise ValueError("stats must include the 'year' being wrapped")
         return year
 
+    def _creative_pick(self, instruction: str) -> str:
+        """Delegate one open-ended creative choice to the provider's highest-entropy path.
+
+        Asking the main generation call to simulate a "random" choice does not produce
+        one - it just returns whatever it considers most likely. generate_creative_pick
+        can spend a separate, cheaper model at a high temperature instead, which gives
+        real sampling variation. The instruction must not name this project's domain
+        (music, listening, Wrapped): naming it collapses picks onto a handful of
+        recap-shaped tropes regardless of what varies the request.
+
+        Returns "" if the provider has nothing to add (e.g. a no-op provider), so
+        callers can skip the directive rather than inject an empty one.
+        """
+        return self.provider.generate_creative_pick(instruction).strip()
+
     def _parse_json(self, response: str, default: dict[str, Any] | None = None) -> dict[str, Any]:
         """Parse JSON response from LLM with defensive error handling.
 
@@ -134,6 +149,17 @@ class NarrativeGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate narrative from user stats."""
         year = self._wrapped_year(stats)
+
+        conceit = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected structural conceit or narrative "
+            "device for telling a story. Reply with ONLY the conceit, nothing else, no "
+            "quotes, no explanation."
+        )
+        directive = (
+            f"Use this specific creative direction for the story, without deviation or "
+            f"explanation: {conceit}\n\n" if conceit else ""
+        )
+
         prompt = f"""You are writing a Plex Wrapped narrative for a user's {year} listening year.
 
 User Stats:
@@ -142,7 +168,7 @@ User Stats:
 Create a playful, humorous narrative that tells the story of their year through music.
 Make it personal, fun, and slightly irreverent - like Spotify Wrapped but with more personality.
 
-IMPORTANT: Return ONLY valid JSON. The narrative text should be plain text with NO markdown formatting (no # headers, no **, no lists).
+{directive}IMPORTANT: Return ONLY valid JSON. The narrative text should be plain text with NO markdown formatting (no # headers, no **, no lists).
 Keep paragraphs separated with \\n\\n for readability.
 
 Return in this exact format:
@@ -192,12 +218,22 @@ class RoastGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate roasts from user stats."""
         year = self._wrapped_year(stats)
+
+        persona = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected critique persona. Reply with "
+            "ONLY the persona, nothing else, no quotes, no explanation."
+        )
+        directive = (
+            f"Write these roasts in this specific comic voice, without deviation or "
+            f"explanation: {persona}\n\n" if persona else ""
+        )
+
         prompt = f"""You are creating playful roasts for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create 3-5 funny, light-hearted roasts about their music taste or listening patterns.
+{directive}Create 3-5 funny, light-hearted roasts about their music taste or listening patterns.
 Keep it fun and not mean-spirited - like friendly banter.
 
 Return ONLY valid JSON in this format:
