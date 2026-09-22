@@ -83,8 +83,27 @@ class BaseGenerator(ABC):
                     result.append(char)
             return ''.join(result)
 
+        # Drop trailing commas before a closing brace or bracket, leaving strings alone
+        def remove_trailing_commas(text: str) -> str:
+            result = []
+            in_string = False
+            escape_next = False
+            for i, char in enumerate(text):
+                if escape_next:
+                    escape_next = False
+                elif in_string and char == '\\':
+                    escape_next = True
+                elif char == '"':
+                    in_string = not in_string
+                elif char == ',' and not in_string:
+                    following = text[i + 1:].lstrip()
+                    if following[:1] in ('}', ']'):
+                        continue
+                result.append(char)
+            return ''.join(result)
+
         try:
-            fixed = escape_newlines_in_strings(response)
+            fixed = remove_trailing_commas(escape_newlines_in_strings(response))
             return json.loads(fixed)
         except json.JSONDecodeError:
             pass
