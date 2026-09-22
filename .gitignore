@@ -1,4 +1,8 @@
+# Configuration files with sensitive data
 config.yaml
+config*.yaml
+*.env
+.env*
 
 # Generated data and build artifacts
 dist/
