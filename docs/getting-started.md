@@ -14,10 +14,20 @@ Before you begin, make sure you have:
 
 ## Installation
 
-### Install Plex Wrapped CLI
+### Clone and Install
 
 ```bash
-pip install git+https://github.com/detour1999/plex-wrapped.git
+# Clone the repository
+git clone https://github.com/detour1999/plex-wrapped.git
+cd plex-wrapped
+
+# Install with uv (recommended)
+uv venv && source .venv/bin/activate
+uv pip install -e .
+
+# Or with pip
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
 ```
 
 Verify installation:
@@ -26,14 +36,7 @@ Verify installation:
 plex-wrapped --help
 ```
 
-### Install Frontend Dependencies
-
-Navigate to the frontend directory and install dependencies:
-
-```bash
-cd frontend
-npm install
-```
+**Note:** The first `plex-wrapped build` (or `generate`) runs `npm install` in `frontend/` when `frontend/node_modules` does not exist, so Node.js 18+ and `npm` must be on your PATH. Run all commands from inside the cloned `plex-wrapped` folder.
 
 ## Configuration
 

@@ -222,6 +222,14 @@ class PlexScreen(Screen):
             status.update(f"[red]✗ Connection failed:[/red]\n{str(e)}")
             next_button.disabled = True
 
+    def show_status(self, message: str, status_type: str) -> None:
+        """Update status message."""
+        status = self.query_one("#status", Static)
+        if status_type == "error":
+            status.update(f"[red]{message}[/red]")
+        else:
+            status.update(f"[yellow]{message}[/yellow]")
+
     @on(Button.Pressed, "#next")
     def go_to_llm(self) -> None:
         """Navigate to LLM configuration screen."""

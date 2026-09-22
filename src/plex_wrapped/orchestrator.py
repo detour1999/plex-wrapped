@@ -2,6 +2,7 @@
 # ABOUTME: Coordinates Plex extraction, stats processing, AI generation, and hosting deployment.
 
 import json
+import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -482,6 +483,26 @@ class Orchestrator:
                 f"Set project_root in config to the directory containing frontend/."
             )
 
+        if shutil.which("npm") is None:
+            raise RuntimeError(
+                "npm was not found on PATH. Install Node.js 18+ (https://nodejs.org) to build the site."
+            )
+
+        # Install frontend dependencies on first build
+        if not (frontend_dir / "node_modules").exists():
+            console.print("[bold blue]Installing frontend dependencies (npm install)...[/bold blue]")
+            try:
+                subprocess.run(
+                    ["npm", "install"],
+                    cwd=frontend_dir,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+            except subprocess.CalledProcessError as e:
+                console.print(f"[red]npm install failed:[/red]\n{e.stderr}")
+                raise RuntimeError(f"npm install failed: {e.stderr}") from e
+
         # Run npm build
         try:
             result = subprocess.run(
@@ -500,8 +521,6 @@ class Orchestrator:
         images_src = self.output_dir / "images"
         images_dst = frontend_dir / "dist" / "images"
         if images_src.exists():
-            import shutil
-
             if images_dst.exists():
                 shutil.rmtree(images_dst)
             shutil.copytree(images_src, images_dst)

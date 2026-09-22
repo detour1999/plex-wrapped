@@ -3,7 +3,32 @@
 
 import pytest
 
-from plex_wrapped.setup_tui import HostingScreen, ProcessingScreen, SetupApp, SummaryScreen
+from plex_wrapped.setup_tui import (
+    HostingScreen,
+    PlexScreen,
+    ProcessingScreen,
+    SetupApp,
+    SummaryScreen,
+)
+
+
+class TestPlexScreen:
+    """Tests for the PlexScreen connection form."""
+
+    async def test_empty_url_and_token_shows_error_instead_of_crashing(self):
+        """Testing the connection with empty fields reports what is missing."""
+        from textual.widgets import Button, Static
+
+        app = SetupApp()
+        async with app.run_test() as pilot:
+            await app.push_screen(PlexScreen())
+            await pilot.pause()
+
+            app.screen.query_one("#test", Button).press()
+            await pilot.pause()
+
+            status = app.screen.query_one("#status", Static)
+            assert "Please enter both URL and token" in str(status.render())
 
 
 class TestProcessingScreen:
