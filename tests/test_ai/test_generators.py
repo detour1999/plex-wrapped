@@ -146,7 +146,6 @@ class TestThemeGenerator:
         assert "intro" in result["slides"]
 
 
-<<<<<<< HEAD
 ALL_GENERATORS = [
     NarrativeGenerator,
     PersonalityGenerator,
@@ -211,7 +210,8 @@ class TestPromptsUseRealYearAndPlex:
             generator_class(provider).generate({"user": "tester"})
 
         assert provider.last_prompt is None
-=======
+
+
 class TestParseJsonTrailingCommas:
     """LLMs sometimes emit a trailing comma, which is invalid JSON."""
 
@@ -243,4 +243,3 @@ class TestParseJsonTrailingCommas:
 
     def test_unparseable_text_still_returns_the_default(self) -> None:
         assert self.parse("not json at all", {"fallback": True}) == {"fallback": True}
->>>>>>> origin/main
