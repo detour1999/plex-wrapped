@@ -35,6 +35,7 @@ class TestNarrativeGenerator:
         generator = NarrativeGenerator(provider)
 
         stats = {
+            "year": 2024,
             "total_minutes": 42000,
             "top_artist": "Radiohead",
             "top_genre": "Alternative",
@@ -50,7 +51,7 @@ class TestNarrativeGenerator:
         provider = MockProvider('{"narrative": "test"}')
         generator = NarrativeGenerator(provider)
 
-        generator.generate({"total_minutes": 100})
+        generator.generate({"year": 2024, "total_minutes": 100})
 
         assert "playful" in provider.last_prompt.lower() or "humor" in provider.last_prompt.lower()
 
@@ -67,7 +68,7 @@ class TestPersonalityGenerator:
         provider = MockProvider(response)
         generator = PersonalityGenerator(provider)
 
-        result = generator.generate({"genres": ["rock", "pop", "jazz"]})
+        result = generator.generate({"year": 2024, "genres": ["rock", "pop", "jazz"]})
 
         assert provider.last_prompt is not None
 
@@ -80,6 +81,7 @@ class TestRoastGenerator:
         generator = RoastGenerator(provider)
 
         result = generator.generate({
+            "year": 2024,
             "late_night_plays": 200,
             "most_repeated_track": "same song",
         })
@@ -98,7 +100,7 @@ class TestSuperlativesGenerator:
         provider = MockProvider(response)
         generator = SuperlativesGenerator(provider)
 
-        result = generator.generate({"top_track_plays": 200})
+        result = generator.generate({"year": 2024, "top_track_plays": 200})
 
         assert provider.last_prompt is not None
         assert "superlatives" in provider.last_prompt.lower() or "award" in provider.last_prompt.lower()
@@ -111,7 +113,7 @@ class TestHotTakesGenerator:
         provider = MockProvider(response)
         generator = HotTakesGenerator(provider)
 
-        result = generator.generate({"top_artists": ["Pop Artist 1", "Pop Artist 2"]})
+        result = generator.generate({"year": 2024, "top_artists": ["Pop Artist 1", "Pop Artist 2"]})
 
         assert provider.last_prompt is not None
         assert "hot take" in provider.last_prompt.lower()
@@ -135,13 +137,79 @@ class TestThemeGenerator:
         provider = MockProvider(response)
         generator = ThemeGenerator(provider)
 
-        result = generator.generate({"top_genres": ["rock", "electronic"]})
+        result = generator.generate({"year": 2024, "top_genres": ["rock", "electronic"]})
 
         assert provider.last_prompt is not None
         assert "palette" in provider.last_prompt.lower()
         assert "visualization" in provider.last_prompt.lower()
         assert result["palette"]["primary"] == "#6366F1"
         assert "intro" in result["slides"]
+
+
+ALL_GENERATORS = [
+    NarrativeGenerator,
+    PersonalityGenerator,
+    RoastGenerator,
+    AuraGenerator,
+    SuperlativesGenerator,
+    HotTakesGenerator,
+    SuggestionsGenerator,
+    ThemeGenerator,
+]
+
+
+def build_prompt(generator_class: type, year: int) -> str:
+    """Run a generator against stats for the given year and return the prompt it built."""
+    provider = MockProvider("{}")
+    generator_class(provider).generate({"user": "tester", "year": year, "total": {"minutes": 100}})
+    assert provider.last_prompt is not None
+    return provider.last_prompt
+
+
+class TestPromptsUseRealYearAndPlex:
+    @pytest.mark.parametrize("generator_class", ALL_GENERATORS)
+    @pytest.mark.parametrize("year", [2023, 2025])
+    def test_prompt_states_the_year_from_stats(self, generator_class: type, year: int) -> None:
+        """Opening instruction names the year being wrapped, not a fixed one."""
+        instruction = build_prompt(generator_class, year).split("User Stats:")[0]
+
+        assert str(year) in instruction
+
+    @pytest.mark.parametrize("generator_class", ALL_GENERATORS)
+    @pytest.mark.parametrize("year", [2022, 2025])
+    def test_prompt_has_no_hardcoded_2024(self, generator_class: type, year: int) -> None:
+        """A non-2024 year never produces a prompt that mentions 2024."""
+        assert "2024" not in build_prompt(generator_class, year)
+
+    @pytest.mark.parametrize("generator_class", ALL_GENERATORS)
+    def test_prompt_never_mentions_lastfm(self, generator_class: type) -> None:
+        """Prompts describe a Plex user, never Last.fm."""
+        prompt = build_prompt(generator_class, 2025)
+
+        assert "last.fm" not in prompt.lower()
+        assert "Plex" in prompt
+
+    def test_narrative_example_uses_the_stats_year(self) -> None:
+        """The narrative example JSON opens with the real year."""
+        assert "Your 2023 musical journey was" in build_prompt(NarrativeGenerator, 2023)
+
+    def test_suggestions_look_ahead_to_the_following_year(self) -> None:
+        """Suggestions predict the year after the wrapped year."""
+        assert "what their 2026 might look like" in build_prompt(SuggestionsGenerator, 2025)
+
+    def test_theme_prompt_names_the_user(self) -> None:
+        """Theme prompt is personalised with the username from stats."""
+        assert "tester" in build_prompt(ThemeGenerator, 2025).split("User Stats:")[0]
+
+    @pytest.mark.parametrize("generator_class", ALL_GENERATORS)
+    def test_missing_year_fails_clearly(self, generator_class: type) -> None:
+        """Stats without a year raise instead of silently defaulting."""
+        provider = MockProvider("{}")
+
+        with pytest.raises(ValueError, match="year"):
+            generator_class(provider).generate({"user": "tester"})
+
+        assert provider.last_prompt is None
 
 
 class TestParseJsonTrailingCommas:
