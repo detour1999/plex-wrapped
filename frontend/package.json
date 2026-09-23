@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@astrojs/svelte": "^5.0.0",
@@ -20,6 +21,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@testing-library/svelte": "^5.4.2",
     "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^2.1.9",
     "jsdom": "^29.1.1",
     "typescript": "^5.0.0",
     "vitest": "^2.1.9"

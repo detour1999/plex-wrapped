@@ -205,7 +205,9 @@ class PlexScreen(Screen):
         self.test_plex_connection(url, token)
 
     @work(exclusive=True)
-    async def test_plex_connection(self, url: str, token: str) -> None:
+    async def test_plex_connection(
+        self, url: str, token: str
+    ) -> None:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Test Plex connection in background worker."""
         status = self.query_one("#status", Static)
         next_button = self.query_one("#next", Button)
@@ -391,7 +393,9 @@ class LLMScreen(Screen):
         self.test_llm_key(provider, api_key)
 
     @work(exclusive=True)
-    async def test_llm_key(self, provider: str, api_key: str) -> None:
+    async def test_llm_key(
+        self, provider: str, api_key: str
+    ) -> None:  # pragma: no cover - a real Anthropic/OpenAI API call to validate the key
         """Test LLM API key in background worker."""
         status = self.query_one("#status", Static)
         next_button = self.query_one("#next", Button)
@@ -527,7 +531,7 @@ class HostingScreen(Screen):
         )
         yield Footer()
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         """Initialize provider fields and pre-fill from config."""
         app = self.app
         provider = "cloudflare"
@@ -538,7 +542,7 @@ class HostingScreen(Screen):
 
         # Track current provider and create fields
         self._current_provider = provider
-        self.update_fields(provider)
+        await self.update_fields(provider)
 
         # Select the correct provider radio button (after fields exist)
         if provider != "cloudflare":
@@ -584,16 +588,20 @@ class HostingScreen(Screen):
                 self.query_one("#branch", Input).value = provider_config["branch"]
 
     @on(RadioSet.Changed, "#provider-set")
-    def on_provider_changed(self, event: RadioSet.Changed) -> None:
+    async def on_provider_changed(self, event: RadioSet.Changed) -> None:
         """Update fields when provider changes."""
         if event.pressed.id and event.pressed.id != self._current_provider:
             self._current_provider = event.pressed.id
-            self.update_fields(event.pressed.id)
+            await self.update_fields(event.pressed.id)
 
-    def update_fields(self, provider: str) -> None:
+    async def update_fields(self, provider: str) -> None:
         """Update dynamic fields based on selected provider."""
         container = self.query_one("#dynamic-fields", Container)
-        container.remove_children()
+        # remove_children() only schedules the removal - it must be awaited, or a
+        # provider switch that reuses a field id (e.g. "project-name" on both
+        # Cloudflare and Vercel) mounts the new field before the old one is
+        # actually gone and crashes with DuplicateIds.
+        await container.remove_children()
 
         if provider == "cloudflare":
             container.mount(
@@ -800,7 +808,9 @@ class SummaryScreen(Screen):
     def build_summary(self) -> str:
         """Build configuration summary text."""
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return "No configuration data available"
 
         config = app.config_data
@@ -846,7 +856,9 @@ class SummaryScreen(Screen):
     def save_config(self) -> None:
         """Save configuration to file."""
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return
 
         year_input = self.query_one("#year", Input)
@@ -1020,7 +1032,9 @@ class ProcessingScreen(Screen):
         self.app.call_from_thread(self._update_ui_start)
 
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return
 
         config_data = app.config_data
