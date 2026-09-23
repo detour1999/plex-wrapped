@@ -5,6 +5,21 @@ from abc import ABC, abstractmethod
 
 from plex_wrapped.config import LLMConfig
 
+# Thinking tokens count toward max_tokens, so leave room for them plus the answer.
+MAX_OUTPUT_TOKENS = 16000
+
+
+def _extract_text(content: list) -> str:
+    """Join the text blocks of an Anthropic response, skipping thinking blocks.
+
+    Raises:
+        ValueError: If the response contains no text block.
+    """
+    text = "".join(block.text for block in content if block.type == "text")
+    if not text:
+        raise ValueError("Anthropic response contained no text block")
+    return text
+
 
 class LLMProvider(ABC):
     """Abstract base class for LLM providers."""
@@ -40,7 +55,7 @@ class NoOpProvider(LLMProvider):
 class AnthropicProvider(LLMProvider):
     """Provider for Anthropic's Claude API."""
 
-    def __init__(self, api_key: str, model: str = "claude-sonnet-4-5-20250929") -> None:
+    def __init__(self, api_key: str, model: str = "claude-sonnet-5") -> None:
         """Initialize Anthropic provider.
 
         Args:
@@ -63,10 +78,10 @@ class AnthropicProvider(LLMProvider):
         """
         message = self.client.messages.create(
             model=self.model,
-            max_tokens=1024,
+            max_tokens=MAX_OUTPUT_TOKENS,
             messages=[{"role": "user", "content": prompt}],
         )
-        return message.content[0].text
+        return _extract_text(message.content)
 
 
 class OpenAIProvider(LLMProvider):

@@ -10,7 +10,7 @@ plex:
 llm:
   provider: "anthropic"  # Options: anthropic, openai, none
   api_key: "sk-ant-xxx"  # Your API key (not needed if provider is 'none')
-  model: "claude-sonnet-4-5-20250929"  # Optional: specific model to use
+  model: "claude-sonnet-5"  # Optional: specific model to use
 
 # Year to generate Wrapped for
 year: 2024
