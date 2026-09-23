@@ -57,7 +57,7 @@ class TimeAnalysisProcessor:
         # Get all unique dates sorted
         dates = sorted(set(track.played_at.date() for track in self.history.tracks))
 
-        if not dates:
+        if not dates:  # pragma: no cover - unreachable, tracks is already non-empty here
             return 0
 
         max_streak = 1
@@ -133,7 +133,7 @@ class TimeAnalysisProcessor:
             key = (track.played_at.date(), track.title, track.artist)
             day_track_counts[key] += 1
 
-        if not day_track_counts:
+        if not day_track_counts:  # pragma: no cover - unreachable, tracks is already non-empty here
             return None
 
         most_common, play_count = day_track_counts.most_common(1)[0]

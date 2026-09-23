@@ -103,3 +103,131 @@ class TestTimeAnalysisProcessor:
         assert anthem is not None
         assert anthem["track"] == "Night Song"
         assert anthem["plays_after_midnight"] == 5
+
+    def test_plays_by_month(self) -> None:
+        tracks = [make_track_at(hour=12, month=3) for _ in range(2)]
+        tracks += [make_track_at(hour=12, month=7)]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        by_month = TimeAnalysisProcessor(history).plays_by_month()
+
+        assert len(by_month) == 12
+        assert by_month[2] == 2  # March is index 2 (months are 1-12)
+        assert by_month[6] == 1  # July is index 6
+        assert by_month[0] == 0  # January
+
+    def test_peak_listening_day(self) -> None:
+        tracks = [make_track_at(hour=12, day_of_week=2) for _ in range(3)]
+        tracks += [make_track_at(hour=12, day_of_week=5)]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        assert TimeAnalysisProcessor(history).peak_listening_day() == 2
+
+    def test_peak_day_overall(self) -> None:
+        tracks = [
+            Track(
+                title="A",
+                artist="Artist",
+                album="Album",
+                duration_ms=180000,
+                played_at=datetime(2024, 3, 15, h, 0),
+                user="test",
+            )
+            for h in (9, 10, 11)
+        ]
+        tracks.append(
+            Track(
+                title="B",
+                artist="Artist",
+                album="Album",
+                duration_ms=180000,
+                played_at=datetime(2024, 3, 16, 9, 0),
+                user="test",
+            )
+        )
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        peak = TimeAnalysisProcessor(history).peak_day_overall()
+
+        assert peak == {"date": "2024-03-15", "plays": 3}
+
+    def test_longest_streak(self) -> None:
+        # Three consecutive days, then a gap, then two more consecutive days
+        dates = [1, 2, 3, 10, 11]
+        tracks = [
+            Track(
+                title=f"Song {d}",
+                artist="Artist",
+                album="Album",
+                duration_ms=180000,
+                played_at=datetime(2024, 1, d, 12, 0),
+                user="test",
+            )
+            for d in dates
+        ]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        assert TimeAnalysisProcessor(history).longest_streak() == 3
+
+    def test_day_anthem(self) -> None:
+        tracks = [make_track_at(hour=12, day_of_week=3) for _ in range(2)]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        anthem = TimeAnalysisProcessor(history).day_anthem(3)
+
+        assert anthem is not None
+        assert anthem["day"] == "Thursday"
+        assert anthem["plays"] == 2
+
+    def test_day_anthem_returns_none_when_nothing_played_that_day(self) -> None:
+        tracks = [make_track_at(hour=12, day_of_week=0)]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        assert TimeAnalysisProcessor(history).day_anthem(6) is None
+
+    def test_most_repeated_single_day(self) -> None:
+        same_day = datetime(2024, 5, 1, 20, 0)
+        tracks = [
+            Track(
+                title="Repeat",
+                artist="Artist",
+                album="Album",
+                duration_ms=180000,
+                played_at=same_day,
+                user="test",
+            )
+            for _ in range(4)
+        ]
+        history = ListeningHistory(user="test", year=2024, tracks=tracks)
+
+        result = TimeAnalysisProcessor(history).most_repeated_single_day()
+
+        assert result == {"track": "Repeat", "artist": "Artist", "date": "2024-05-01", "plays": 4}
+
+
+class TestTimeAnalysisEmptyHistory:
+    """Every stat has a graceful empty-history default instead of an IndexError."""
+
+    def _empty_processor(self) -> TimeAnalysisProcessor:
+        return TimeAnalysisProcessor(ListeningHistory(user="test", year=2024, tracks=[]))
+
+    def test_peak_listening_hour_defaults_to_zero(self) -> None:
+        assert self._empty_processor().peak_listening_hour() == 0
+
+    def test_peak_listening_day_defaults_to_zero(self) -> None:
+        assert self._empty_processor().peak_listening_day() == 0
+
+    def test_peak_day_overall_defaults_to_none_date(self) -> None:
+        assert self._empty_processor().peak_day_overall() == {"date": None, "plays": 0}
+
+    def test_longest_streak_defaults_to_zero(self) -> None:
+        assert self._empty_processor().longest_streak() == 0
+
+    def test_late_night_anthem_defaults_to_none(self) -> None:
+        assert self._empty_processor().late_night_anthem() is None
+
+    def test_day_anthem_defaults_to_none(self) -> None:
+        assert self._empty_processor().day_anthem(0) is None
+
+    def test_most_repeated_single_day_defaults_to_none(self) -> None:
+        assert self._empty_processor().most_repeated_single_day() is None

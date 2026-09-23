@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
 from typer.testing import CliRunner
 
 from plex_wrapped.main import app, detect_frontend_directory
@@ -120,3 +121,141 @@ class TestPreviewCommand:
 
         assert result.exit_code == 1
         assert "Preview failed" in result.stdout
+
+
+def write_config(tmp_path: Path, **overrides) -> Path:
+    """A minimal valid config.yaml - real file, no network/AI/hosting providers."""
+    import yaml
+
+    config_data = {
+        "plex": {"url": "https://plex.example.com", "token": "test-token"},
+        "llm": {"provider": "none"},
+        "hosting": {"provider": "none"},
+        "year": 2024,
+        **overrides,
+    }
+    config_file = tmp_path / "config.yaml"
+    config_file.write_text(yaml.dump(config_data))
+    return config_file
+
+
+class TestGetOrchestrator:
+    def test_loads_config_and_builds_an_orchestrator(self, tmp_path: Path) -> None:
+        from plex_wrapped.main import get_orchestrator
+
+        config_file = write_config(tmp_path)
+
+        orchestrator = get_orchestrator(str(config_file))
+
+        assert orchestrator.config.plex.url == "https://plex.example.com"
+
+    def test_year_override_applies_to_the_loaded_config(self, tmp_path: Path) -> None:
+        from plex_wrapped.main import get_orchestrator
+
+        config_file = write_config(tmp_path)
+
+        orchestrator = get_orchestrator(str(config_file), year=2025)
+
+        assert orchestrator.config.year == 2025
+
+    def test_missing_config_file_exits_with_error(self) -> None:
+        from plex_wrapped.main import get_orchestrator
+
+        with pytest.raises(SystemExit) as exc_info:
+            get_orchestrator("/nonexistent/config.yaml")
+
+        assert exc_info.value.code == 1
+
+
+class TestOrchestratedCommands:
+    """generate/extract/process/build/deploy all share the same shape: load config,
+    call one Orchestrator method, exit 1 with a message if it raises."""
+
+    @pytest.mark.parametrize(
+        "command,orchestrator_method,failure_message",
+        [
+            ("generate", "run_all", "Generation failed"),
+            ("extract", "extract", "Extraction failed"),
+            ("process", "process", "Processing failed"),
+            ("build", "build", "Build failed"),
+            ("deploy", "deploy", "Deployment failed"),
+        ],
+    )
+    def test_command_success(
+        self, tmp_path: Path, command: str, orchestrator_method: str, failure_message: str
+    ) -> None:
+        config_file = write_config(tmp_path)
+
+        with patch(f"plex_wrapped.orchestrator.Orchestrator.{orchestrator_method}") as method:
+            result = runner.invoke(app, [command, "--config", str(config_file)])
+
+        assert result.exit_code == 0
+        method.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "command,orchestrator_method,failure_message",
+        [
+            ("generate", "run_all", "Generation failed"),
+            ("extract", "extract", "Extraction failed"),
+            ("process", "process", "Processing failed"),
+            ("build", "build", "Build failed"),
+            ("deploy", "deploy", "Deployment failed"),
+        ],
+    )
+    def test_command_reports_failure_and_exits_nonzero(
+        self, tmp_path: Path, command: str, orchestrator_method: str, failure_message: str
+    ) -> None:
+        config_file = write_config(tmp_path)
+
+        with patch(
+            f"plex_wrapped.orchestrator.Orchestrator.{orchestrator_method}",
+            side_effect=RuntimeError("boom"),
+        ):
+            result = runner.invoke(app, [command, "--config", str(config_file)])
+
+        assert result.exit_code == 1
+        assert failure_message in result.stdout
+
+    def test_generate_and_extract_and_process_accept_a_year_override(self, tmp_path: Path) -> None:
+        config_file = write_config(tmp_path)
+
+        with patch("plex_wrapped.orchestrator.Orchestrator.extract") as extract:
+            result = runner.invoke(app, ["extract", "--config", str(config_file), "--year", "2019"])
+
+        assert result.exit_code == 0
+        extract.assert_called_once()
+
+
+class TestSetupWizardEntryPoints:
+    """The bare CLI and `init` both launch the TUI wizard."""
+
+    @patch("plex_wrapped.setup_tui.SetupApp")
+    def test_bare_invocation_launches_the_wizard(self, mock_app_cls: MagicMock) -> None:
+        result = runner.invoke(app, [])
+
+        assert result.exit_code == 0
+        mock_app_cls.return_value.run.assert_called_once()
+
+    @patch("plex_wrapped.setup_tui.SetupApp")
+    def test_init_command_launches_the_wizard(self, mock_app_cls: MagicMock) -> None:
+        result = runner.invoke(app, ["init"])
+
+        assert result.exit_code == 0
+        mock_app_cls.return_value.run.assert_called_once()
+
+
+class TestPreviewKeyboardInterrupt:
+    @patch("plex_wrapped.main.subprocess.run")
+    @patch("plex_wrapped.main.detect_frontend_directory")
+    def test_preview_stopped_by_keyboard_interrupt_exits_cleanly(
+        self, mock_detect: MagicMock, mock_run: MagicMock, tmp_path: Path
+    ) -> None:
+        frontend_dir = tmp_path / "frontend"
+        frontend_dir.mkdir()
+        mock_detect.return_value = frontend_dir
+        mock_run.side_effect = KeyboardInterrupt()
+
+        result = runner.invoke(app, ["preview"])
+
+        assert result.exit_code == 0
+        assert "Preview server stopped" in result.stdout

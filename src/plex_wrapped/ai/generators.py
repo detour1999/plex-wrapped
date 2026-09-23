@@ -18,7 +18,7 @@ class BaseGenerator(ABC):
     @abstractmethod
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate content from user stats."""
-        pass
+        pass  # pragma: no cover - every concrete subclass overrides this
 
     @staticmethod
     def _wrapped_year(stats: dict[str, Any]) -> int:

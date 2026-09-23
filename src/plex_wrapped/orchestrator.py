@@ -48,7 +48,9 @@ class Orchestrator:
         self.output_dir = config.output_dir
         self.project_root = config.project_root
 
-    def extract(self, on_progress: Optional[ProgressCallback] = None) -> None:
+    def extract(
+        self, on_progress: Optional[ProgressCallback] = None
+    ) -> None:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Extract listening history from Plex server.
 
         Args:
@@ -92,7 +94,7 @@ class Orchestrator:
         history,
         extractor: PlexExtractor,
         on_progress: Optional[ProgressCallback] = None,
-    ) -> None:
+    ) -> None:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Download images only for top artists, tracks, and albums.
 
         Image Matching Algorithm:

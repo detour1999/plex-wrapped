@@ -15,6 +15,7 @@ from plex_wrapped.ai.provider import (
     get_provider,
     LLMProvider,
     NoOpProvider,
+    OpenAIProvider,
 )
 from plex_wrapped.config import LLMConfig
 
@@ -117,6 +118,113 @@ class TestGenerateCreativePickDefault:
         provider = MinimalProvider()
 
         assert provider.generate_creative_pick("invent something") == "echo: invent something"
+
+
+class TestAnthropicProviderGenerate:
+    def test_calls_the_configured_model_and_returns_the_text(self) -> None:
+        provider = AnthropicProvider(api_key="unused", model="claude-opus-5")
+        provider.client = MagicMock()
+        provider.client.messages.create.return_value = anthropic_message([text('{"a": 1}')])
+
+        result = provider.generate("a prompt")
+
+        assert result == '{"a": 1}'
+        _, kwargs = provider.client.messages.create.call_args
+        assert kwargs["model"] == "claude-opus-5"
+        assert kwargs["max_tokens"] == MAX_OUTPUT_TOKENS
+        assert kwargs["messages"] == [{"role": "user", "content": "a prompt"}]
+
+    def test_skips_a_leading_thinking_block(self) -> None:
+        provider = AnthropicProvider(api_key="unused")
+        provider.client = MagicMock()
+        provider.client.messages.create.return_value = anthropic_message(
+            [thinking("hmm"), text("the answer")]
+        )
+
+        assert provider.generate("a prompt") == "the answer"
+
+
+class TestOpenAIProviderGenerate:
+    def _provider_with_response(self, content: str | None) -> OpenAIProvider:
+        provider = OpenAIProvider(api_key="unused", model="gpt-4o-mini")
+        provider.client = MagicMock()
+        choice = MagicMock()
+        choice.message.content = content
+        provider.client.chat.completions.create.return_value = MagicMock(choices=[choice])
+        return provider
+
+    def test_default_model_is_gpt4o(self) -> None:
+        assert OpenAIProvider(api_key="unused").model == "gpt-4o"
+
+    def test_calls_the_configured_model_and_returns_the_text(self) -> None:
+        provider = self._provider_with_response('{"a": 1}')
+
+        result = provider.generate("a prompt")
+
+        assert result == '{"a": 1}'
+        _, kwargs = provider.client.chat.completions.create.call_args
+        assert kwargs["model"] == "gpt-4o-mini"
+        assert kwargs["messages"] == [{"role": "user", "content": "a prompt"}]
+
+    def test_returns_empty_string_when_content_is_none(self) -> None:
+        """A refused or empty completion has message.content = None, not a crash."""
+        provider = self._provider_with_response(None)
+
+        assert provider.generate("a prompt") == ""
+
+
+class TestGetProviderAnthropicAndOpenAI:
+    def test_anthropic_with_explicit_model(self) -> None:
+        config = LLMConfig(provider="anthropic", api_key="sk-test", model="claude-opus-5")
+
+        provider = get_provider(config)
+
+        assert isinstance(provider, AnthropicProvider)
+        assert provider.model == "claude-opus-5"
+
+    def test_anthropic_without_explicit_model_uses_the_default(self) -> None:
+        config = LLMConfig(provider="anthropic", api_key="sk-test")
+
+        provider = get_provider(config)
+
+        assert isinstance(provider, AnthropicProvider)
+        assert provider.model == "claude-sonnet-5"
+
+    def test_anthropic_without_api_key_raises(self) -> None:
+        config = LLMConfig.model_construct(provider="anthropic", api_key=None, model=None)
+
+        with pytest.raises(ValueError, match="Anthropic API key required"):
+            get_provider(config)
+
+    def test_openai_with_explicit_model(self) -> None:
+        config = LLMConfig(provider="openai", api_key="sk-test", model="gpt-4o-mini")
+
+        provider = get_provider(config)
+
+        assert isinstance(provider, OpenAIProvider)
+        assert provider.model == "gpt-4o-mini"
+
+    def test_openai_without_explicit_model_uses_the_default(self) -> None:
+        config = LLMConfig(provider="openai", api_key="sk-test")
+
+        provider = get_provider(config)
+
+        assert isinstance(provider, OpenAIProvider)
+        assert provider.model == "gpt-4o"
+
+    def test_openai_without_api_key_raises(self) -> None:
+        config = LLMConfig.model_construct(provider="openai", api_key=None, model=None)
+
+        with pytest.raises(ValueError, match="OpenAI API key required"):
+            get_provider(config)
+
+    def test_unsupported_provider_raises(self) -> None:
+        """Pydantic's Literal type already blocks this through normal construction;
+        model_construct bypasses validation to exercise the defensive fallback branch."""
+        config = LLMConfig.model_construct(provider="carrier-pigeon", api_key=None, model=None)
+
+        with pytest.raises(ValueError, match="Unsupported provider"):
+            get_provider(config)
 
 
 class TestAnthropicProviderCreativePick:

@@ -34,7 +34,7 @@ class LLMProvider(ABC):
         Returns:
             Generated text content.
         """
-        pass
+        pass  # pragma: no cover - every concrete subclass overrides this
 
     def generate_creative_pick(self, prompt: str) -> str:
         """Make one open-ended creative choice with real sampling entropy.

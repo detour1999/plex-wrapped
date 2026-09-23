@@ -72,13 +72,15 @@ class PlexExtractor:
         Raises:
             ConnectionError: If unable to connect to Plex server
         """
-        try:
+        try:  # pragma: no cover - requires a real Plex server, no mocking per project rules
             self._server = PlexServer(self.url, self.token)
             return self._server
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise ConnectionError(f"Failed to connect to Plex server: {e}") from e
 
-    def get_users(self) -> list[str]:
+    def get_users(
+        self,
+    ) -> list[str]:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Get list of usernames with access to the Plex server.
 
         Returns:
@@ -108,7 +110,9 @@ class PlexExtractor:
         self,
         music_library,
         on_progress: Optional[ProgressCallback] = None,
-    ) -> dict[tuple[str, str], int]:
+    ) -> dict[
+        tuple[str, str], int
+    ]:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Build a cache mapping (title, artist) to duration_ms.
 
         Args:
@@ -151,7 +155,9 @@ class PlexExtractor:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         on_progress: Optional[ProgressCallback] = None,
-    ) -> ListeningHistory:
+    ) -> (
+        ListeningHistory
+    ):  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Extract listening history for a specific user.
 
         Args:
@@ -283,7 +289,9 @@ class PlexExtractor:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         on_progress: Optional[ProgressCallback] = None,
-    ) -> list[ListeningHistory]:
+    ) -> list[
+        ListeningHistory
+    ]:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Extract listening history for all users.
 
         Args:
@@ -330,7 +338,9 @@ class PlexExtractor:
 
         return histories
 
-    def _get_user_account_id(self, username: str) -> int:
+    def _get_user_account_id(
+        self, username: str
+    ) -> int:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Get Plex account ID for a username.
 
         Args:

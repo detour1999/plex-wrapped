@@ -278,6 +278,32 @@ class TestParseJsonTrailingCommas:
     def test_unparseable_text_still_returns_the_default(self) -> None:
         assert self.parse("not json at all", {"fallback": True}) == {"fallback": True}
 
+    def test_plain_markdown_fence_without_a_json_language_tag(self) -> None:
+        assert self.parse('```\n{"a": 1}\n```') == {"a": 1}
+
+    def test_escaped_quote_survives_alongside_a_raw_newline_needing_a_fix(self) -> None:
+        """An already-valid response never reaches the newline-fixing fallback at all,
+        so this pairs an escaped quote with a raw newline that forces direct parsing to
+        fail, landing in escape_newlines_in_strings where both must be handled right."""
+        raw = '{"text": "before \\"quoted\\" after \nnewline"}'
+        assert self.parse(raw) == {"text": 'before "quoted" after \nnewline'}
+
+    def test_raw_carriage_return_inside_a_string(self) -> None:
+        assert self.parse('{"text": "line one\r\nline two"}') == {"text": "line one\r\nline two"}
+
+    def test_extracts_a_json_object_embedded_in_surrounding_prose(self) -> None:
+        """When neither a direct parse nor the newline/comma fixups work (the problem
+        isn't a newline or trailing comma - it's text wrapped around the JSON), the
+        final fallback extracts just the {...} substring."""
+        assert self.parse('Here you go: {"a": 1} hope that helps!') == {"a": 1}
+
+    def test_extracted_substring_that_is_still_invalid_json_falls_through_to_default(self) -> None:
+        """The regex finds a {...} span, but its content is still malformed (unquoted
+        keys) - that inner parse must fail gracefully and fall through to the default,
+        not raise."""
+        text = "Sure, here's something: {not: valid, json: here} enjoy!"
+        assert self.parse(text, {"fallback": True}) == {"fallback": True}
+
 
 class RecordingProvider(LLMProvider):
     """Records the prompts a generator sends to generate() and to generate_creative_pick()
