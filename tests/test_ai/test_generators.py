@@ -40,7 +40,7 @@ class TestNarrativeGenerator:
             "top_artist": "Radiohead",
             "top_genre": "Alternative",
         }
-        result = generator.generate(stats)
+        generator.generate(stats)
 
         assert provider.last_prompt is not None
         assert "42000" in provider.last_prompt
@@ -68,7 +68,7 @@ class TestPersonalityGenerator:
         provider = MockProvider(response)
         generator = PersonalityGenerator(provider)
 
-        result = generator.generate({"year": 2024, "genres": ["rock", "pop", "jazz"]})
+        generator.generate({"year": 2024, "genres": ["rock", "pop", "jazz"]})
 
         assert provider.last_prompt is not None
 
@@ -80,7 +80,7 @@ class TestRoastGenerator:
         provider = MockProvider(response)
         generator = RoastGenerator(provider)
 
-        result = generator.generate({
+        generator.generate({
             "year": 2024,
             "late_night_plays": 200,
             "most_repeated_track": "same song",
@@ -111,7 +111,7 @@ class TestSuperlativesGenerator:
         provider = MockProvider(response)
         generator = SuperlativesGenerator(provider)
 
-        result = generator.generate({"year": 2024, "top_track_plays": 200})
+        generator.generate({"year": 2024, "top_track_plays": 200})
 
         assert provider.last_prompt is not None
         assert "superlatives" in provider.last_prompt.lower() or "award" in provider.last_prompt.lower()
@@ -124,7 +124,7 @@ class TestHotTakesGenerator:
         provider = MockProvider(response)
         generator = HotTakesGenerator(provider)
 
-        result = generator.generate({"year": 2024, "top_artists": ["Pop Artist 1", "Pop Artist 2"]})
+        generator.generate({"year": 2024, "top_artists": ["Pop Artist 1", "Pop Artist 2"]})
 
         assert provider.last_prompt is not None
         assert "hot take" in provider.last_prompt.lower()

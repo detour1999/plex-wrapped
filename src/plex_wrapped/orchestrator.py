@@ -6,10 +6,7 @@ import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Optional
-
-# Type alias for progress callbacks: (message: str) -> None
-ProgressCallback = Callable[[str], None]
+from typing import Callable, Optional
 
 from rich.console import Console
 
@@ -31,6 +28,9 @@ from plex_wrapped.config import Config
 from plex_wrapped.extractors.plex import PlexExtractor
 from plex_wrapped.processors.stats import StatsProcessor
 from plex_wrapped.processors.time_analysis import TimeAnalysisProcessor
+
+# Type alias for progress callbacks: (message: str) -> None
+ProgressCallback = Callable[[str], None]
 
 console = Console()
 
@@ -512,7 +512,7 @@ class Orchestrator:
 
         # Run npm build
         try:
-            result = subprocess.run(
+            subprocess.run(
                 ["npm", "run", "build"],
                 cwd=frontend_dir,
                 check=True,

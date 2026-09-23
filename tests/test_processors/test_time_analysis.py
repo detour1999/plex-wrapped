@@ -1,7 +1,6 @@
 # ABOUTME: Tests for time pattern analysis.
 # ABOUTME: Verifies hour/day/month breakdowns and quirky stat detection.
 
-import pytest
 from datetime import datetime
 
 from plex_wrapped.extractors.plex import Track, ListeningHistory

@@ -1,11 +1,10 @@
 # ABOUTME: Tests for stats processing (top tracks, artists, albums).
 # ABOUTME: Verifies correct aggregation and ranking of listening data.
 
-import pytest
 from datetime import datetime
 
 from plex_wrapped.extractors.plex import Track, ListeningHistory
-from plex_wrapped.processors.stats import StatsProcessor, TopItem
+from plex_wrapped.processors.stats import StatsProcessor
 
 
 def make_track(title: str, artist: str, album: str, plays: int = 1) -> list[Track]:

@@ -8,11 +8,9 @@ from typing import Any, Dict, Optional
 import anthropic
 import openai
 import yaml
-from plexapi.server import PlexServer
-from rich.text import Text
 from textual import on, work
 from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal, Vertical
+from textual.containers import Container, Horizontal
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet, RichLog, Static
 
