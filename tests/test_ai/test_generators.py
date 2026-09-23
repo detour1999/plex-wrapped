@@ -90,6 +90,17 @@ class TestRoastGenerator:
 
 
 class TestSuperlativesGenerator:
+    def test_falls_back_to_default_when_response_is_the_wrong_shape(self) -> None:
+        """The model can return a single flat award/reason object instead of the wrapped
+        list - valid JSON, wrong shape - and that must not pass through as-is."""
+        provider = MockProvider('{"award": "Solo Award", "reason": "just one"}')
+        generator = SuperlativesGenerator(provider)
+
+        result = generator.generate({"year": 2025, "top_track_plays": 200})
+
+        assert isinstance(result.get("superlatives"), list)
+        assert len(result["superlatives"]) >= 1
+
     def test_generates_superlatives_from_stats(self) -> None:
         """Superlatives generator creates awards from stats."""
         response = '''{
@@ -143,6 +154,19 @@ class TestThemeGenerator:
         assert "palette" in provider.last_prompt.lower()
         assert "visualization" in provider.last_prompt.lower()
         assert result["palette"]["primary"] == "#6366F1"
+        assert "intro" in result["slides"]
+
+    def test_falls_back_to_default_when_response_is_the_wrong_shape(self) -> None:
+        """The model can return a flattened palette (no "palette"/"slides" wrapper at all) -
+        valid JSON, wrong shape - and that must not pass through as-is."""
+        provider = MockProvider('{"primary": "#B784A7", "secondary": "#8E6C7D", "accent": "#000"}')
+        generator = ThemeGenerator(provider)
+
+        result = generator.generate({"year": 2025, "top_genres": ["rock"]})
+
+        assert isinstance(result.get("palette"), dict)
+        assert "primary" in result["palette"]
+        assert isinstance(result.get("slides"), dict)
         assert "intro" in result["slides"]
 
 
@@ -243,3 +267,337 @@ class TestParseJsonTrailingCommas:
 
     def test_unparseable_text_still_returns_the_default(self) -> None:
         assert self.parse("not json at all", {"fallback": True}) == {"fallback": True}
+
+
+class RecordingProvider(LLMProvider):
+    """Records the prompts a generator sends to generate() and to generate_creative_pick()
+    separately, and lets a test control what each one returns."""
+
+    def __init__(self, response: str = "{}", pick: str = "a specific structural conceit") -> None:
+        self.response = response
+        self.pick = pick
+        self.last_prompt: str | None = None
+        self.pick_prompts: list[str] = []
+
+    def generate(self, prompt: str, max_tokens: int = 1024) -> str:
+        self.last_prompt = prompt
+        return self.response
+
+    def generate_creative_pick(self, prompt: str) -> str:
+        self.pick_prompts.append(prompt)
+        return self.pick
+
+
+NEVER_IN_PICK_PROMPT = ("music", "listening", "wrapped", "song", "playlist", "taste")
+
+
+class TestNarrativeCreativePick:
+    def test_asks_for_a_structural_conceit(self) -> None:
+        """The picker prompt asks for a device, not for content about the user."""
+        provider = RecordingProvider()
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert len(provider.pick_prompts) == 1
+        assert "conceit" in provider.pick_prompts[0] or "device" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        """Naming the domain is what caused every pick to collapse onto a recap trope."""
+        provider = RecordingProvider()
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt_as_a_directive(self) -> None:
+        provider = RecordingProvider(pick="told entirely through voicemail transcripts")
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert "told entirely through voicemail transcripts" in provider.last_prompt
+        assert "without deviation" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        """A provider with nothing to add (e.g. NoOpProvider) must not get an empty directive."""
+        provider = RecordingProvider(pick="")
+        NarrativeGenerator(provider).generate({"year": 2025, "total_minutes": 100})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            NarrativeGenerator(provider).generate({"total_minutes": 100})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestRoastCreativePick:
+    def test_asks_for_a_critique_persona(self) -> None:
+        provider = RecordingProvider()
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert len(provider.pick_prompts) == 1
+        assert "persona" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a disgruntled maritime archaeologist")
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert "a disgruntled maritime archaeologist" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        RoastGenerator(provider).generate({"year": 2025, "late_night_plays": 5})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            RoastGenerator(provider).generate({"late_night_plays": 5})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestPersonalityCreativePick:
+    def test_asks_for_a_classification_framework(self) -> None:
+        provider = RecordingProvider()
+        PersonalityGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert len(provider.pick_prompts) == 1
+        assert "classification" in provider.pick_prompts[0] or "framework" in provider.pick_prompts[0] or "metaphor" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        PersonalityGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a species of deep-sea fungus")
+        PersonalityGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert "a species of deep-sea fungus" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        PersonalityGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            PersonalityGenerator(provider).generate({"genres": ["rock"]})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestAuraCreativePick:
+    def test_asks_for_a_colour_and_mood(self) -> None:
+        provider = RecordingProvider()
+        AuraGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert len(provider.pick_prompts) == 1
+        assert "colour" in provider.pick_prompts[0] or "color" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        AuraGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="Burnt Sienna, wistful")
+        AuraGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert "Burnt Sienna, wistful" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        AuraGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            AuraGenerator(provider).generate({"genres": ["rock"]})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestSuperlativesCreativePick:
+    def test_asks_for_an_award_ceremony_format(self) -> None:
+        provider = RecordingProvider()
+        SuperlativesGenerator(provider).generate({"year": 2025, "top_track_plays": 200})
+
+        assert len(provider.pick_prompts) == 1
+        assert "award" in provider.pick_prompts[0] or "ceremony" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        SuperlativesGenerator(provider).generate({"year": 2025, "top_track_plays": 200})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a county fair ribbon ceremony")
+        SuperlativesGenerator(provider).generate({"year": 2025, "top_track_plays": 200})
+
+        assert "a county fair ribbon ceremony" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        SuperlativesGenerator(provider).generate({"year": 2025, "top_track_plays": 200})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            SuperlativesGenerator(provider).generate({"top_track_plays": 200})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestHotTakesCreativePick:
+    def test_asks_for_a_rhetorical_stance(self) -> None:
+        provider = RecordingProvider()
+        HotTakesGenerator(provider).generate({"year": 2025, "top_artists": ["A"]})
+
+        assert len(provider.pick_prompts) == 1
+        assert "stance" in provider.pick_prompts[0] or "angle" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        HotTakesGenerator(provider).generate({"year": 2025, "top_artists": ["A"]})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a conspiracy theorist connecting unrelated dots")
+        HotTakesGenerator(provider).generate({"year": 2025, "top_artists": ["A"]})
+
+        assert "a conspiracy theorist connecting unrelated dots" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        HotTakesGenerator(provider).generate({"year": 2025, "top_artists": ["A"]})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            HotTakesGenerator(provider).generate({"top_artists": ["A"]})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestSuggestionsCreativePick:
+    def test_asks_for_a_recommendation_format(self) -> None:
+        provider = RecordingProvider()
+        SuggestionsGenerator(provider).generate({"year": 2025})
+
+        assert len(provider.pick_prompts) == 1
+        assert "recommendation" in provider.pick_prompts[0] or "format" in provider.pick_prompts[0]
+
+    def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        SuggestionsGenerator(provider).generate({"year": 2025})
+
+        pick_prompt = provider.pick_prompts[0].lower()
+        for banned in NEVER_IN_PICK_PROMPT:
+            assert banned not in pick_prompt
+
+    def test_splices_the_pick_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="a fortune cookie slip")
+        SuggestionsGenerator(provider).generate({"year": 2025})
+
+        assert "a fortune cookie slip" in provider.last_prompt
+
+    def test_skips_the_directive_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        SuggestionsGenerator(provider).generate({"year": 2025})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            SuggestionsGenerator(provider).generate({})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+
+
+class TestThemeCreativePick:
+    def test_asks_for_a_colour_and_mood_and_a_visual_direction(self) -> None:
+        """Theme makes two picks: a palette colour/mood, and an overall visual direction
+        that should inform every slide's visualization/mood choice."""
+        provider = RecordingProvider()
+        ThemeGenerator(provider).generate({"year": 2025, "top_genres": ["rock"]})
+
+        assert len(provider.pick_prompts) == 2
+
+    def test_pick_prompts_are_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
+        provider = RecordingProvider()
+        ThemeGenerator(provider).generate({"year": 2025, "top_genres": ["rock"]})
+
+        for pick_prompt in provider.pick_prompts:
+            lowered = pick_prompt.lower()
+            for banned in NEVER_IN_PICK_PROMPT:
+                assert banned not in lowered
+
+    def test_splices_both_picks_into_the_main_prompt(self) -> None:
+        provider = RecordingProvider(pick="Electric Cerulean, unhinged")
+        ThemeGenerator(provider).generate({"year": 2025, "top_genres": ["rock"]})
+
+        assert "Electric Cerulean, unhinged" in provider.last_prompt
+        assert provider.last_prompt.count("without deviation") == 2
+
+    def test_skips_directives_when_the_provider_has_no_pick(self) -> None:
+        provider = RecordingProvider(pick="")
+        ThemeGenerator(provider).generate({"year": 2025, "top_genres": ["rock"]})
+
+        assert "without deviation" not in provider.last_prompt
+
+    def test_missing_year_raises_before_any_pick_call(self) -> None:
+        provider = RecordingProvider()
+
+        with pytest.raises(ValueError, match="year"):
+            ThemeGenerator(provider).generate({"top_genres": ["rock"]})
+
+        assert provider.pick_prompts == []
+        assert provider.last_prompt is None
+

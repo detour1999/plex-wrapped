@@ -36,6 +36,23 @@ class LLMProvider(ABC):
         """
         pass
 
+    def generate_creative_pick(self, prompt: str) -> str:
+        """Make one open-ended creative choice with real sampling entropy.
+
+        A provider that can spend a separate, cheaper model at a high temperature on
+        this should override it: asking the main model to simulate a "random" choice
+        does not produce one, since it just returns its single most likely answer. The
+        default falls back to generate(), which uses whatever this provider's normal
+        call does.
+
+        Args:
+            prompt: An instruction asking for one short, concrete creative choice.
+
+        Returns:
+            The chosen text, or "" if the provider has nothing to add.
+        """
+        return self.generate(prompt)
+
 
 class NoOpProvider(LLMProvider):
     """Provider that returns empty strings for AI-free mode."""
@@ -54,6 +71,10 @@ class NoOpProvider(LLMProvider):
 
 class AnthropicProvider(LLMProvider):
     """Provider for Anthropic's Claude API."""
+
+    # A cheap, fast model spent at temperature 1.0 for generate_creative_pick's real
+    # sampling entropy; the main model stays on whatever `model` the caller configured.
+    CREATIVE_PICK_MODEL = "claude-haiku-4-5"
 
     def __init__(self, api_key: str, model: str = "claude-sonnet-5") -> None:
         """Initialize Anthropic provider.
@@ -82,6 +103,23 @@ class AnthropicProvider(LLMProvider):
             messages=[{"role": "user", "content": prompt}],
         )
         return _extract_text(message.content)
+
+    def generate_creative_pick(self, prompt: str) -> str:
+        """Ask a cheap model at temperature 1.0 for one concrete creative choice.
+
+        Args:
+            prompt: An instruction asking for one short, concrete creative choice.
+
+        Returns:
+            The chosen text, stripped of surrounding whitespace.
+        """
+        message = self.client.messages.create(
+            model=self.CREATIVE_PICK_MODEL,
+            max_tokens=60,
+            temperature=1.0,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return _extract_text(message.content).strip()
 
 
 class OpenAIProvider(LLMProvider):
