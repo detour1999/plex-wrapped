@@ -546,4 +546,10 @@ real intensity (0.0-1.0) for every slide yourself, informed by the visual direct
                 "share": {"visualization": "aurora", "mood": "triumphant", "intensity": 0.7}
             }
         }
-        return self._parse_json(response, default_theme)
+        parsed = self._parse_json(response, default_theme)
+        # The model occasionally flattens the palette straight to the top level, dropping
+        # the "palette"/"slides" wrapper entirely - valid JSON, wrong shape - which must
+        # not pass through as-is.
+        if not isinstance(parsed.get("palette"), dict) or not isinstance(parsed.get("slides"), dict):
+            return default_theme
+        return parsed

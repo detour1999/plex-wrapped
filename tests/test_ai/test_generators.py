@@ -156,6 +156,19 @@ class TestThemeGenerator:
         assert result["palette"]["primary"] == "#6366F1"
         assert "intro" in result["slides"]
 
+    def test_falls_back_to_default_when_response_is_the_wrong_shape(self) -> None:
+        """The model can return a flattened palette (no "palette"/"slides" wrapper at all) -
+        valid JSON, wrong shape - and that must not pass through as-is."""
+        provider = MockProvider('{"primary": "#B784A7", "secondary": "#8E6C7D", "accent": "#000"}')
+        generator = ThemeGenerator(provider)
+
+        result = generator.generate({"year": 2025, "top_genres": ["rock"]})
+
+        assert isinstance(result.get("palette"), dict)
+        assert "primary" in result["palette"]
+        assert isinstance(result.get("slides"), dict)
+        assert "intro" in result["slides"]
+
 
 ALL_GENERATORS = [
     NarrativeGenerator,
