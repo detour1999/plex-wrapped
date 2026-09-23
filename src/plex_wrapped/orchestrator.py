@@ -359,6 +359,13 @@ class Orchestrator:
             if on_progress:
                 on_progress(msg)
 
+            if int(file_year) != self.config.year:
+                console.print(
+                    f"  [yellow]Warning: {raw_file.name} is for {file_year}, but the "
+                    f"configured year is {self.config.year}. Using {file_year} (from the "
+                    "filename) for the processed data so it matches the output filename.[/yellow]"
+                )
+
             # Load raw history
             with open(raw_file) as f:
                 history_data = json.load(f)
@@ -414,7 +421,7 @@ class Orchestrator:
 
             stats = {
                 "user": username,
-                "year": self.config.year,
+                "year": int(file_year),
                 "total": stats_processor.total_stats(),
                 "top_artists": top_artists,
                 "top_tracks": top_tracks,
