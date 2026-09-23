@@ -34,7 +34,7 @@
         class="track-item flex items-center gap-4 bg-wrapped-secondary/20 rounded-lg p-4 backdrop-blur"
         in:fly={{ y: 20, duration: 400 }}
       >
-        <div class="text-4xl font-black text-wrapped-accent w-12 text-center">
+        <div class="text-4xl font-black text-wrapped-accent min-w-[3rem] shrink-0 whitespace-nowrap text-center">
           #{i + 1}
         </div>
 
@@ -47,12 +47,12 @@
           />
         {/if}
 
-        <div class="flex-1 text-left">
+        <div class="flex-1 min-w-0 text-left">
           <div class="font-bold text-lg">{track.name}</div>
           <div class="text-wrapped-muted text-sm">{track.artist}</div>
         </div>
 
-        <div class="text-right">
+        <div class="text-right shrink-0">
           <div class="text-2xl font-bold text-wrapped-accent">
             <AnimatedNumber value={track.plays} />
           </div>

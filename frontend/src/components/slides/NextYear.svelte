@@ -11,7 +11,7 @@
 </script>
 
 <SlideContainer {visible}>
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-2xl w-full mx-auto">
     <h2 class="text-4xl font-black mb-4 text-wrapped-accent">Looking Ahead</h2>
     <p class="text-wrapped-muted text-lg mb-10">
       Based on your listening, here's what to try in {year + 1}

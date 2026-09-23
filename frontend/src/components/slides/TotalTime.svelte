@@ -15,7 +15,7 @@
 <SlideContainer {visible}>
   <p class="text-wrapped-muted text-xl mb-4">You listened for</p>
 
-  <div class="text-8xl font-black text-wrapped-accent mb-2">
+  <div class="text-[clamp(3rem,18vw,6rem)] leading-none font-black text-wrapped-accent mb-2">
     <AnimatedNumber value={totalMinutes} />
   </div>
   <p class="text-2xl mb-8">minutes</p>

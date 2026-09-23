@@ -24,7 +24,7 @@
 </script>
 
 <SlideContainer {visible}>
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-2xl w-full mx-auto">
     <h2 class="text-4xl font-black mb-4 text-wrapped-accent">Your Musical Aura</h2>
 
     <div
@@ -35,7 +35,7 @@
 
     {#if mounted && visible}
       <h3
-        class="text-5xl font-black mb-8"
+        class="text-[clamp(1.875rem,9vw,3rem)] leading-none font-black mb-8"
         style="color: {aura.primary_color}"
         in:fly={{ y: 20, duration: 600, delay: 600 }}
       >

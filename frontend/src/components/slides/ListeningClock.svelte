@@ -51,7 +51,7 @@
   <h2 class="text-4xl font-black mb-8 text-wrapped-accent">Your Listening Clock</h2>
   <p class="text-wrapped-muted text-lg mb-12">When you pressed play</p>
 
-  <div class="relative w-96 h-96 mx-auto">
+  <div class="relative w-full max-w-sm aspect-square mx-auto">
     <svg viewBox="0 0 500 500" class="w-full h-full overflow-visible">
       <!-- Clock face circle -->
       <circle

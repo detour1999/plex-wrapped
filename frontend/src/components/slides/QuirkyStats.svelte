@@ -17,7 +17,7 @@
 <SlideContainer {visible}>
   <h2 class="text-4xl font-black mb-12 text-wrapped-accent">Your Quirky Stats</h2>
 
-  <div class="space-y-8 max-w-xl mx-auto">
+  <div class="space-y-8 max-w-xl w-full mx-auto">
     {#if stats.late_night_anthem}
       <div
         class="bg-wrapped-secondary/20 rounded-xl p-6 backdrop-blur"
