@@ -187,12 +187,24 @@ class PersonalityGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate personality type from user stats."""
         year = self._wrapped_year(stats)
+
+        framework = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected classification system or metaphor "
+            "for describing a type of person (e.g. drawn from nature, a craft, a profession, "
+            "a game). Reply with ONLY the system or metaphor, nothing else, no quotes, no "
+            "explanation."
+        )
+        directive = (
+            f"Base the personality type on this specific classification system or metaphor, "
+            f"without deviation or explanation: {framework}\n\n" if framework else ""
+        )
+
         prompt = f"""You are creating a music personality type for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create a funny, creative personality type that captures their listening patterns. Think Myers-Briggs meets music taste.
+{directive}Create a funny, creative personality type that captures their listening patterns. Think Myers-Briggs meets music taste.
 
 Return ONLY valid JSON in this format:
 {{
@@ -257,12 +269,23 @@ class AuraGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate aura from user stats."""
         year = self._wrapped_year(stats)
+
+        colour_mood = self._creative_pick(
+            "In 3-8 words, invent a specific, unexpected colour and a one-word mood for it "
+            "(state it as: colour name, mood word). Reply with ONLY the colour and mood, "
+            "nothing else, no quotes, no explanation."
+        )
+        directive = (
+            f"Base the aura on this specific colour and mood, without deviation or "
+            f"explanation: {colour_mood}\n\n" if colour_mood else ""
+        )
+
         prompt = f"""You are creating a "music aura" for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create a creative aura color and vibe that represents their musical energy. Think astrology but for music taste.
+{directive}Create a creative aura color and vibe that represents their musical energy. Think astrology but for music taste.
 
 Return ONLY valid JSON in this format:
 {{
@@ -288,14 +311,28 @@ class SuperlativesGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate superlatives from user stats."""
         year = self._wrapped_year(stats)
+
+        ceremony = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected format or ceremony for handing out "
+            "playful awards. Reply with ONLY the format or ceremony, nothing else, no quotes, "
+            "no explanation."
+        )
+        directive = (
+            f"Give these awards the flavor of this specific format or ceremony, without "
+            f"deviation or explanation: {ceremony}. Whatever the ceremony, you must still "
+            f"produce 3-5 separate awards as separate items in the JSON array below - never "
+            f"collapse them into one.\n\n" if ceremony else ""
+        )
+
         prompt = f"""You are creating music superlatives/awards for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create 3-5 funny, creative awards like "Most Likely To..." or "Best..." based on their listening patterns.
+{directive}Create 3-5 funny, creative awards like "Most Likely To..." or "Best..." based on their listening patterns.
 
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON in this format - always a "superlatives" array of 3-5 items, even if
+the ceremony above suggests a single winner:
 {{
     "superlatives": [
         {{
@@ -320,12 +357,23 @@ class HotTakesGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate hot takes from user stats."""
         year = self._wrapped_year(stats)
+
+        stance = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected rhetorical stance or angle for "
+            "delivering a bold opinion. Reply with ONLY the stance or angle, nothing else, "
+            "no quotes, no explanation."
+        )
+        directive = (
+            f"Deliver these opinions from this specific stance or angle, without deviation "
+            f"or explanation: {stance}\n\n" if stance else ""
+        )
+
         prompt = f"""You are creating "hot takes" about a Plex user's music taste based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create 3-5 bold, funny opinions or observations about their music taste.
+{directive}Create 3-5 bold, funny opinions or observations about their music taste.
 Make them slightly controversial but playful.
 
 Return ONLY valid JSON in this format:
@@ -349,12 +397,23 @@ class SuggestionsGenerator(BaseGenerator):
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Generate suggestions from user stats."""
         year = self._wrapped_year(stats)
+
+        fmt = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected format for giving someone a "
+            "recommendation (e.g. drawn from a ritual, a document, a piece of advice). "
+            "Reply with ONLY the format, nothing else, no quotes, no explanation."
+        )
+        directive = (
+            f"Present these recommendations in this specific format, without deviation or "
+            f"explanation: {fmt}\n\n" if fmt else ""
+        )
+
         prompt = f"""You are creating personalized music suggestions for a Plex user based on their {year} listening habits.
 
 User Stats:
 {json.dumps(stats, indent=2)}
 
-Create 3-5 recommendations or predictions about what they should listen to next, or what their {year + 1} might look like.
+{directive}Create 3-5 recommendations or predictions about what they should listen to next, or what their {year + 1} might look like.
 Make them fun and personalized.
 
 Return ONLY valid JSON in this format:
@@ -393,6 +452,28 @@ class ThemeGenerator(BaseGenerator):
         slides_list = json.dumps(self.SLIDES)
         username = stats.get("user", "the user")
 
+        colour_mood = self._creative_pick(
+            "In 3-8 words, invent a specific, unexpected colour and a one-word mood for it "
+            "(state it as: colour name, mood word). Reply with ONLY the colour and mood, "
+            "nothing else, no quotes, no explanation."
+        )
+        direction = self._creative_pick(
+            "In 3-10 words, invent a specific, unexpected overall visual mood or aesthetic "
+            "direction for a set of animated backgrounds. Reply with ONLY the direction, "
+            "nothing else, no quotes, no explanation."
+        )
+        directives = ""
+        if colour_mood:
+            directives += (
+                f"Base the palette on this specific colour and mood, without deviation or "
+                f"explanation: {colour_mood}\n\n"
+            )
+        if direction:
+            directives += (
+                f"Let this overall visual direction inform your visualization and mood choice "
+                f"for every slide, without deviation or explanation: {direction}\n\n"
+            )
+
         prompt = f"""You are creating a visual theme for {username}'s Plex Wrapped experience for {year}.
 
 User Stats:
@@ -403,13 +484,15 @@ Available Visualizations:
 
 Slides to configure: {slides_list}
 
-Based on the user's music taste and personality, create:
+{directives}Based on the user's music taste and personality, create:
 1. A color palette (5 colors) that reflects their musical vibe
 2. A visualization type and mood for each slide
 
 Moods can be: dramatic, mystical, warm, introspective, celebratory, reflective, energetic, playful, chaotic, analytical, triumphant
 
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON in this shape. The values below are placeholders showing what type
+each field holds, not suggested answers - choose a real visualization id, a real mood, and a
+real intensity (0.0-1.0) for every slide yourself, informed by the visual direction above:
 {{
     "palette": {{
         "primary": "#hexcolor",
@@ -419,17 +502,17 @@ Return ONLY valid JSON in this format:
         "text": "#ffffff"
     }},
     "slides": {{
-        "intro": {{"visualization": "aurora", "mood": "dramatic", "intensity": 0.8}},
-        "totalTime": {{"visualization": "particles", "mood": "celebratory", "intensity": 0.6}},
-        "topArtist": {{"visualization": "gradient_blob", "mood": "warm", "intensity": 0.7}},
-        "topTracks": {{"visualization": "particles", "mood": "energetic", "intensity": 0.5}},
-        "listeningClock": {{"visualization": "aurora", "mood": "analytical", "intensity": 0.4}},
-        "quirkyStats": {{"visualization": "particles", "mood": "playful", "intensity": 0.6}},
-        "personality": {{"visualization": "gradient_blob", "mood": "introspective", "intensity": 0.7}},
-        "aura": {{"visualization": "aurora", "mood": "mystical", "intensity": 0.9}},
-        "roasts": {{"visualization": "particles", "mood": "chaotic", "intensity": 0.8}},
-        "narrative": {{"visualization": "gradient_blob", "mood": "reflective", "intensity": 0.3}},
-        "share": {{"visualization": "aurora", "mood": "triumphant", "intensity": 0.7}}
+        "intro": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "totalTime": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "topArtist": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "topTracks": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "listeningClock": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "quirkyStats": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "personality": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "aura": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "roasts": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "narrative": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}},
+        "share": {{"visualization": "<your pick>", "mood": "<your pick>", "intensity": "<0.0-1.0>"}}
     }}
 }}
 """
