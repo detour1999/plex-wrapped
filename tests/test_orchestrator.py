@@ -69,6 +69,44 @@ def make_frontend(project_root: Path) -> Path:
     return frontend
 
 
+class TestProcessYearConsistency:
+    def test_process_stats_year_matches_the_raw_filename_year(self, tmp_path: Path) -> None:
+        """The processed file's stats["year"] always matches the year in its own filename.
+
+        Raw files are named "{user}_{year}_raw.json", and process() globs every raw
+        file in the data directory rather than just the one for the currently
+        configured year. A stale raw file left over from an earlier run (e.g. the
+        orchestrator is re-run later with a different config year, without clearing
+        old data) must not be stamped with the *current* config year - the year
+        embedded in the raw filename is the actual source of truth for what
+        listening period that file's data covers, and the frontend derives the
+        displayed year from that same filename.
+        """
+        output_dir = tmp_path / "out"
+        data_dir = output_dir / "data"
+        data_dir.mkdir(parents=True)
+
+        # Raw data left over from a 2022 run, while the orchestrator is now
+        # configured for 2025.
+        history = {"user": "alice", "year": 2022, "tracks": []}
+        (data_dir / "alice_2022_raw.json").write_text(json.dumps(history))
+
+        config = Config(
+            plex=PlexConfig(url="https://test.com", token="test"),
+            llm=LLMConfig(provider="none"),
+            year=2025,
+            hosting=HostingConfig(provider="none"),
+            output_dir=output_dir,
+        )
+        Orchestrator(config).process()
+
+        processed_file = data_dir / "alice_2022_processed.json"
+        assert processed_file.exists()
+
+        stats = json.loads(processed_file.read_text())
+        assert stats["year"] == 2022
+
+
 class TestBuild:
     def test_build_installs_dependencies_when_node_modules_missing(self, tmp_path: Path) -> None:
         """build() runs npm install first if frontend/node_modules does not exist."""

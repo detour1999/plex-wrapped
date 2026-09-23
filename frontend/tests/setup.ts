@@ -1,5 +1,22 @@
 // ABOUTME: Test setup that gives jsdom the Web Animations API used by Svelte transitions.
-// ABOUTME: Transitions finish immediately, which is what these tests need.
+// ABOUTME: Transitions finish immediately, and matchMedia is stubbed, which is what these tests need.
+
+if (!window.matchMedia) {
+  window.matchMedia = function (query: string) {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener() {},
+      removeListener() {},
+      addEventListener() {},
+      removeEventListener() {},
+      dispatchEvent() {
+        return false;
+      },
+    } as unknown as MediaQueryList;
+  };
+}
 
 if (!Element.prototype.animate) {
   Element.prototype.animate = function () {

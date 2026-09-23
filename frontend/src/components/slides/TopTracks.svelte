@@ -2,6 +2,7 @@
 <!-- ABOUTME: Shows tracks one by one with play counts and album art. -->
 
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { fly, scale } from 'svelte/transition';
   import SlideContainer from '../common/SlideContainer.svelte';
   import AnimatedNumber from '../common/AnimatedNumber.svelte';
@@ -10,19 +11,26 @@
     name: string;
     artist: string;
     plays: number;
-    album_art?: string;
+    image_url?: string;
   }>;
   export let visible = true;
 
   const maxTracks = 5;
-  let revealed = 0;
+  let revealed = 1;
   $: displayTracks = tracks.slice(0, maxTracks);
-  $: if (visible && revealed < displayTracks.length) {
+
+  // Started once on mount: a reactive `$:` block would re-run (and reset
+  // revealed) every time the timer increments it.
+  onMount(() => {
+    if (!visible || displayTracks.length === 0) return;
+
     const timer = setInterval(() => {
       revealed++;
       if (revealed >= displayTracks.length) clearInterval(timer);
     }, 800);
-  }
+
+    return () => clearInterval(timer);
+  });
 </script>
 
 <SlideContainer {visible}>
@@ -38,9 +46,9 @@
           #{i + 1}
         </div>
 
-        {#if track.album_art}
+        {#if track.image_url}
           <img
-            src={track.album_art}
+            src={track.image_url}
             alt={track.name}
             class="w-16 h-16 rounded shadow-lg object-cover"
             in:scale={{ duration: 400, delay: 200 }}
