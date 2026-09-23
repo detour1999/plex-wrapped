@@ -59,12 +59,12 @@ class TestNarrativeGenerator:
 class TestPersonalityGenerator:
     def test_generates_personality_type(self) -> None:
         """Personality generator creates type with tagline."""
-        response = '''{
+        response = """{
             "type": "The Chaos Agent",
             "tagline": "Your playlists have trust issues",
             "description": "You listen to everything...",
             "spirit_animal": "A caffeinated raccoon"
-        }'''
+        }"""
         provider = MockProvider(response)
         generator = PersonalityGenerator(provider)
 
@@ -80,11 +80,13 @@ class TestRoastGenerator:
         provider = MockProvider(response)
         generator = RoastGenerator(provider)
 
-        generator.generate({
-            "year": 2024,
-            "late_night_plays": 200,
-            "most_repeated_track": "same song",
-        })
+        generator.generate(
+            {
+                "year": 2024,
+                "late_night_plays": 200,
+                "most_repeated_track": "same song",
+            }
+        )
 
         assert provider.last_prompt is not None
 
@@ -103,24 +105,29 @@ class TestSuperlativesGenerator:
 
     def test_generates_superlatives_from_stats(self) -> None:
         """Superlatives generator creates awards from stats."""
-        response = '''{
+        response = """{
             "superlatives": [
                 {"award": "Most Dedicated Fan", "reason": "Played the same song 200 times"}
             ]
-        }'''
+        }"""
         provider = MockProvider(response)
         generator = SuperlativesGenerator(provider)
 
         generator.generate({"year": 2024, "top_track_plays": 200})
 
         assert provider.last_prompt is not None
-        assert "superlatives" in provider.last_prompt.lower() or "award" in provider.last_prompt.lower()
+        assert (
+            "superlatives" in provider.last_prompt.lower()
+            or "award" in provider.last_prompt.lower()
+        )
 
 
 class TestHotTakesGenerator:
     def test_generates_hot_takes_from_stats(self) -> None:
         """HotTakes generator creates spicy opinions."""
-        response = '{"hot_takes": ["You say you like indie, but your top 10 is basically the radio"]}'
+        response = (
+            '{"hot_takes": ["You say you like indie, but your top 10 is basically the radio"]}'
+        )
         provider = MockProvider(response)
         generator = HotTakesGenerator(provider)
 
@@ -133,7 +140,7 @@ class TestHotTakesGenerator:
 class TestThemeGenerator:
     def test_generates_theme_with_palette_and_slides(self) -> None:
         """Theme generator creates colors and per-slide visualizations."""
-        response = '''{
+        response = """{
             "palette": {
                 "primary": "#6366F1",
                 "secondary": "#8B5CF6",
@@ -144,7 +151,7 @@ class TestThemeGenerator:
             "slides": {
                 "intro": {"visualization": "aurora", "mood": "dramatic", "intensity": 0.8}
             }
-        }'''
+        }"""
         provider = MockProvider(response)
         generator = ThemeGenerator(provider)
 
@@ -243,7 +250,10 @@ class TestParseJsonTrailingCommas:
         return NarrativeGenerator(MockProvider())._parse_json(text, default)
 
     def test_trailing_comma_in_object(self) -> None:
-        assert self.parse('{"color": "Blue", "hex": "#0000FF",\n}') == {"color": "Blue", "hex": "#0000FF"}
+        assert self.parse('{"color": "Blue", "hex": "#0000FF",\n}') == {
+            "color": "Blue",
+            "hex": "#0000FF",
+        }
 
     def test_trailing_comma_in_list(self) -> None:
         assert self.parse('{"roasts": ["one", "two",]}') == {"roasts": ["one", "two"]}
@@ -377,7 +387,11 @@ class TestPersonalityCreativePick:
         PersonalityGenerator(provider).generate({"year": 2025, "genres": ["rock"]})
 
         assert len(provider.pick_prompts) == 1
-        assert "classification" in provider.pick_prompts[0] or "framework" in provider.pick_prompts[0] or "metaphor" in provider.pick_prompts[0]
+        assert (
+            "classification" in provider.pick_prompts[0]
+            or "framework" in provider.pick_prompts[0]
+            or "metaphor" in provider.pick_prompts[0]
+        )
 
     def test_pick_prompt_is_not_scoped_to_music_or_the_wrapped_domain(self) -> None:
         provider = RecordingProvider()
@@ -600,4 +614,3 @@ class TestThemeCreativePick:
 
         assert provider.pick_prompts == []
         assert provider.last_prompt is None
-

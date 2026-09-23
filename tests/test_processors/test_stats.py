@@ -43,9 +43,8 @@ class TestStatsProcessor:
 
     def test_top_tracks(self) -> None:
         """Calculates top tracks by play count."""
-        tracks = (
-            make_track("Song A", "Artist 1", "Album 1", plays=10)
-            + make_track("Song B", "Artist 2", "Album 2", plays=15)
+        tracks = make_track("Song A", "Artist 1", "Album 1", plays=10) + make_track(
+            "Song B", "Artist 2", "Album 2", plays=15
         )
         history = ListeningHistory(user="test", year=2024, tracks=tracks)
 

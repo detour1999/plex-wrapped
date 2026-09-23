@@ -85,9 +85,7 @@ class Orchestrator:
             with open(user_file, "w") as f:
                 json.dump(history.model_dump(mode="json"), f, indent=2, default=str)
 
-        console.print(
-            f"[green]Extracted data for {len(histories)} users to {data_dir}[/green]"
-        )
+        console.print(f"[green]Extracted data for {len(histories)} users to {data_dir}[/green]")
 
     def _download_images_for_user(
         self,
@@ -167,7 +165,9 @@ class Orchestrator:
                     if album.parentTitle == item.artist and album.thumb:
                         url = f"{extractor.url}{album.thumb}?X-Plex-Token={extractor.token}"
                         filename = f"album-{slugify(item.artist or '')}-{slugify(item.name)}"
-                        images_to_download.append((url, filename, f"album:{item.artist}:{item.name}"))
+                        images_to_download.append(
+                            (url, filename, f"album:{item.artist}:{item.name}")
+                        )
                         break
             except Exception:
                 pass
@@ -180,7 +180,9 @@ class Orchestrator:
                     if album.parentTitle == item.artist and album.thumb:
                         url = f"{extractor.url}{album.thumb}?X-Plex-Token={extractor.token}"
                         filename = f"track-{slugify(item.artist or '')}-{slugify(item.name)}"
-                        images_to_download.append((url, filename, f"track:{item.artist}:{item.name}"))
+                        images_to_download.append(
+                            (url, filename, f"track:{item.artist}:{item.name}")
+                        )
                         break
             except Exception:
                 pass
@@ -240,6 +242,7 @@ class Orchestrator:
                     except httpx.HTTPError:
                         if attempt < max_retries - 1:
                             import time
+
                             time.sleep(retry_delay)
                             retry_delay *= 2
                         continue
@@ -325,9 +328,7 @@ class Orchestrator:
 
         data_dir = self.output_dir / "data"
         if not data_dir.exists():
-            raise RuntimeError(
-                f"Data directory not found: {data_dir}. Run extract first."
-            )
+            raise RuntimeError(f"Data directory not found: {data_dir}. Run extract first.")
 
         # Find all raw data files
         raw_files = list(data_dir.glob("*_raw.json"))
@@ -386,38 +387,46 @@ class Orchestrator:
             for item in stats_processor.top_artists(10):
                 artist_key = f"artist:{slugify(item.name)}"
                 image_url = image_mapping.get(artist_key, item.image_url)
-                top_artists.append({
-                    "name": item.name,
-                    "plays": item.plays,
-                    "minutes": item.minutes,
-                    "image_url": image_url,
-                })
+                top_artists.append(
+                    {
+                        "name": item.name,
+                        "plays": item.plays,
+                        "minutes": item.minutes,
+                        "image_url": image_url,
+                    }
+                )
 
             top_tracks = []
             for item in stats_processor.top_tracks(10):
                 track_key = f"track:{slugify(item.artist or '')}-{slugify(item.name)}"
                 album_key = f"album:{slugify(item.artist or '')}-{slugify(item.album or '')}"
-                image_url = image_mapping.get(track_key) or image_mapping.get(album_key) or item.image_url
-                top_tracks.append({
-                    "name": item.name,
-                    "artist": item.artist,
-                    "album": item.album,
-                    "plays": item.plays,
-                    "minutes": item.minutes,
-                    "image_url": image_url,
-                })
+                image_url = (
+                    image_mapping.get(track_key) or image_mapping.get(album_key) or item.image_url
+                )
+                top_tracks.append(
+                    {
+                        "name": item.name,
+                        "artist": item.artist,
+                        "album": item.album,
+                        "plays": item.plays,
+                        "minutes": item.minutes,
+                        "image_url": image_url,
+                    }
+                )
 
             top_albums = []
             for item in stats_processor.top_albums(10):
                 album_key = f"album:{slugify(item.artist or '')}-{slugify(item.name)}"
                 image_url = image_mapping.get(album_key, item.image_url)
-                top_albums.append({
-                    "name": item.name,
-                    "artist": item.artist,
-                    "plays": item.plays,
-                    "minutes": item.minutes,
-                    "image_url": image_url,
-                })
+                top_albums.append(
+                    {
+                        "name": item.name,
+                        "artist": item.artist,
+                        "plays": item.plays,
+                        "minutes": item.minutes,
+                        "image_url": image_url,
+                    }
+                )
 
             stats = {
                 "user": username,
@@ -497,7 +506,9 @@ class Orchestrator:
 
         # Install frontend dependencies on first build
         if not (frontend_dir / "node_modules").exists():
-            console.print("[bold blue]Installing frontend dependencies (npm install)...[/bold blue]")
+            console.print(
+                "[bold blue]Installing frontend dependencies (npm install)...[/bold blue]"
+            )
             try:
                 subprocess.run(
                     ["npm", "install"],
@@ -547,9 +558,7 @@ class Orchestrator:
         dist_dir = frontend_dir / "dist"
 
         if not dist_dir.exists():
-            raise RuntimeError(
-                f"Build directory not found: {dist_dir}. Run build first."
-            )
+            raise RuntimeError(f"Build directory not found: {dist_dir}. Run build first.")
 
         if provider == "cloudflare":
             self._deploy_cloudflare(dist_dir)
@@ -583,6 +592,7 @@ class Orchestrator:
         env = None
         if config.api_token:
             import os
+
             env = os.environ.copy()
             env["CLOUDFLARE_API_TOKEN"] = config.api_token
 
@@ -605,6 +615,7 @@ class Orchestrator:
         env = None
         if config.token:
             import os
+
             env = os.environ.copy()
             env["VERCEL_TOKEN"] = config.token
 
@@ -636,6 +647,7 @@ class Orchestrator:
         env = None
         if config.auth_token:
             import os
+
             env = os.environ.copy()
             env["NETLIFY_AUTH_TOKEN"] = config.auth_token
 
@@ -671,9 +683,7 @@ class Orchestrator:
 
     def run_all(self) -> None:
         """Run the complete workflow: extract, process, build, and deploy."""
-        console.print(
-            "[bold magenta]Running complete Plex Wrapped workflow...[/bold magenta]"
-        )
+        console.print("[bold magenta]Running complete Plex Wrapped workflow...[/bold magenta]")
 
         try:
             self.extract()
@@ -681,9 +691,7 @@ class Orchestrator:
             self.build()
             self.deploy()
 
-            console.print(
-                "[bold green]Complete! Your Plex Wrapped is live![/bold green]"
-            )
+            console.print("[bold green]Complete! Your Plex Wrapped is live![/bold green]")
         except Exception as e:
             console.print(f"[bold red]Workflow failed: {e}[/bold red]")
             raise

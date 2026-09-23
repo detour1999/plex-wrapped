@@ -93,9 +93,7 @@ class TestPreviewCommand:
         result = runner.invoke(app, ["preview"])
 
         assert result.exit_code == 0
-        mock_run.assert_called_once_with(
-            ["npm", "run", "preview"], cwd=frontend_dir, check=True
-        )
+        mock_run.assert_called_once_with(["npm", "run", "preview"], cwd=frontend_dir, check=True)
 
     @patch("plex_wrapped.main.detect_frontend_directory")
     def test_preview_frontend_not_found(self, mock_detect: MagicMock) -> None:

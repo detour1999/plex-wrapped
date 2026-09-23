@@ -137,7 +137,9 @@ class TestBuild:
 
         assert not (frontend / "dist").exists()
 
-    def test_build_explains_missing_npm(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_build_explains_missing_npm(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Without npm on PATH, build() says to install Node.js instead of crashing."""
         make_frontend(tmp_path)
         empty_bin = tmp_path / "empty-bin"

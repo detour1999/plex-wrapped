@@ -95,8 +95,13 @@ class TestAnthropicProviderLive:
 
 def anthropic_message(content: list) -> Message:
     return Message(
-        id="msg_1", type="message", role="assistant", model="m", content=content,
-        stop_reason="end_turn", stop_sequence=None,
+        id="msg_1",
+        type="message",
+        role="assistant",
+        model="m",
+        content=content,
+        stop_reason="end_turn",
+        stop_sequence=None,
         usage=Usage(input_tokens=1, output_tokens=1),
     )
 
@@ -119,7 +124,9 @@ class TestAnthropicProviderCreativePick:
         """Real sampling entropy (a hot, cheap model) makes the pick, not the main model."""
         provider = AnthropicProvider(api_key="unused")
         provider.client = MagicMock()
-        provider.client.messages.create.return_value = anthropic_message([text("a lit match at midnight")])
+        provider.client.messages.create.return_value = anthropic_message(
+            [text("a lit match at midnight")]
+        )
 
         result = provider.generate_creative_pick("invent a conceit")
 
@@ -132,7 +139,9 @@ class TestAnthropicProviderCreativePick:
     def test_strips_surrounding_whitespace(self) -> None:
         provider = AnthropicProvider(api_key="unused")
         provider.client = MagicMock()
-        provider.client.messages.create.return_value = anthropic_message([text("  a pick with padding  \n")])
+        provider.client.messages.create.return_value = anthropic_message(
+            [text("  a pick with padding  \n")]
+        )
 
         assert provider.generate_creative_pick("invent a conceit") == "a pick with padding"
 

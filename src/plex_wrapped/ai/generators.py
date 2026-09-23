@@ -92,19 +92,19 @@ class BaseGenerator(ABC):
                 if escape_next:
                     result.append(char)
                     escape_next = False
-                elif char == '\\':
+                elif char == "\\":
                     result.append(char)
                     escape_next = True
                 elif char == '"':
                     result.append(char)
                     in_string = not in_string
-                elif char == '\n' and in_string:
-                    result.append('\\n')
-                elif char == '\r' and in_string:
-                    result.append('\\r')
+                elif char == "\n" and in_string:
+                    result.append("\\n")
+                elif char == "\r" and in_string:
+                    result.append("\\r")
                 else:
                     result.append(char)
-            return ''.join(result)
+            return "".join(result)
 
         # Drop trailing commas before a closing brace or bracket, leaving strings alone
         def remove_trailing_commas(text: str) -> str:
@@ -114,16 +114,16 @@ class BaseGenerator(ABC):
             for i, char in enumerate(text):
                 if escape_next:
                     escape_next = False
-                elif in_string and char == '\\':
+                elif in_string and char == "\\":
                     escape_next = True
                 elif char == '"':
                     in_string = not in_string
-                elif char == ',' and not in_string:
-                    following = text[i + 1:].lstrip()
-                    if following[:1] in ('}', ']'):
+                elif char == "," and not in_string:
+                    following = text[i + 1 :].lstrip()
+                    if following[:1] in ("}", "]"):
                         continue
                 result.append(char)
-            return ''.join(result)
+            return "".join(result)
 
         try:
             fixed = remove_trailing_commas(escape_newlines_in_strings(response))
@@ -132,7 +132,7 @@ class BaseGenerator(ABC):
             pass
 
         # Try to find and extract JSON object from response
-        match = re.search(r'\{[^{}]*\}', response, re.DOTALL)
+        match = re.search(r"\{[^{}]*\}", response, re.DOTALL)
         if match:
             try:
                 return json.loads(match.group())
@@ -157,7 +157,9 @@ class NarrativeGenerator(BaseGenerator):
         )
         directive = (
             f"Use this specific creative direction for the story, without deviation or "
-            f"explanation: {conceit}\n\n" if conceit else ""
+            f"explanation: {conceit}\n\n"
+            if conceit
+            else ""
         )
 
         prompt = f"""You are writing a Plex Wrapped narrative for a user's {year} listening year.
@@ -178,7 +180,9 @@ Return in this exact format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {"narrative": "Your musical journey was too epic to put into words."})
+        return self._parse_json(
+            response, {"narrative": "Your musical journey was too epic to put into words."}
+        )
 
 
 class PersonalityGenerator(BaseGenerator):
@@ -196,7 +200,9 @@ class PersonalityGenerator(BaseGenerator):
         )
         directive = (
             f"Base the personality type on this specific classification system or metaphor, "
-            f"without deviation or explanation: {framework}\n\n" if framework else ""
+            f"without deviation or explanation: {framework}\n\n"
+            if framework
+            else ""
         )
 
         prompt = f"""You are creating a music personality type for a Plex user based on their {year} listening habits.
@@ -216,12 +222,15 @@ Return ONLY valid JSON in this format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
-            "type": "The Mystery Listener",
-            "tagline": "Your taste defies classification",
-            "description": "We couldn't quite figure you out, but that's probably a compliment.",
-            "spirit_animal": "A sphinx"
-        })
+        return self._parse_json(
+            response,
+            {
+                "type": "The Mystery Listener",
+                "tagline": "Your taste defies classification",
+                "description": "We couldn't quite figure you out, but that's probably a compliment.",
+                "spirit_animal": "A sphinx",
+            },
+        )
 
 
 class RoastGenerator(BaseGenerator):
@@ -237,7 +246,9 @@ class RoastGenerator(BaseGenerator):
         )
         directive = (
             f"Write these roasts in this specific comic voice, without deviation or "
-            f"explanation: {persona}\n\n" if persona else ""
+            f"explanation: {persona}\n\n"
+            if persona
+            else ""
         )
 
         prompt = f"""You are creating playful roasts for a Plex user based on their {year} listening habits.
@@ -258,9 +269,10 @@ Return ONLY valid JSON in this format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
-            "roasts": ["Your music taste is so unique, we couldn't even roast it properly."]
-        })
+        return self._parse_json(
+            response,
+            {"roasts": ["Your music taste is so unique, we couldn't even roast it properly."]},
+        )
 
 
 class AuraGenerator(BaseGenerator):
@@ -277,7 +289,9 @@ class AuraGenerator(BaseGenerator):
         )
         directive = (
             f"Base the aura on this specific colour and mood, without deviation or "
-            f"explanation: {colour_mood}\n\n" if colour_mood else ""
+            f"explanation: {colour_mood}\n\n"
+            if colour_mood
+            else ""
         )
 
         prompt = f"""You are creating a "music aura" for a Plex user based on their {year} listening habits.
@@ -297,12 +311,15 @@ Return ONLY valid JSON in this format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
-            "color": "Cosmic Purple",
-            "hex": "#9B59B6",
-            "vibe": "Enigmatic and eclectic",
-            "description": "Your musical energy transcends simple description."
-        })
+        return self._parse_json(
+            response,
+            {
+                "color": "Cosmic Purple",
+                "hex": "#9B59B6",
+                "vibe": "Enigmatic and eclectic",
+                "description": "Your musical energy transcends simple description.",
+            },
+        )
 
 
 class SuperlativesGenerator(BaseGenerator):
@@ -321,7 +338,9 @@ class SuperlativesGenerator(BaseGenerator):
             f"Give these awards the flavor of this specific format or ceremony, without "
             f"deviation or explanation: {ceremony}. Whatever the ceremony, you must still "
             f"produce 3-5 separate awards as separate items in the JSON array below - never "
-            f"collapse them into one.\n\n" if ceremony else ""
+            f"collapse them into one.\n\n"
+            if ceremony
+            else ""
         )
 
         prompt = f"""You are creating music superlatives/awards for a Plex user based on their {year} listening habits.
@@ -371,7 +390,9 @@ class HotTakesGenerator(BaseGenerator):
         )
         directive = (
             f"Deliver these opinions from this specific stance or angle, without deviation "
-            f"or explanation: {stance}\n\n" if stance else ""
+            f"or explanation: {stance}\n\n"
+            if stance
+            else ""
         )
 
         prompt = f"""You are creating "hot takes" about a Plex user's music taste based on their {year} listening habits.
@@ -392,9 +413,9 @@ Return ONLY valid JSON in this format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
-            "hot_takes": ["Your music taste is impeccable and we have no notes."]
-        })
+        return self._parse_json(
+            response, {"hot_takes": ["Your music taste is impeccable and we have no notes."]}
+        )
 
 
 class SuggestionsGenerator(BaseGenerator):
@@ -411,7 +432,9 @@ class SuggestionsGenerator(BaseGenerator):
         )
         directive = (
             f"Present these recommendations in this specific format, without deviation or "
-            f"explanation: {fmt}\n\n" if fmt else ""
+            f"explanation: {fmt}\n\n"
+            if fmt
+            else ""
         )
 
         prompt = f"""You are creating personalized music suggestions for a Plex user based on their {year} listening habits.
@@ -432,23 +455,41 @@ Return ONLY valid JSON in this format:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
-            "suggestions": ["Keep doing what you're doing - your taste is already excellent."]
-        })
+        return self._parse_json(
+            response,
+            {"suggestions": ["Keep doing what you're doing - your taste is already excellent."]},
+        )
 
 
 class ThemeGenerator(BaseGenerator):
     """Generates visual theme with color palette and per-slide visualizations."""
 
     AVAILABLE_VISUALIZATIONS = [
-        {"id": "gradient_blob", "name": "Gradient Blob", "bestFor": ["warm", "introspective", "calm"]},
-        {"id": "particles", "name": "Particles", "bestFor": ["celebratory", "reflective", "dreamy"]},
+        {
+            "id": "gradient_blob",
+            "name": "Gradient Blob",
+            "bestFor": ["warm", "introspective", "calm"],
+        },
+        {
+            "id": "particles",
+            "name": "Particles",
+            "bestFor": ["celebratory", "reflective", "dreamy"],
+        },
         {"id": "aurora", "name": "Aurora", "bestFor": ["dramatic", "mystical", "epic"]},
     ]
 
     SLIDES = [
-        "intro", "totalTime", "topArtist", "topTracks", "listeningClock",
-        "quirkyStats", "personality", "aura", "roasts", "narrative", "share"
+        "intro",
+        "totalTime",
+        "topArtist",
+        "topTracks",
+        "listeningClock",
+        "quirkyStats",
+        "personality",
+        "aura",
+        "roasts",
+        "narrative",
+        "share",
     ]
 
     def generate(self, stats: dict[str, Any]) -> dict[str, Any]:
@@ -530,26 +571,44 @@ real intensity (0.0-1.0) for every slide yourself, informed by the visual direct
                 "secondary": "#8B5CF6",
                 "accent": "#EC4899",
                 "background": "#0F172A",
-                "text": "#FFFFFF"
+                "text": "#FFFFFF",
             },
             "slides": {
                 "intro": {"visualization": "aurora", "mood": "dramatic", "intensity": 0.8},
-                "totalTime": {"visualization": "particles", "mood": "celebratory", "intensity": 0.6},
+                "totalTime": {
+                    "visualization": "particles",
+                    "mood": "celebratory",
+                    "intensity": 0.6,
+                },
                 "topArtist": {"visualization": "gradient_blob", "mood": "warm", "intensity": 0.7},
                 "topTracks": {"visualization": "particles", "mood": "energetic", "intensity": 0.5},
-                "listeningClock": {"visualization": "aurora", "mood": "analytical", "intensity": 0.4},
+                "listeningClock": {
+                    "visualization": "aurora",
+                    "mood": "analytical",
+                    "intensity": 0.4,
+                },
                 "quirkyStats": {"visualization": "particles", "mood": "playful", "intensity": 0.6},
-                "personality": {"visualization": "gradient_blob", "mood": "introspective", "intensity": 0.7},
+                "personality": {
+                    "visualization": "gradient_blob",
+                    "mood": "introspective",
+                    "intensity": 0.7,
+                },
                 "aura": {"visualization": "aurora", "mood": "mystical", "intensity": 0.9},
                 "roasts": {"visualization": "particles", "mood": "chaotic", "intensity": 0.8},
-                "narrative": {"visualization": "gradient_blob", "mood": "reflective", "intensity": 0.3},
-                "share": {"visualization": "aurora", "mood": "triumphant", "intensity": 0.7}
-            }
+                "narrative": {
+                    "visualization": "gradient_blob",
+                    "mood": "reflective",
+                    "intensity": 0.3,
+                },
+                "share": {"visualization": "aurora", "mood": "triumphant", "intensity": 0.7},
+            },
         }
         parsed = self._parse_json(response, default_theme)
         # The model occasionally flattens the palette straight to the top level, dropping
         # the "palette"/"slides" wrapper entirely - valid JSON, wrong shape - which must
         # not pass through as-is.
-        if not isinstance(parsed.get("palette"), dict) or not isinstance(parsed.get("slides"), dict):
+        if not isinstance(parsed.get("palette"), dict) or not isinstance(
+            parsed.get("slides"), dict
+        ):
             return default_theme
         return parsed

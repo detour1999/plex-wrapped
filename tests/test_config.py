@@ -76,7 +76,10 @@ class TestLLMConfig:
             "plex": {"url": "https://plex.example.com", "token": "test"},
             "llm": {"provider": "none"},
             "year": 2024,
-            "hosting": {"provider": "cloudflare", "cloudflare": {"account_id": "x", "project_name": "y"}},
+            "hosting": {
+                "provider": "cloudflare",
+                "cloudflare": {"account_id": "x", "project_name": "y"},
+            },
         }
         config_file = tmp_path / "config.yaml"
         config_file.write_text(yaml.dump(config_data))
@@ -91,7 +94,10 @@ class TestLLMConfig:
             "plex": {"url": "https://plex.example.com", "token": "test"},
             "llm": {"provider": "anthropic"},  # Missing api_key!
             "year": 2024,
-            "hosting": {"provider": "cloudflare", "cloudflare": {"account_id": "x", "project_name": "y"}},
+            "hosting": {
+                "provider": "cloudflare",
+                "cloudflare": {"account_id": "x", "project_name": "y"},
+            },
         }
         config_file = tmp_path / "config.yaml"
         config_file.write_text(yaml.dump(config_data))

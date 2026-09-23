@@ -237,7 +237,9 @@ class PlexExtractor:
                     duration_ms=duration_ms,
                     played_at=item.viewedAt,
                     user=username,
-                    genre=", ".join([g.tag for g in item.genres]) if hasattr(item, "genres") and item.genres else None,
+                    genre=", ".join([g.tag for g in item.genres])
+                    if hasattr(item, "genres") and item.genres
+                    else None,
                     thumb_url=thumb_url,
                 )
                 tracks.append(track)

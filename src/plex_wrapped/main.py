@@ -84,7 +84,9 @@ def init() -> None:
 @app.command()
 def generate(
     config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
-    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to generate (overrides config)")
+    year: Optional[int] = typer.Option(
+        None, "--year", "-y", help="Year to generate (overrides config)"
+    ),
 ) -> None:
     """Generate a complete Wrapped experience from start to finish."""
     orchestrator = get_orchestrator(config, year)
@@ -98,7 +100,9 @@ def generate(
 @app.command()
 def extract(
     config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
-    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to extract (overrides config)")
+    year: Optional[int] = typer.Option(
+        None, "--year", "-y", help="Year to extract (overrides config)"
+    ),
 ) -> None:
     """Extract listening history from Plex server."""
     orchestrator = get_orchestrator(config, year)
@@ -112,7 +116,9 @@ def extract(
 @app.command()
 def process(
     config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
-    year: Optional[int] = typer.Option(None, "--year", "-y", help="Year to process (overrides config)")
+    year: Optional[int] = typer.Option(
+        None, "--year", "-y", help="Year to process (overrides config)"
+    ),
 ) -> None:
     """Process extracted data and generate insights."""
     orchestrator = get_orchestrator(config, year)
@@ -125,7 +131,7 @@ def process(
 
 @app.command()
 def build(
-    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file")
+    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
 ) -> None:
     """Build the frontend application with processed data."""
     orchestrator = get_orchestrator(config)
@@ -138,7 +144,7 @@ def build(
 
 @app.command()
 def deploy(
-    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file")
+    config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file"),
 ) -> None:
     """Deploy the built application to hosting."""
     orchestrator = get_orchestrator(config)
