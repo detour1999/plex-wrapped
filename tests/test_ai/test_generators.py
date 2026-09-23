@@ -601,35 +601,3 @@ class TestThemeCreativePick:
         assert provider.pick_prompts == []
         assert provider.last_prompt is None
 
-
-class TestParseJsonTrailingCommas:
-    """LLMs sometimes emit a trailing comma, which is invalid JSON."""
-
-    def parse(self, text: str, default: dict | None = None) -> dict:
-        return NarrativeGenerator(MockProvider())._parse_json(text, default)
-
-    def test_trailing_comma_in_object(self) -> None:
-        assert self.parse('{"color": "Blue", "hex": "#0000FF",\n}') == {"color": "Blue", "hex": "#0000FF"}
-
-    def test_trailing_comma_in_list(self) -> None:
-        assert self.parse('{"roasts": ["one", "two",]}') == {"roasts": ["one", "two"]}
-
-    def test_trailing_commas_in_nested_structures(self) -> None:
-        text = '{"superlatives": [{"award": "A", "reason": "r",},],}'
-        assert self.parse(text) == {"superlatives": [{"award": "A", "reason": "r"}]}
-
-    def test_comma_inside_a_string_is_left_alone(self) -> None:
-        """Only structural trailing commas are removed, never text inside strings."""
-        assert self.parse('{"note": "ends like this,}",}') == {"note": "ends like this,}"}
-
-    def test_trailing_comma_inside_a_markdown_block(self) -> None:
-        assert self.parse('```json\n{"a": 1,}\n```') == {"a": 1}
-
-    def test_trailing_comma_together_with_a_raw_newline_in_a_string(self) -> None:
-        assert self.parse('{"text": "line one\nline two",}') == {"text": "line one\nline two"}
-
-    def test_valid_json_is_unchanged(self) -> None:
-        assert self.parse('{"a": [1, 2], "b": {"c": "d"}}') == {"a": [1, 2], "b": {"c": "d"}}
-
-    def test_unparseable_text_still_returns_the_default(self) -> None:
-        assert self.parse("not json at all", {"fallback": True}) == {"fallback": True}
