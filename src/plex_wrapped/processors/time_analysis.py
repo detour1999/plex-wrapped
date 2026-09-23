@@ -2,7 +2,6 @@
 # ABOUTME: Analyzes plays by hour, day, month and identifies quirky temporal stats.
 
 from collections import Counter
-from datetime import datetime
 
 from plex_wrapped.extractors.plex import ListeningHistory
 

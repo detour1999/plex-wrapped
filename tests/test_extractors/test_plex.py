@@ -1,9 +1,7 @@
 # ABOUTME: Tests for Plex data extraction.
 # ABOUTME: Uses real Plex API calls (no mocking per project rules).
 
-import pytest
 from datetime import datetime
-from pathlib import Path
 
 from plex_wrapped.extractors.plex import PlexExtractor, ListeningHistory, Track
 

@@ -3,10 +3,9 @@
 
 import pytest
 from pathlib import Path
-import tempfile
 import yaml
 
-from plex_wrapped.config import load_config, Config, PlexConfig, LLMConfig, HostingConfig
+from plex_wrapped.config import load_config
 
 
 class TestConfigLoading:

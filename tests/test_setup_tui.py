@@ -1,8 +1,6 @@
 # ABOUTME: Tests for the TUI setup wizard and processing screen.
 # ABOUTME: Uses Textual's pilot API for async UI testing.
 
-import pytest
-
 from plex_wrapped.setup_tui import (
     HostingScreen,
     PlexScreen,
@@ -155,7 +153,7 @@ class TestHostingScreen:
 
     async def test_hosting_screen_prefills_cloudflare_from_config(self):
         """HostingScreen pre-fills Cloudflare fields from existing config."""
-        from textual.widgets import Input, RadioButton, RadioSet
+        from textual.widgets import Input, RadioButton
 
         app = SetupApp()
         app.config_data = {
@@ -173,7 +171,6 @@ class TestHostingScreen:
             await pilot.pause()
 
             # Check provider is selected
-            provider_set = app.screen.query_one("#provider-set", RadioSet)
             cloudflare_button = app.screen.query_one("#cloudflare", RadioButton)
             assert cloudflare_button.value is True
 
