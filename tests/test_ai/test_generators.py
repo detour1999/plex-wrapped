@@ -90,6 +90,17 @@ class TestRoastGenerator:
 
 
 class TestSuperlativesGenerator:
+    def test_falls_back_to_default_when_response_is_the_wrong_shape(self) -> None:
+        """The model can return a single flat award/reason object instead of the wrapped
+        list - valid JSON, wrong shape - and that must not pass through as-is."""
+        provider = MockProvider('{"award": "Solo Award", "reason": "just one"}')
+        generator = SuperlativesGenerator(provider)
+
+        result = generator.generate({"year": 2025, "top_track_plays": 200})
+
+        assert isinstance(result.get("superlatives"), list)
+        assert len(result["superlatives"]) >= 1
+
     def test_generates_superlatives_from_stats(self) -> None:
         """Superlatives generator creates awards from stats."""
         response = '''{

@@ -344,11 +344,17 @@ the ceremony above suggests a single winner:
 """
 
         response = self.provider.generate(prompt)
-        return self._parse_json(response, {
+        default = {
             "superlatives": [
                 {"award": "Most Dedicated Listener", "reason": "You showed up for your music"}
             ]
-        })
+        }
+        parsed = self._parse_json(response, default)
+        # The model occasionally returns a single flat {award, reason} object instead of
+        # the wrapped list - valid JSON, wrong shape - which must not pass through as-is.
+        if not isinstance(parsed.get("superlatives"), list) or not parsed["superlatives"]:
+            return default
+        return parsed
 
 
 class HotTakesGenerator(BaseGenerator):
