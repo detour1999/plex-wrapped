@@ -7,10 +7,11 @@
   import SlideContainer from '../common/SlideContainer.svelte';
 
   export let aura: {
-    primary_color: string;
-    secondary_color: string;
+    color?: string;
+    hex?: string;
     vibe: string;
     description: string;
+    colors?: string[];
   };
   export let visible = true;
 
@@ -20,7 +21,9 @@
     mounted = true;
   });
 
-  $: gradientStyle = `background: linear-gradient(135deg, ${aura.primary_color}, ${aura.secondary_color})`;
+  $: primaryColor = aura.hex || aura.colors?.[0] || '#1DB954';
+  $: secondaryColor = aura.colors?.[1] || primaryColor;
+  $: gradientStyle = `background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
 </script>
 
 <SlideContainer {visible}>
@@ -36,7 +39,7 @@
     {#if mounted && visible}
       <h3
         class="text-[clamp(1.875rem,9vw,3rem)] leading-none font-black mb-8"
-        style="color: {aura.primary_color}"
+        style="color: {primaryColor}"
         in:fly={{ y: 20, duration: 600, delay: 600 }}
       >
         {aura.vibe}
