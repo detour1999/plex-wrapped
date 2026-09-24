@@ -22,7 +22,7 @@ export default defineConfig({
       // brittle to minor, legitimate coverage drift.
       thresholds: {
         statements: 97,
-        branches: 87,
+        branches: 90,
         functions: 97,
         lines: 97,
       },
