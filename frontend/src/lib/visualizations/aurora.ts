@@ -49,6 +49,7 @@ export const AuroraRenderer: VisualizationRenderer = {
   startTime: 0,
   palette: null as Palette | null,
 
+  /* v8 ignore start -- requires a real WebGL context, which jsdom does not implement */
   init(gl: WebGLRenderingContext, palette: Palette) {
     this.gl = gl;
     this.palette = palette;
@@ -89,10 +90,12 @@ export const AuroraRenderer: VisualizationRenderer = {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   },
+  /* v8 ignore stop */
 
   transition(toConfig: SlideConfig, progress: number) {},
 
   destroy() {
+    /* v8 ignore next 2 -- only reachable after a real WebGL init() */
     if (this.gl && this.program) this.gl.deleteProgram(this.program);
     if (this.gl && this.buffer) this.gl.deleteBuffer(this.buffer);
   },

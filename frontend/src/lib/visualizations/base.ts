@@ -1,6 +1,7 @@
 // ABOUTME: Shared WebGL utilities for visualization renderers.
 // ABOUTME: Provides shader compilation and common helpers.
 
+/* v8 ignore start -- requires a real WebGL context, which jsdom does not implement */
 export function createShader(
   gl: WebGLRenderingContext,
   type: number,
@@ -41,6 +42,7 @@ export function createProgram(
 
   return program;
 }
+/* v8 ignore stop */
 
 export function hexToRgb(hex: string): [number, number, number] {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
