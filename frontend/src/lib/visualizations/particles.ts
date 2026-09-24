@@ -56,6 +56,7 @@ export const ParticlesRenderer: VisualizationRenderer = {
   startTime: 0,
   palette: null as Palette | null,
 
+  /* v8 ignore start -- requires a real WebGL context, which jsdom does not implement */
   init(gl: WebGLRenderingContext, palette: Palette) {
     this.gl = gl;
     this.palette = palette;
@@ -95,11 +96,14 @@ export const ParticlesRenderer: VisualizationRenderer = {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   },
+  /* v8 ignore stop */
 
   transition(toConfig: SlideConfig, progress: number) {},
 
   destroy() {
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.program) this.gl.deleteProgram(this.program);
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.buffer) this.gl.deleteBuffer(this.buffer);
   },
 } as VisualizationRenderer & { gl: WebGLRenderingContext | null; program: WebGLProgram | null; buffer: WebGLBuffer | null; startTime: number; palette: Palette | null };

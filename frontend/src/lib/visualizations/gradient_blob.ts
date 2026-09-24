@@ -55,6 +55,7 @@ export const GradientBlobRenderer: VisualizationRenderer = {
   palette: null as Palette | null,
   currentIntensity: 0.5,
 
+  /* v8 ignore start -- requires a real WebGL context, which jsdom does not implement */
   init(gl: WebGLRenderingContext, palette: Palette) {
     this.gl = gl;
     this.palette = palette;
@@ -96,15 +97,18 @@ export const GradientBlobRenderer: VisualizationRenderer = {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   },
+  /* v8 ignore stop */
 
   transition(toConfig: SlideConfig, progress: number) {
     this.currentIntensity = toConfig.intensity;
   },
 
   destroy() {
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.program) {
       this.gl.deleteProgram(this.program);
     }
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.buffer) {
       this.gl.deleteBuffer(this.buffer);
     }

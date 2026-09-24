@@ -17,14 +17,14 @@ export default defineConfig({
       // Vitest exercises the same way Svelte components are - and config files
       // aren't application code. Both are out of scope for this coverage gate.
       include: ['src/components/**/*.svelte', 'src/lib/**/*.ts'],
-      // Floor matches the real current baseline (only 3 of ~15 components have
-      // tests yet) - it exists to catch regressions, not to demand the rest of
-      // the component library be tested in one pass.
+      // Floor sits a few points under the real achieved baseline (every
+      // component has tests now) so it catches regressions without being
+      // brittle to minor, legitimate coverage drift.
       thresholds: {
-        statements: 10,
-        branches: 65,
-        functions: 30,
-        lines: 10,
+        statements: 97,
+        branches: 90,
+        functions: 97,
+        lines: 97,
       },
     },
   },

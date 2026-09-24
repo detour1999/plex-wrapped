@@ -70,4 +70,21 @@ describe('Roasts slide', () => {
 
     expect(vi.getTimerCount()).toBe(0);
   });
+
+  it('never starts the reveal timer when mounted with an empty roasts list', async () => {
+    render(Roasts, { roasts: [], visible: true });
+    await tick();
+    await advance(3000);
+
+    expect(shownRoasts()).toHaveLength(0);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('never starts the reveal timer when mounted not visible', async () => {
+    render(Roasts, { roasts, visible: false });
+    await tick();
+    await advance(3000);
+
+    expect(vi.getTimerCount()).toBe(0);
+  });
 });

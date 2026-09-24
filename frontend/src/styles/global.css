@@ -1,0 +1,42 @@
+/* ABOUTME: Tailwind CSS v4 entry point and theme tokens for Last Wrapped. */
+/* ABOUTME: Replaces tailwind.config.mjs - v4 configures theme values in CSS, not JS. */
+
+@import "tailwindcss";
+
+@theme {
+  --color-wrapped-bg: #121212;
+  --color-wrapped-card: #1a1a1a;
+  --color-wrapped-accent: #1db954;
+  --color-wrapped-text: #ffffff;
+  --color-wrapped-muted: #b3b3b3;
+
+  --color-landing-black: #1a1a1a;
+  --color-landing-cream: #faf6f0;
+  --color-landing-paper: #f4e9d8;
+  --color-landing-orange: #e85d04;
+  --color-landing-green: #606c38;
+
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-count-up: countUp 2s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
