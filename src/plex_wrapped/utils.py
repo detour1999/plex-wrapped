@@ -26,8 +26,8 @@ def slugify(text: str) -> str:
         return ""
 
     # Remove special characters, keep alphanumeric and spaces
-    text = re.sub(r'[^\w\s-]', '', text.lower())
+    text = re.sub(r"[^\w\s-]", "", text.lower())
     # Replace spaces and multiple hyphens with single hyphen
-    text = re.sub(r'[-\s]+', '-', text).strip('-')
+    text = re.sub(r"[-\s]+", "-", text).strip("-")
     # Limit length
     return text[:50]

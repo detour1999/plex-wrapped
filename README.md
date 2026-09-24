@@ -45,6 +45,23 @@ plex-wrapped generate
 
 See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 
+## Development
+
+This repo uses [pre-commit](https://pre-commit.com) to run lint, format, and test
+checks (with a coverage floor) before each commit - see `.pre-commit-config.yaml`.
+If `pre-commit` isn't already wired into your `git commit` (it needs to be either
+installed via `pre-commit install` or picked up by an existing global hooks setup),
+run the checks manually with:
+
+```bash
+uv run pre-commit run --all-files
+```
+
+Python checks run via `uv run ruff format --check`, `uv run ruff check`, and
+`uv run pytest --cov` (fails under 90% coverage - see `[tool.coverage.report]` in
+`pyproject.toml`). Frontend checks run `npm run test:coverage` inside `frontend/`
+whenever a `frontend/` file changes.
+
 ## License
 
 MIT

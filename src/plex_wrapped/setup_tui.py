@@ -12,7 +12,17 @@ from textual import on, work
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet, RichLog, Static
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    RadioButton,
+    RadioSet,
+    RichLog,
+    Static,
+)
 
 from plex_wrapped.extractors.plex import PlexExtractor
 
@@ -150,7 +160,9 @@ class PlexScreen(Screen):
                 classes="help-text",
             ),
             Label("Plex Token", classes="field-label"),
-            Input(placeholder="Your Plex token", password=True, id="plex-token", classes="input-field"),
+            Input(
+                placeholder="Your Plex token", password=True, id="plex-token", classes="input-field"
+            ),
             Static("", id="status"),
             Horizontal(
                 Button("Back", variant="default", id="back"),
@@ -193,7 +205,9 @@ class PlexScreen(Screen):
         self.test_plex_connection(url, token)
 
     @work(exclusive=True)
-    async def test_plex_connection(self, url: str, token: str) -> None:
+    async def test_plex_connection(
+        self, url: str, token: str
+    ) -> None:  # pragma: no cover - requires a real Plex server, no mocking per project rules
         """Test Plex connection in background worker."""
         status = self.query_one("#status", Static)
         next_button = self.query_one("#next", Button)
@@ -379,7 +393,9 @@ class LLMScreen(Screen):
         self.test_llm_key(provider, api_key)
 
     @work(exclusive=True)
-    async def test_llm_key(self, provider: str, api_key: str) -> None:
+    async def test_llm_key(
+        self, provider: str, api_key: str
+    ) -> None:  # pragma: no cover - a real Anthropic/OpenAI API call to validate the key
         """Test LLM API key in background worker."""
         status = self.query_one("#status", Static)
         next_button = self.query_one("#next", Button)
@@ -394,7 +410,7 @@ class LLMScreen(Screen):
                 client.messages.create(
                     model="claude-haiku-4-5",
                     max_tokens=10,
-                    messages=[{"role": "user", "content": "Hi"}]
+                    messages=[{"role": "user", "content": "Hi"}],
                 )
             else:
                 client = openai.OpenAI(api_key=api_key)
@@ -402,17 +418,16 @@ class LLMScreen(Screen):
                 client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     max_tokens=10,
-                    messages=[{"role": "user", "content": "Hi"}]
+                    messages=[{"role": "user", "content": "Hi"}],
                 )
 
             app = self.app
             if isinstance(app, SetupApp):
-                app.config_data["llm"] = {
-                    "provider": provider,
-                    "api_key": api_key
-                }
+                app.config_data["llm"] = {"provider": provider, "api_key": api_key}
 
-            status.update(f"[green]✓ API key validated successfully![/green]\n{provider.capitalize()} is ready.")
+            status.update(
+                f"[green]✓ API key validated successfully![/green]\n{provider.capitalize()} is ready."
+            )
             next_button.disabled = False
 
         except Exception as e:
@@ -516,7 +531,7 @@ class HostingScreen(Screen):
         )
         yield Footer()
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         """Initialize provider fields and pre-fill from config."""
         app = self.app
         provider = "cloudflare"
@@ -527,7 +542,7 @@ class HostingScreen(Screen):
 
         # Track current provider and create fields
         self._current_provider = provider
-        self.update_fields(provider)
+        await self.update_fields(provider)
 
         # Select the correct provider radio button (after fields exist)
         if provider != "cloudflare":
@@ -573,16 +588,20 @@ class HostingScreen(Screen):
                 self.query_one("#branch", Input).value = provider_config["branch"]
 
     @on(RadioSet.Changed, "#provider-set")
-    def on_provider_changed(self, event: RadioSet.Changed) -> None:
+    async def on_provider_changed(self, event: RadioSet.Changed) -> None:
         """Update fields when provider changes."""
         if event.pressed.id and event.pressed.id != self._current_provider:
             self._current_provider = event.pressed.id
-            self.update_fields(event.pressed.id)
+            await self.update_fields(event.pressed.id)
 
-    def update_fields(self, provider: str) -> None:
+    async def update_fields(self, provider: str) -> None:
         """Update dynamic fields based on selected provider."""
         container = self.query_one("#dynamic-fields", Container)
-        container.remove_children()
+        # remove_children() only schedules the removal - it must be awaited, or a
+        # provider switch that reuses a field id (e.g. "project-name" on both
+        # Cloudflare and Vercel) mounts the new field before the old one is
+        # actually gone and crashes with DuplicateIds.
+        await container.remove_children()
 
         if provider == "cloudflare":
             container.mount(
@@ -595,21 +614,32 @@ class HostingScreen(Screen):
                     classes="help-text",
                 ),
                 Label("Account ID", classes="field-label"),
-                Input(placeholder="Your Cloudflare account ID", id="account-id", classes="input-field"),
+                Input(
+                    placeholder="Your Cloudflare account ID", id="account-id", classes="input-field"
+                ),
                 Label("Project Name", classes="field-label"),
                 Input(placeholder="Your project name", id="project-name", classes="input-field"),
                 Label("API Token", classes="field-label"),
-                Input(placeholder="Your Cloudflare API token", password=True, id="api-token", classes="input-field"),
+                Input(
+                    placeholder="Your Cloudflare API token",
+                    password=True,
+                    id="api-token",
+                    classes="input-field",
+                ),
             )
         elif provider == "vercel":
             container.mount(
                 Static(
-                    "[dim]Create a token at:\n"
-                    "vercel.com/account/tokens → Create Token[/]",
+                    "[dim]Create a token at:\nvercel.com/account/tokens → Create Token[/]",
                     classes="help-text",
                 ),
                 Label("Token", classes="field-label"),
-                Input(placeholder="Your Vercel token", password=True, id="token", classes="input-field"),
+                Input(
+                    placeholder="Your Vercel token",
+                    password=True,
+                    id="token",
+                    classes="input-field",
+                ),
                 Label("Project Name", classes="field-label"),
                 Input(placeholder="Your project name", id="project-name", classes="input-field"),
             )
@@ -622,7 +652,12 @@ class HostingScreen(Screen):
                     classes="help-text",
                 ),
                 Label("Token", classes="field-label"),
-                Input(placeholder="Your Netlify token", password=True, id="token", classes="input-field"),
+                Input(
+                    placeholder="Your Netlify token",
+                    password=True,
+                    id="token",
+                    classes="input-field",
+                ),
                 Label("Site ID", classes="field-label"),
                 Input(placeholder="Your site ID", id="site-id", classes="input-field"),
             )
@@ -687,10 +722,7 @@ class HostingScreen(Screen):
 
         app = self.app
         if isinstance(app, SetupApp):
-            app.config_data["hosting"] = {
-                "provider": provider,
-                provider: config
-            }
+            app.config_data["hosting"] = {"provider": provider, provider: config}
 
         self.app.push_screen(SummaryScreen())
 
@@ -776,7 +808,9 @@ class SummaryScreen(Screen):
     def build_summary(self) -> str:
         """Build configuration summary text."""
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return "No configuration data available"
 
         config = app.config_data
@@ -791,16 +825,16 @@ class SummaryScreen(Screen):
         # LLM
         if "llm" in config:
             llm = config["llm"]
-            provider = llm.get('provider', 'Not set')
+            provider = llm.get("provider", "Not set")
             lines.append(f"[cyan]LLM Provider:[/cyan] {provider.capitalize()}")
-            api_key = llm.get('api_key', '')
+            api_key = llm.get("api_key", "")
             if api_key:
                 lines.append(f"[cyan]API Key:[/cyan] {'*' * 8}...{api_key[-4:]}\n")
 
         # Hosting
         if "hosting" in config:
             hosting = config["hosting"]
-            provider = hosting.get('provider', 'Not set')
+            provider = hosting.get("provider", "Not set")
             lines.append(f"[cyan]Hosting:[/cyan] {provider.capitalize()}")
 
             provider_config = hosting.get(provider, {})
@@ -822,7 +856,9 @@ class SummaryScreen(Screen):
     def save_config(self) -> None:
         """Save configuration to file."""
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return
 
         year_input = self.query_one("#year", Input)
@@ -941,8 +977,7 @@ class ProcessingScreen(Screen):
         yield Container(
             Static("Generate Wrapped", classes="screen-title"),
             Static(
-                "[dim]Run the full generation pipeline:\n"
-                "Extract → Process → Build → Deploy[/]",
+                "[dim]Run the full generation pipeline:\nExtract → Process → Build → Deploy[/]",
                 classes="help-text",
             ),
             Horizontal(
@@ -997,7 +1032,9 @@ class ProcessingScreen(Screen):
         self.app.call_from_thread(self._update_ui_start)
 
         app = self.app
-        if not isinstance(app, SetupApp):
+        if not isinstance(
+            app, SetupApp
+        ):  # pragma: no cover - unreachable, self.app is always this SetupApp
             return
 
         config_data = app.config_data

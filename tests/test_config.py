@@ -45,6 +45,14 @@ class TestConfigLoading:
         with pytest.raises(FileNotFoundError):
             load_config(Path("/nonexistent/config.yaml"))
 
+    def test_load_empty_file_raises(self, tmp_path: Path) -> None:
+        """An empty (or all-comments) YAML file raises a clear error."""
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text("# just a comment, no data\n")
+
+        with pytest.raises(ValueError, match="empty"):
+            load_config(config_file)
+
     def test_load_invalid_yaml_raises(self, tmp_path: Path) -> None:
         """Loading invalid YAML raises ValueError."""
         config_file = tmp_path / "config.yaml"
@@ -76,7 +84,10 @@ class TestLLMConfig:
             "plex": {"url": "https://plex.example.com", "token": "test"},
             "llm": {"provider": "none"},
             "year": 2024,
-            "hosting": {"provider": "cloudflare", "cloudflare": {"account_id": "x", "project_name": "y"}},
+            "hosting": {
+                "provider": "cloudflare",
+                "cloudflare": {"account_id": "x", "project_name": "y"},
+            },
         }
         config_file = tmp_path / "config.yaml"
         config_file.write_text(yaml.dump(config_data))
@@ -91,7 +102,10 @@ class TestLLMConfig:
             "plex": {"url": "https://plex.example.com", "token": "test"},
             "llm": {"provider": "anthropic"},  # Missing api_key!
             "year": 2024,
-            "hosting": {"provider": "cloudflare", "cloudflare": {"account_id": "x", "project_name": "y"}},
+            "hosting": {
+                "provider": "cloudflare",
+                "cloudflare": {"account_id": "x", "project_name": "y"},
+            },
         }
         config_file = tmp_path / "config.yaml"
         config_file.write_text(yaml.dump(config_data))
@@ -114,3 +128,88 @@ class TestHostingConfig:
 
         with pytest.raises(ValueError, match="cloudflare"):
             load_config(config_file)
+
+
+class TestEnvironmentVariableFallbacks:
+    """Sensitive credentials omitted from the YAML fall back to environment variables."""
+
+    def _write_config(
+        self, tmp_path: Path, hosting: dict, llm: dict, plex_token: str | None = "inline-token"
+    ) -> Path:
+        config_data = {
+            "plex": {
+                "url": "https://plex.example.com",
+                **({"token": plex_token} if plex_token else {}),
+            },
+            "llm": llm,
+            "year": 2024,
+            "hosting": hosting,
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+        return config_file
+
+    def test_plex_token_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("PLEX_TOKEN", "env-plex-token")
+        config_file = self._write_config(
+            tmp_path, {"provider": "none"}, {"provider": "none"}, plex_token=None
+        )
+
+        config = load_config(config_file)
+
+        assert config.plex.token == "env-plex-token"
+
+    def test_anthropic_api_key_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "env-anthropic-key")
+        config_file = self._write_config(tmp_path, {"provider": "none"}, {"provider": "anthropic"})
+
+        config = load_config(config_file)
+
+        assert config.llm.api_key == "env-anthropic-key"
+
+    def test_openai_api_key_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("OPENAI_API_KEY", "env-openai-key")
+        config_file = self._write_config(tmp_path, {"provider": "none"}, {"provider": "openai"})
+
+        config = load_config(config_file)
+
+        assert config.llm.api_key == "env-openai-key"
+
+    def test_cloudflare_api_token_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "env-cf-token")
+        hosting = {"provider": "cloudflare", "cloudflare": {"account_id": "x", "project_name": "y"}}
+        config_file = self._write_config(tmp_path, hosting, {"provider": "none"})
+
+        config = load_config(config_file)
+
+        assert config.hosting.cloudflare.api_token == "env-cf-token"
+
+    def test_vercel_token_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("VERCEL_TOKEN", "env-vercel-token")
+        hosting = {"provider": "vercel", "vercel": {"project_name": "y"}}
+        config_file = self._write_config(tmp_path, hosting, {"provider": "none"})
+
+        config = load_config(config_file)
+
+        assert config.hosting.vercel.token == "env-vercel-token"
+
+    def test_netlify_auth_token_falls_back_to_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("NETLIFY_AUTH_TOKEN", "env-netlify-token")
+        hosting = {"provider": "netlify", "netlify": {"site_id": "y"}}
+        config_file = self._write_config(tmp_path, hosting, {"provider": "none"})
+
+        config = load_config(config_file)
+
+        assert config.hosting.netlify.auth_token == "env-netlify-token"

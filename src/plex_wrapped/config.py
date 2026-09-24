@@ -28,8 +28,8 @@ class LLMConfig(BaseModel):
     )
     model: Optional[str] = Field(None, description="Specific model to use (optional)")
 
-    @model_validator(mode='after')
-    def validate_api_key_required(self) -> 'LLMConfig':
+    @model_validator(mode="after")
+    def validate_api_key_required(self) -> "LLMConfig":
         """Validate that api_key is provided when provider is not 'none'."""
         if self.provider != "none" and not self.api_key:
             raise ValueError(f"api_key is required when provider is '{self.provider}'")
@@ -80,14 +80,14 @@ class HostingConfig(BaseModel):
         None, description="GitHub Pages-specific configuration"
     )
 
-    @model_validator(mode='after')
-    def validate_provider_config_exists(self) -> 'HostingConfig':
+    @model_validator(mode="after")
+    def validate_provider_config_exists(self) -> "HostingConfig":
         """Validate that provider-specific config matches the selected provider."""
         provider_map = {
-            'cloudflare': self.cloudflare,
-            'vercel': self.vercel,
-            'netlify': self.netlify,
-            'github': self.github,
+            "cloudflare": self.cloudflare,
+            "vercel": self.vercel,
+            "netlify": self.netlify,
+            "github": self.github,
         }
         if self.provider in provider_map and provider_map[self.provider] is None:
             raise ValueError(f"Missing config for hosting provider '{self.provider}'")
@@ -101,7 +101,7 @@ class Config(BaseModel):
     llm: LLMConfig = Field(..., description="LLM provider configuration")
     year: int = Field(
         default_factory=lambda: datetime.now().year,
-        description="Year to generate Wrapped for (defaults to current year)"
+        description="Year to generate Wrapped for (defaults to current year)",
     )
     hosting: HostingConfig = Field(..., description="Hosting provider configuration")
     output_dir: Path = Field(
@@ -163,7 +163,9 @@ def load_config(config_path: Path) -> Config:
         provider = config_data["hosting"].get("provider", "")
         if provider == "cloudflare" and "cloudflare" in config_data["hosting"]:
             if not config_data["hosting"]["cloudflare"].get("api_token"):
-                config_data["hosting"]["cloudflare"]["api_token"] = os.getenv("CLOUDFLARE_API_TOKEN")
+                config_data["hosting"]["cloudflare"]["api_token"] = os.getenv(
+                    "CLOUDFLARE_API_TOKEN"
+                )
         elif provider == "vercel" and "vercel" in config_data["hosting"]:
             if not config_data["hosting"]["vercel"].get("token"):
                 config_data["hosting"]["vercel"]["token"] = os.getenv("VERCEL_TOKEN")

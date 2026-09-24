@@ -1,6 +1,7 @@
 # ABOUTME: Tests for Plex data extraction.
 # ABOUTME: Uses real Plex API calls (no mocking per project rules).
 
+import pytest
 from datetime import datetime
 
 from plex_wrapped.extractors.plex import PlexExtractor, ListeningHistory, Track
@@ -57,3 +58,32 @@ class TestPlexExtractor:
         )
         assert history.total_tracks == 2
         assert history.total_minutes == 7.0
+
+
+class TestNotConnectedGuards:
+    """Every method that needs a server connection fails clearly if connect() was never
+    called, before touching anything network-related - real, mock-free behavior."""
+
+    def test_get_users_without_connecting(self) -> None:
+        extractor = PlexExtractor(url="https://plex.example.com", token="test-token")
+
+        with pytest.raises(RuntimeError, match="Not connected"):
+            extractor.get_users()
+
+    def test_extract_user_history_without_connecting(self) -> None:
+        extractor = PlexExtractor(url="https://plex.example.com", token="test-token")
+
+        with pytest.raises(RuntimeError, match="Not connected"):
+            extractor.extract_user_history(username="someone", year=2024)
+
+    def test_extract_all_users_without_connecting(self) -> None:
+        extractor = PlexExtractor(url="https://plex.example.com", token="test-token")
+
+        with pytest.raises(RuntimeError, match="Not connected"):
+            extractor.extract_all_users(year=2024)
+
+    def test_get_user_account_id_without_connecting(self) -> None:
+        extractor = PlexExtractor(url="https://plex.example.com", token="test-token")
+
+        with pytest.raises(RuntimeError, match="Not connected"):
+            extractor._get_user_account_id("someone")
