@@ -30,4 +30,26 @@ describe('NextYear slide', () => {
 
     expect(screen.getByText(/try in 2026/)).toBeTruthy();
   });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const { rerender } = render(NextYear, { suggestions: ['Try more jazz'], year: 2025, visible: false });
+    await tick();
+    expect(screen.queryByText('Try more jazz')).toBeNull();
+
+    await rerender({ suggestions: ['Try more jazz'], year: 2025, visible: true });
+    await tick();
+
+    expect(screen.getByText('Try more jazz')).toBeTruthy();
+  });
+
+  it('adds a suggestion once it arrives on an already-visible slide', async () => {
+    const { rerender } = render(NextYear, { suggestions: [], year: 2025, visible: true });
+    await tick();
+    expect(screen.queryByText('Try more jazz')).toBeNull();
+
+    await rerender({ suggestions: ['Try more jazz'], year: 2025, visible: true });
+    await tick();
+
+    expect(screen.getByText('Try more jazz')).toBeTruthy();
+  });
 });

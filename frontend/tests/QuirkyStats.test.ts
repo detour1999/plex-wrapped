@@ -67,6 +67,59 @@ describe('QuirkyStats slide', () => {
     expect(screen.getByText('Energetic')).toBeTruthy();
   });
 
+  it('adds each stat card once its data arrives on an already-visible slide', async () => {
+    const { rerender } = render(QuirkyStats, { stats: {}, visible: true });
+    await tick();
+
+    await rerender({
+      stats: { late_night_anthem: { name: 'Midnight Song', artist: 'Night Owl', count: 12 } },
+      visible: true,
+    });
+    await tick();
+    expect(screen.getByText('Late Night Anthem')).toBeTruthy();
+
+    await rerender({
+      stats: { longest_session: { duration_minutes: 125, date: '2025-06-01T00:00:00Z' } },
+      visible: true,
+    });
+    await tick();
+    expect(screen.getByText('Marathon Session')).toBeTruthy();
+
+    await rerender({
+      stats: { most_repeated: { name: 'Repeat Song', artist: 'Loop Artist', streak: 7 } },
+      visible: true,
+    });
+    await tick();
+    expect(screen.getByText('Repeat Champion')).toBeTruthy();
+
+    await rerender({
+      stats: { genre_mood: { morning: 'Chill', evening: 'Energetic' } },
+      visible: true,
+    });
+    await tick();
+    expect(screen.getByText('Mood Shifts')).toBeTruthy();
+  });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const stats = {
+      late_night_anthem: { name: 'Midnight Song', artist: 'Night Owl', count: 12 },
+      longest_session: { duration_minutes: 125, date: '2025-06-01T00:00:00Z' },
+      most_repeated: { name: 'Repeat Song', artist: 'Loop Artist', streak: 7 },
+      genre_mood: { morning: 'Chill', evening: 'Energetic' },
+    };
+    const { rerender } = render(QuirkyStats, { stats, visible: false });
+    await tick();
+    expect(screen.queryByText('Late Night Anthem')).toBeNull();
+
+    await rerender({ stats, visible: true });
+    await tick();
+
+    expect(screen.getByText('Late Night Anthem')).toBeTruthy();
+    expect(screen.getByText('Marathon Session')).toBeTruthy();
+    expect(screen.getByText('Repeat Champion')).toBeTruthy();
+    expect(screen.getByText('Mood Shifts')).toBeTruthy();
+  });
+
   it('renders every card at once when all stats are present', async () => {
     render(QuirkyStats, {
       stats: {

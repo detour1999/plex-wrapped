@@ -81,4 +81,30 @@ describe('TopTracks slide', () => {
 
     expect(screen.queryByAltText('track two')).toBeNull();
   });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const { rerender } = render(TopTracks, { tracks, visible: false });
+    await tick();
+    expect(shownTracks()).toHaveLength(0);
+
+    await rerender({ tracks, visible: true });
+    await tick();
+
+    expect(shownTracks()).toHaveLength(1);
+  });
+
+  it('renders album art for a later-revealed track, not just the first one', async () => {
+    const tracksWithLaterArt = [
+      { name: 'track one', artist: 'artist one', plays: 10 },
+      { name: 'track two', artist: 'artist two', plays: 9, image_url: '/images/two.jpg' },
+    ];
+    render(TopTracks, { tracks: tracksWithLaterArt, visible: true });
+    await tick();
+    expect(screen.queryByAltText('track two')).toBeNull();
+
+    await advance(800);
+
+    const image = screen.getByAltText('track two') as HTMLImageElement;
+    expect(image.src).toContain('/images/two.jpg');
+  });
 });

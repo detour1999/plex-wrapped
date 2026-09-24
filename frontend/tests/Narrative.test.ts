@@ -73,4 +73,18 @@ describe('Narrative slide', () => {
 
     expect(vi.getTimerCount()).toBe(0);
   });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const narrative = 'Short story';
+    const { rerender } = render(Narrative, { narrative, visible: false });
+    await tick();
+    expect(screen.queryByText(/still being written/)).toBeNull();
+
+    await rerender({ narrative, visible: true });
+    await tick();
+    await advance(30 * narrative.length);
+
+    expect(screen.getByText(narrative)).toBeTruthy();
+    expect(screen.getByText(/Written by AI/)).toBeTruthy();
+  });
 });

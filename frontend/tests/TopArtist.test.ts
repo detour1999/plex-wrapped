@@ -34,4 +34,30 @@ describe('TopArtist slide', () => {
     expect(screen.getByText('plays')).toBeTruthy();
     expect(screen.getByText('hours')).toBeTruthy();
   });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const artist = { name: 'The Beatles', plays: 500, minutes: 1500, image_url: '/beatles.jpg' };
+    const { rerender } = render(TopArtist, { artist, visible: false });
+    await tick();
+    expect(screen.queryByText('The Beatles')).toBeNull();
+
+    await rerender({ artist, visible: true });
+    await tick();
+
+    expect(screen.getByText('The Beatles')).toBeTruthy();
+  });
+
+  it('adds album art once it becomes available on an already-visible slide', async () => {
+    const withoutArt = { name: 'The Beatles', plays: 500, minutes: 1500 };
+    const { rerender } = render(TopArtist, { artist: withoutArt, visible: true });
+    await tick();
+    expect(screen.queryByAltText('The Beatles')).toBeNull();
+
+    const withArt = { ...withoutArt, image_url: '/beatles.jpg' };
+    await rerender({ artist: withArt, visible: true });
+    await tick();
+
+    const image = screen.getByAltText('The Beatles') as HTMLImageElement;
+    expect(image.src).toContain('/beatles.jpg');
+  });
 });

@@ -106,12 +106,90 @@ describe('WrappedExperience', () => {
     expect(screen.getByText('Thanks for listening')).toBeTruthy();
   });
 
+  const slideText: Array<[index: number, text: string]> = [
+    [0, 'Dylan'],
+    [1, 'You listened for'],
+    [2, 'Your top artist was'],
+    [3, 'Your Top 5 Tracks'],
+    [4, 'Your Listening Clock'],
+    [5, 'Your Quirky Stats'],
+    [6, 'Your listening personality'],
+    [7, 'Your Musical Aura'],
+    [8, 'The Roast'],
+    [9, 'Your Year in Music'],
+    [10, 'Looking Ahead'],
+    [11, 'Thanks for listening'],
+  ];
+
+  it.each(slideText)('renders the right slide component at index %i', async (index, text) => {
+    const { container } = render(WrappedExperience, { data });
+    await tick();
+
+    const dots = container.querySelectorAll('.fixed.top-4 button');
+    await fireEvent.click(dots[index]);
+    await tick();
+
+    expect(screen.getByText(text)).toBeTruthy();
+  });
+
+  it('advances when Enter is pressed on the container', async () => {
+    const { container } = render(WrappedExperience, { data });
+    await tick();
+
+    const wrapper = container.querySelector('.wrapped-container') as HTMLElement;
+    await fireEvent.keyPress(wrapper, { key: 'Enter' });
+    await tick();
+
+    expect(screen.getByText('You listened for')).toBeTruthy();
+  });
+
+  it('ignores keypresses other than Enter on the container', async () => {
+    const { container } = render(WrappedExperience, { data });
+    await tick();
+
+    const wrapper = container.querySelector('.wrapped-container') as HTMLElement;
+    await fireEvent.keyPress(wrapper, { key: 'a' });
+    await tick();
+
+    expect(screen.getByText('Dylan')).toBeTruthy();
+  });
+
   it('falls back to the default aura color when no hex or colors array is present', async () => {
     const dataWithoutAuraColor = {
       ...data,
       ai_generated: { ...data.ai_generated, aura: { vibe: 'Plain', description: 'Plain.' } },
     };
     const { container } = render(WrappedExperience, { data: dataWithoutAuraColor });
+    await tick();
+
+    const dots = container.querySelectorAll('.fixed.top-4 button');
+    await fireEvent.click(dots[dots.length - 1]);
+    await tick();
+
+    expect(screen.getByText('Thanks for listening')).toBeTruthy();
+  });
+
+  it('falls back to the legacy colors array when aura has no hex field', async () => {
+    const dataWithColorsArray = {
+      ...data,
+      ai_generated: {
+        ...data.ai_generated,
+        aura: { colors: ['#111111'], vibe: 'Legacy', description: 'Legacy.' },
+      },
+    };
+    const { container } = render(WrappedExperience, { data: dataWithColorsArray });
+    await tick();
+
+    const dots = container.querySelectorAll('.fixed.top-4 button');
+    await fireEvent.click(dots[dots.length - 1]);
+    await tick();
+
+    expect(screen.getByText('Thanks for listening')).toBeTruthy();
+  });
+
+  it('passes no top artist to Share when there are no artists', async () => {
+    const dataWithoutArtists = { ...data, top: { ...data.top, artists: [] } };
+    const { container } = render(WrappedExperience, { data: dataWithoutArtists });
     await tick();
 
     const dots = container.querySelectorAll('.fixed.top-4 button');

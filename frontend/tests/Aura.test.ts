@@ -43,4 +43,16 @@ describe('Aura slide', () => {
     expect(orb?.getAttribute('style')).toContain(rgb(17, 17, 17));
     expect(orb?.getAttribute('style')).toContain(rgb(34, 34, 34));
   });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const aura = { hex: '#9B59B6', vibe: 'Mysterious and moody', description: 'Mystery.' };
+    const { rerender } = render(Aura, { aura, visible: false });
+    await tick();
+    expect(screen.queryByText('Mysterious and moody')).toBeNull();
+
+    await rerender({ aura, visible: true });
+    await tick();
+
+    expect(screen.getByText('Mysterious and moody')).toBeTruthy();
+  });
 });
