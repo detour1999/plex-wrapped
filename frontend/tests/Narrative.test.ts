@@ -74,6 +74,36 @@ describe('Narrative slide', () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it('styles paragraphs differently based on their position', async () => {
+    const narrative = 'Para zero.\n\nPara one.\n\nPara two.';
+    render(Narrative, { narrative, visible: true });
+    await tick();
+    await advance(30 * narrative.length);
+
+    const paragraphs = screen.getAllByText(/^Para (zero|one|two)\.$/);
+    expect(paragraphs).toHaveLength(3);
+    expect(paragraphs[0].className).toContain('text-xl');
+    expect(paragraphs[1].className).toContain('text-wrapped-muted');
+    expect(paragraphs[2].className).not.toContain('text-xl');
+    expect(paragraphs[2].className).not.toContain('text-wrapped-muted');
+  });
+
+  it('restarts typing from scratch when the narrative changes mid-typing', async () => {
+    const firstNarrative = 'A much longer narrative to type out slowly';
+    const { rerender } = render(Narrative, { narrative: firstNarrative, visible: true });
+    await tick();
+    await advance(30 * 5);
+
+    const secondNarrative = 'New';
+    await rerender({ narrative: secondNarrative, visible: true });
+    await tick();
+
+    expect(screen.queryByText(firstNarrative, { exact: false })).toBeNull();
+
+    await advance(30 * secondNarrative.length);
+    expect(screen.getByText(secondNarrative)).toBeTruthy();
+  });
+
   it('renders its content when toggled from hidden to visible after mount', async () => {
     const narrative = 'Short story';
     const { rerender } = render(Narrative, { narrative, visible: false });

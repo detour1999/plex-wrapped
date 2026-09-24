@@ -104,12 +104,12 @@ export const GradientBlobRenderer: VisualizationRenderer = {
   },
 
   destroy() {
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.program) {
-      /* v8 ignore next -- only reachable after a real WebGL init() */
       this.gl.deleteProgram(this.program);
     }
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.buffer) {
-      /* v8 ignore next -- only reachable after a real WebGL init() */
       this.gl.deleteBuffer(this.buffer);
     }
   },

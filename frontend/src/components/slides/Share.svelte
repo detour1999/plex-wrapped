@@ -61,6 +61,7 @@
       return;
     }
 
+    /* v8 ignore start -- html2canvas parses real computed CSS, which jsdom can't produce */
     const canvas = await html2canvas(card as HTMLElement, {
       backgroundColor: null,
       scale: 2,
@@ -70,6 +71,7 @@
     link.download = `music-wrapped-${year}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+    /* v8 ignore stop */
   }
 </script>
 

@@ -21,10 +21,10 @@ export default defineConfig({
       // component has tests now) so it catches regressions without being
       // brittle to minor, legitimate coverage drift.
       thresholds: {
-        statements: 93,
-        branches: 74,
-        functions: 92,
-        lines: 93,
+        statements: 97,
+        branches: 87,
+        functions: 97,
+        lines: 97,
       },
     },
   },

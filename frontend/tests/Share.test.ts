@@ -3,7 +3,7 @@
 // ABOUTME: doesn't implement them - this only intercepts the browser boundary, not our logic.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import Share from '../src/components/slides/Share.svelte';
 
@@ -60,6 +60,14 @@ describe('Share slide', () => {
     expect(screen.queryByText(/Musical aura:/)).toBeNull();
   });
 
+  it('omits the hours line when total listening time rounds to zero', async () => {
+    const { container } = render(Share, { ...baseProps, totalMinutes: 0 });
+    await tick();
+
+    const caption = container.querySelector('pre');
+    expect(caption?.textContent).not.toContain('hours of music');
+  });
+
   it('copies the caption to the clipboard and shows a confirmation that reverts', async () => {
     render(Share, baseProps);
     await tick();
@@ -107,5 +115,29 @@ describe('Share slide', () => {
 
     expect(writeText).toHaveBeenCalledWith(window.location.href);
     expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Link copied'));
+  });
+
+  it('alerts instead of downloading when the summary card is missing from the DOM', async () => {
+    // downloadImage() awaits a real dynamic import() before checking the card,
+    // which needs real timers to resolve - fake timers can stall it indefinitely.
+    vi.useRealTimers();
+
+    const { container } = render(Share, baseProps);
+    await tick();
+
+    container.querySelector('.summary-card')?.remove();
+    await fireEvent.click(screen.getByText('Download Image'));
+    await waitFor(() => expect(alertSpy).toHaveBeenCalledWith('Could not capture image'));
+  });
+
+  it('renders its content when toggled from hidden to visible after mount', async () => {
+    const { rerender } = render(Share, { ...baseProps, visible: false });
+    await tick();
+    expect(screen.queryByText('Thanks for listening')).toBeNull();
+
+    await rerender({ ...baseProps, visible: true });
+    await tick();
+
+    expect(screen.getByText('Thanks for listening')).toBeTruthy();
   });
 });

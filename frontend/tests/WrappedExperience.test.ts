@@ -68,6 +68,16 @@ describe('WrappedExperience', () => {
     expect(screen.getByText('Dylan')).toBeTruthy();
   });
 
+  it('ignores keys other than ArrowRight, ArrowLeft, and Space', async () => {
+    render(WrappedExperience, { data });
+    await tick();
+
+    await fireEvent.keyDown(window, { key: 'x' });
+    await tick();
+
+    expect(screen.getByText('Dylan')).toBeTruthy();
+  });
+
   it('does not move before the first slide', async () => {
     render(WrappedExperience, { data });
     await tick();
@@ -178,6 +188,24 @@ describe('WrappedExperience', () => {
       },
     };
     const { container } = render(WrappedExperience, { data: dataWithColorsArray });
+    await tick();
+
+    const dots = container.querySelectorAll('.fixed.top-4 button');
+    await fireEvent.click(dots[dots.length - 1]);
+    await tick();
+
+    expect(screen.getByText('Thanks for listening')).toBeTruthy();
+  });
+
+  it('falls back to the default color when aura has an empty colors array and no hex', async () => {
+    const dataWithEmptyColors = {
+      ...data,
+      ai_generated: {
+        ...data.ai_generated,
+        aura: { colors: [], vibe: 'Empty', description: 'Empty.' },
+      },
+    };
+    const { container } = render(WrappedExperience, { data: dataWithEmptyColors });
     await tick();
 
     const dots = container.querySelectorAll('.fixed.top-4 button');

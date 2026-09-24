@@ -44,6 +44,29 @@ describe('Aura slide', () => {
     expect(orb?.getAttribute('style')).toContain(rgb(34, 34, 34));
   });
 
+  it('falls back to the default green when neither "hex" nor "colors" is provided', async () => {
+    const aura = { vibe: 'Undefined vibes', description: 'A blank canvas.' };
+
+    const { container } = render(Aura, { aura, visible: true });
+    await tick();
+
+    const orb = container.querySelector('.rounded-full');
+    expect(orb?.getAttribute('style')).toContain(rgb(29, 185, 84));
+  });
+
+  it('falls back to the primary color for the secondary gradient stop when "colors" has only one entry', async () => {
+    const aura = { colors: ['#9B59B6'], vibe: 'Single tone', description: 'One color only.' };
+
+    const { container } = render(Aura, { aura, visible: true });
+    await tick();
+
+    const orb = container.querySelector('.rounded-full');
+    // Both gradient stops should be the same primary color.
+    expect(orb?.getAttribute('style')).toContain(
+      `linear-gradient(135deg, ${rgb(155, 89, 182)}, ${rgb(155, 89, 182)})`
+    );
+  });
+
   it('renders its content when toggled from hidden to visible after mount', async () => {
     const aura = { hex: '#9B59B6', vibe: 'Mysterious and moody', description: 'Mystery.' };
     const { rerender } = render(Aura, { aura, visible: false });

@@ -35,8 +35,10 @@
   $: slideConfig = theme?.slides?.[currentSlide] || defaultSlideConfig;
 
   function initWebGL() {
+    /* v8 ignore next -- canvas is always bound by the time onMount runs */
     if (!canvas) return;
     gl = canvas.getContext('webgl');
+    /* v8 ignore else -- the "gl is truthy" case needs a real WebGL context, unavailable in jsdom */
     if (!gl) {
       console.error('WebGL not supported');
       return;
@@ -46,6 +48,8 @@
   }
 
   function resizeCanvas() {
+    /* v8 ignore next -- the true branch (no real WebGL context) is the only one
+       reachable in jsdom; the false branch needs a real WebGL context */
     if (!canvas || !gl || typeof window === 'undefined') return;
     /* v8 ignore start -- only reached with a real WebGL context, unavailable in jsdom */
     canvas.width = window.innerWidth;
@@ -55,13 +59,13 @@
   }
 
   function switchRenderer(vizType: string) {
+    /* v8 ignore next -- only reached once a prior renderer was init()'d against real WebGL */
     if (currentRenderer) {
-      /* v8 ignore next -- only reached once a prior renderer was init()'d against real WebGL */
       currentRenderer.destroy();
     }
     currentRenderer = getRenderer(vizType);
+    /* v8 ignore next -- only reached with a real WebGL context, unavailable in jsdom */
     if (currentRenderer && gl) {
-      /* v8 ignore next -- only reached with a real WebGL context, unavailable in jsdom */
       currentRenderer.init(gl, palette);
     }
   }
@@ -93,21 +97,21 @@
     const deltaTime = time - lastTime;
     lastTime = time;
 
+    /* v8 ignore next -- only reached with a real WebGL context, unavailable in jsdom */
     if (gl && currentRenderer) {
-      /* v8 ignore start -- only reached with a real WebGL context, unavailable in jsdom */
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       currentRenderer.update(deltaTime, slideConfig.mood, slideConfig.intensity);
-      /* v8 ignore stop */
     }
 
     animationId = requestAnimationFrame(animate);
   }
 
+  /* v8 ignore start -- gl is never truthy in jsdom, which has no real WebGL context */
   $: if (gl && currentSlide !== previousSlide) {
-    /* v8 ignore next -- gl is never truthy in jsdom, which has no real WebGL context */
     transitionToSlide(currentSlide);
   }
+  /* v8 ignore stop */
 
   onMount(() => {
     initWebGL();
@@ -117,8 +121,11 @@
   });
 
   onDestroy(() => {
+    /* v8 ignore else -- onMount always sets animationId before a test can unmount */
     if (animationId) cancelAnimationFrame(animationId);
+    /* v8 ignore else -- onMount always sets currentRenderer before a test can unmount */
     if (currentRenderer) currentRenderer.destroy();
+    /* v8 ignore else -- jsdom (the only test environment here) always defines window */
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', resizeCanvas);
     }

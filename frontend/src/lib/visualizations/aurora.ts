@@ -95,8 +95,9 @@ export const AuroraRenderer: VisualizationRenderer = {
   transition(toConfig: SlideConfig, progress: number) {},
 
   destroy() {
-    /* v8 ignore next 2 -- only reachable after a real WebGL init() */
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.program) this.gl.deleteProgram(this.program);
+    /* v8 ignore next -- only reachable after a real WebGL init() */
     if (this.gl && this.buffer) this.gl.deleteBuffer(this.buffer);
   },
 } as VisualizationRenderer & { gl: WebGLRenderingContext | null; program: WebGLProgram | null; buffer: WebGLBuffer | null; startTime: number; palette: Palette | null };

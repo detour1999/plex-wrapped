@@ -61,4 +61,14 @@ describe('ListeningClock slide', () => {
 
     expect(screen.getByText('12am')).toBeTruthy();
   });
+
+  it('renders without dividing by zero when every hour has no plays', async () => {
+    const noPlays = Array.from({ length: 24 }, (_, hour) => ({ hour, plays: 0 }));
+
+    expect(() => render(ListeningClock, { hourly_data: noPlays, visible: true })).not.toThrow();
+    await tick();
+
+    // With no plays anywhere, hour 0 is the (arbitrary) first max - still a valid label.
+    expect(screen.getByText('12am')).toBeTruthy();
+  });
 });
